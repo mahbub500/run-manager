@@ -189,6 +189,7 @@ final class Plugin {
 		 * AJAX related hooks
 		 */
 		$ajax = new App\AJAX( $this->plugin );
+		$ajax->all( 'export_woocommerce_orders', 'woocommerce_orders_export' );
 	}
 
 	/**

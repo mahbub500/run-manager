@@ -427,7 +427,7 @@ class Settings extends Base {
 							'items'     => [
 								'run-manager_export_order_data' => [
 											'id'        => 'run-manager_export_order_data',
-											'label'     => __( 'Table', 'run-manager' ),
+											'label'     => __( 'Export Order Data', 'run-manager' ),
 											'icon'      => 'dashicons-editor-table',
 											// 'color'		=> '#28c9ee',
 											'hide_form'	=> true,

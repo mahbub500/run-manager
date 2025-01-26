@@ -31,7 +31,42 @@ class Front extends Base {
 		$this->version	= $this->plugin['Version'];
 	}
 
-	public function head() {}
+	public function head() {
+			 $args = [
+				    'status'        => ['wc-completed', 'wc-processing'], // Order statuses to filter
+				    'limit'         => -1, // Fetch all orders
+				];
+				$orders = wc_get_orders($args);
+
+				if (!empty($orders)) {
+			   		foreach ($orders as $order) {
+			   			$order_id = $order->get_id();
+
+			   			$order = wc_get_order($order_id);
+
+						if ($order) {
+						    // Loop through each item in the order
+						    foreach ($order->get_items() as $item_id => $item) {
+						        echo 'Item Name: ' . $item->get_name() . '<br>'; // Product name
+
+						        // Fetch all meta data for the current item
+						        $item_meta_data = $item->get_meta_data();
+
+						        Helper::pri( $item );
+						        
+						        // echo 'Meta Data: <br>';
+						        // foreach ($item_meta_data as $meta) {
+						        //     echo $meta->key . ': ' . $meta->value . '<br>';
+						        // }
+
+						        echo '<hr>';
+						    }
+						}
+					}
+				}
+			// Helper::pri($orders);
+
+	}
 	
 	/**
 	 * Enqueue JavaScripts and stylesheets
