@@ -425,32 +425,14 @@ class Settings extends Base {
 							'label'     => __( 'Sample Tabs' ),
 							'type'      => 'tabs',
 							'items'     => [
-								'sample_tab1' => [
-									'id'      => 'sample_tab1',
-									'label'     => __( 'First Tab', 'run-manager' ),
-									'fields'    => [
-										'sample_tab1_email' => [
-											'id'      => 'sample_tab1_email',
-											'label'     => __( 'Tab Email Field', 'run-manager' ),
-											'type'      => 'email',
-											'desc'      => __( 'This is an email field.', 'run-manager' ),
-											// 'class'     => '',
-											'default'   => 'john@doe.com',
-											'readonly'  => false, // true|false
-											'disabled'  => false, // true|false
+								'run-manager_export_order_data' => [
+											'id'        => 'run-manager_export_order_data',
+											'label'     => __( 'Table', 'run-manager' ),
+											'icon'      => 'dashicons-editor-table',
+											// 'color'		=> '#28c9ee',
+											'hide_form'	=> true,
+											'template'  => RUN_MANAGER_DIR . '/views/export/export.php',
 										],
-										'sample_tab1_url' => [
-											'id'      => 'sample_tab1_url',
-											'label'     => __( 'Tab URL Field', 'run-manager' ),
-											'type'      => 'url',
-											'desc'      => __( 'This is a url field.', 'run-manager' ),
-											// 'class'     => '',
-											'default'   => 'https://johndoe.com',
-											'readonly'  => false, // true|false
-											'disabled'  => false, // true|false
-										],
-									],
-								],
 								'sample_tab2' => [
 									'id'      => 'sample_tab2',
 									'label'     => __( 'Second Tab', 'run-manager' ),
