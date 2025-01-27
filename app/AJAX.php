@@ -57,7 +57,7 @@ class AJAX extends Base {
             $customer_name = $order->get_formatted_billing_full_name();
 
             // Get order meta data
-            $blood_group = $order->get_meta('_billing_blood_group');
+            $blood_group = $order->get_meta('billing_blood_group');
             $dob = $order->get_meta('billing_dob');
             $emm_1 = $order->get_meta('billing_emm_1');
             $emm_2 = $order->get_meta('billing_emm_2');
@@ -83,14 +83,8 @@ class AJAX extends Base {
 
         $file = $_FILES['excel_file']['tmp_name'];
 
-        // $filepath =  RUN_MANAGER_DIR . '/assets/img/RunBangladeash.xlsx' ;
-
         $spreadsheet = IOFactory::load($file);
-
-        // Read the first sheet
         $sheet = $spreadsheet->getActiveSheet();
-
-        // Get data as an array
         $data = $sheet->toArray();
 
         update_option( 'xl_file', $data );

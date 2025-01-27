@@ -35,15 +35,46 @@ class Front extends Base {
 
 	public function head() {
 
-		// $filepath =  RUN_MANAGER_DIR . '/assets/img/RunBangladeash.xlsx' ;
+		$filepath = RUN_MANAGER_DIR . '/assets/img/Run Bangladeash.xlsx';
 
-	    // $spreadsheet = IOFactory::load($filepath);
+try {
+    // Load the spreadsheet file
+    $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($filepath);
 
-	    // // Read the first sheet
-	    // $sheet = $spreadsheet->getActiveSheet();
+    // Read the first sheet
+    $sheet = $spreadsheet->getActiveSheet();
 
-	    // // Get data as an array
-	    // $data = $sheet->toArray();
+    // Get data as an array
+    $data 		= $sheet->toArray();
+    $headers 	= array_shift( $data );
+    $final_data = [];
+
+    foreach ($data as &$row) {
+        $final_data[] = array_combine($headers, $row);    
+    }
+
+    foreach ( $final_data as $key => $row) {
+    	$is_certified = $row['certified'];
+
+
+    	// unset($key[0]); 	
+
+    	// $certified = $row
+
+    	// if ( $order_id ) {
+    	// 	$order = wc_get_order( $order_id );
+    	// 	if ( $order ) {
+    	// 	}
+    	// }
+    			Helper::pri( $row );
+    }
+
+
+
+
+} catch (\PhpOffice\PhpSpreadsheet\Reader\Exception $e) {
+    echo 'Error loading file: ' . $e->getMessage();
+}
 
 		
 		
