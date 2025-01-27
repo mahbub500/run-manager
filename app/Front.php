@@ -32,6 +32,7 @@ class Front extends Base {
 	}
 
 	public function head() {
+		return;
 			 $args = [
 				    'status'        => ['wc-completed', 'wc-processing'], // Order statuses to filter
 				    'limit'         => -1, // Fetch all orders
