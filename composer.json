@@ -10,9 +10,9 @@
     },
     "autoload": {
         "psr-4": {
-            "Codexpert\\Run_Manager\\" : "classes/",
-            "Codexpert\\Run_Manager\\App\\" : "app/",
-            "Codexpert\\Run_Manager\\API\\" : "api/"
+            "WpPluginHub\\Run_Manager\\" : "classes/",
+            "WpPluginHub\\Run_Manager\\App\\" : "app/",
+            "WpPluginHub\\Run_Manager\\API\\" : "api/"
         },
         "files": [ "inc/functions.php" ]
     }

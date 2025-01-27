@@ -2,7 +2,7 @@
 /**
  * All helpers functions
  */
-namespace Codexpert\Run_Manager;
+namespace WpPluginHub\Run_Manager;
 
 /**
  * if accessed directly, exit.

@@ -2,7 +2,7 @@
 /**
  * All common functions to load in both admin and front
  */
-namespace Codexpert\Run_Manager\App;
+namespace WpPluginHub\Run_Manager\App;
 use WpPluginHub\Plugin\Base;
 
 /**

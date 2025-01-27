@@ -2,9 +2,9 @@
 /**
  * All public facing functions
  */
-namespace Codexpert\Run_Manager\App;
+namespace WpPluginHub\Run_Manager\App;
 use WpPluginHub\Plugin\Base;
-use Codexpert\Run_Manager\Helper;
+use WpPluginHub\Run_Manager\Helper;
 /**
  * if accessed directly, exit.
  */

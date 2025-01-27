@@ -2,8 +2,8 @@
 /**
  * All settings related functions
  */
-namespace Codexpert\Run_Manager\App;
-use Codexpert\Run_Manager\Helper;
+namespace WpPluginHub\Run_Manager\App;
+use WpPluginHub\Run_Manager\Helper;
 use WpPluginHub\Plugin\Base;
 use WpPluginHub\Plugin\Settings as Settings_API;
 

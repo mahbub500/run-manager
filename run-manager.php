@@ -10,7 +10,7 @@
  * Domain Path: /languages
  */
 
-namespace Codexpert\Run_Manager;
+namespace WpPluginHub\Run_Manager;
 use WpPluginHub\Plugin\Notice;
 
 /**
