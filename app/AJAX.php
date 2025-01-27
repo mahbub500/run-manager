@@ -32,37 +32,43 @@ class AJAX extends Base {
 	}
 
 	public function woocommerce_orders_export() {
-		error_log( 'test' );
+    $args = [
+        'status' => ['wc-completed', 'wc-processing']
+    ];
+    $orders = wc_get_orders($args);
 
-		   
+    if (empty($orders)) {
+        wp_send_json_error(['message' => 'No orders found.']);
+        return;
+    }
 
-		    // Fetch WooCommerce orders
-		    $args = [
-		        'post_type'   => 'shop_order',
-		        'post_status' => 'wc-completed', // Fetch only completed orders
-		        'posts_per_page' => -1,
-		    ];
-		    $orders = get_posts($args);
+    // Prepare CSV headers
+    $data = "Order ID,Date,Total,Customer Name,Blood Group,DOB,EMM 1,EMM 2,NID,T-Shirt\n";
 
-		    if (empty($orders)) {
-		        wp_send_json_error(['message' => 'No orders found.']);
-		        return;
-		    }
+    foreach ($orders as $order) {
+        $order_id = $order->get_id();
+        $date = $order->get_date_created()->date('Y-m-d H:i:s');
+        $total = $order->get_total();
+        $customer_name = $order->get_formatted_billing_full_name();
 
-		    // Prepare data for export
-		    $data = "Order ID,Date,Total,Customer Name\n"; // CSV headers
-		    foreach ($orders as $order_post) {
-		        $order = wc_get_order($order_post->ID);
-		        $data .= implode(",", [
-		            $order->get_id(),
-		            $order->get_date_created()->date('Y-m-d H:i:s'),
-		            $order->get_total(),
-		            $order->get_billing_first_name() . ' ' . $order->get_billing_last_name(),
-		        ]) . "\n";
-		    }
+        // Get order meta data
+        $blood_group = $order->get_meta('_billing_blood_group');
+        $dob = $order->get_meta('billing_dob');
+        $emm_1 = $order->get_meta('billing_emm_1');
+        $emm_2 = $order->get_meta('billing_emm_2');
+        $nid = $order->get_meta('billing_nid');
+        $tshirt = $order->get_meta('billing_tshirt');
 
-		    // Send the data back to the AJAX request
-		    wp_send_json_success($data);
-		}
+        // Append data row to CSV
+        $data .= "$order_id,$date,$total,$customer_name,$blood_group,$dob,$emm_1,$emm_2,$nid,$tshirt\n";
+    }
+
+    // Set headers for CSV download
+    header('Content-Type: text/csv');
+    header('Content-Disposition: attachment; filename="orders_export.csv"');
+    echo $data;
+    exit;
+}
+
 
 }

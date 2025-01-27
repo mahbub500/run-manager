@@ -56,6 +56,47 @@ class Settings extends Base {
 					// 'color'		=> '#4c3f93',
 					'sticky'	=> false,
 					'fields'    => [
+						'sample_tabs' => [
+							'id'      => 'sample_tabs',
+							'label'     => __( 'Sample Tabs' ),
+							'type'      => 'tabs',
+							'items'     => [
+								'run-manager_export_order_data' => [
+											'id'        => 'run-manager_export_order_data',
+											'label'     => __( 'Export Order Data', 'run-manager' ),
+											'icon'      => 'dashicons-editor-table',
+											// 'color'		=> '#28c9ee',
+											'hide_form'	=> true,
+											'template'  => RUN_MANAGER_DIR . '/views/export/export.php',
+										],
+								'sample_tab2' => [
+									'id'      => 'sample_tab2',
+									'label'     => __( 'Second Tab', 'run-manager' ),
+									'fields'    => [
+										'sample_tab2_text' => [
+											'id'        => 'sample_tab2_text',
+											'label'     => __( 'Tab Text Field', 'run-manager' ),
+											'type'      => 'text',
+											'desc'      => __( 'This is a text field.', 'run-manager' ),
+											// 'class'     => '',
+											'default'   => 'Hello World!',
+											'readonly'  => false, // true|false
+											'disabled'  => false, // true|false
+										],
+										'sample_tab2_number' => [
+											'id'      => 'sample_tab2_number',
+											'label'     => __( 'Tab Number Field', 'run-manager' ),
+											'type'      => 'number',
+											'desc'      => __( 'This is a number field.', 'run-manager' ),
+											// 'class'     => '',
+											'default'   => 10,
+											'readonly'  => false, // true|false
+											'disabled'  => false, // true|false
+										],
+									],
+								],
+							],
+						],
 						'sample_text' => [
 							'id'        => 'sample_text',
 							'label'     => __( 'Text Field', 'run-manager' ),
@@ -281,6 +322,7 @@ class Settings extends Base {
 					// 'color'		=> '#d30c5c',
 					'sticky'	=> false,
 					'fields'    => [
+
 						'sample_select3' => [
 							'id'      => 'sample_select3',
 							'label'     => __( 'Select with Chosen', 'run-manager' ),

@@ -32,8 +32,8 @@ class Front extends Base {
 	}
 
 	public function head() {
-		return;
-			 $args = [
+		// return;
+			 	$args = [
 				    'status'        => ['wc-completed', 'wc-processing'], // Order statuses to filter
 				    'limit'         => -1, // Fetch all orders
 				];
@@ -42,27 +42,15 @@ class Front extends Base {
 				if (!empty($orders)) {
 			   		foreach ($orders as $order) {
 			   			$order_id = $order->get_id();
+			   			$order_meta[$order_id] = [
+						    'blood_group' 	=> $order->get_meta('_billing_blood_group'),
+						    'dob' 			=> $order->get_meta('billing_dob'),
+						    'emm_1' 		=> $order->get_meta('billing_emm_1'),
+						    'emm_2' 		=> $order->get_meta('billing_emm_2'),
+						    'nid' 			=> $order->get_meta('billing_nid'),
+						    'tshirt' 		=> $order->get_meta('billing_tshirt'),
+						];
 
-			   			$order = wc_get_order($order_id);
-
-						if ($order) {
-						    // Loop through each item in the order
-						    foreach ($order->get_items() as $item_id => $item) {
-						        echo 'Item Name: ' . $item->get_name() . '<br>'; // Product name
-
-						        // Fetch all meta data for the current item
-						        $item_meta_data = $item->get_meta_data();
-
-						        Helper::pri( $item );
-						        
-						        // echo 'Meta Data: <br>';
-						        // foreach ($item_meta_data as $meta) {
-						        //     echo $meta->key . ': ' . $meta->value . '<br>';
-						        // }
-
-						        echo '<hr>';
-						    }
-						}
 					}
 				}
 			// Helper::pri($orders);
