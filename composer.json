@@ -6,7 +6,8 @@
         }
     ],
     "require": {
-        "wppluginhub/plugin": "dev-master"
+        "wppluginhub/plugin": "dev-master",
+        "phpoffice/phpspreadsheet": "^3.9"
     },
     "autoload": {
         "psr-4": {

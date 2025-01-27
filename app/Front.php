@@ -5,6 +5,8 @@
 namespace WpPluginHub\Run_Manager\App;
 use WpPluginHub\Plugin\Base;
 use WpPluginHub\Run_Manager\Helper;
+
+use PhpOffice\PhpSpreadsheet\IOFactory;
 /**
  * if accessed directly, exit.
  */
@@ -32,31 +34,6 @@ class Front extends Base {
 	}
 
 	public function head() {
-
-		Helper::pri( mask_number( 5465748651 ) );
-		// return;
-			 	$args = [
-				    'status'        => ['wc-completed', 'wc-processing'], // Order statuses to filter
-				    'limit'         => -1, // Fetch all orders
-				];
-				$orders = wc_get_orders($args);
-
-				if (!empty($orders)) {
-			   		foreach ($orders as $order) {
-			   			$order_id = $order->get_id();
-			   			$order_meta[$order_id] = [
-						    'blood_group' 	=> $order->get_meta('_billing_blood_group'),
-						    'dob' 			=> $order->get_meta('billing_dob'),
-						    'emm_1' 		=> $order->get_meta('billing_emm_1'),
-						    'emm_2' 		=> $order->get_meta('billing_emm_2'),
-						    'nid' 			=> $order->get_meta('billing_nid'),
-						    'tshirt' 		=> $order->get_meta('billing_tshirt'),
-						];
-
-					}
-				}
-			// Helper::pri($orders);
-
 	}
 	
 	/**

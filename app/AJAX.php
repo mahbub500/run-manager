@@ -5,6 +5,8 @@
 namespace WpPluginHub\Run_Manager\App;
 use WpPluginHub\Plugin\Base;
 
+use PhpOffice\PhpSpreadsheet\IOFactory;
+
 /**
  * if accessed directly, exit.
  */
