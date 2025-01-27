@@ -1,5 +1,5 @@
 <?php
-use Codexpert\Plugin\Table;
+use WpPluginHub\Plugin\Table;
 
 $config = [
 	'per_page'		=> 5,

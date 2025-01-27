@@ -6,7 +6,7 @@
         }
     ],
     "require": {
-        "codexpert/plugin": "dev-master"
+        "wppluginhub/plugin": "dev-master"
     },
     "autoload": {
         "psr-4": {

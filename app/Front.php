@@ -3,7 +3,7 @@
  * All public facing functions
  */
 namespace Codexpert\Run_Manager\App;
-use Codexpert\Plugin\Base;
+use WpPluginHub\Plugin\Base;
 use Codexpert\Run_Manager\Helper;
 /**
  * if accessed directly, exit.

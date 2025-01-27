@@ -4,8 +4,8 @@
  */
 namespace Codexpert\Run_Manager\App;
 use Codexpert\Run_Manager\Helper;
-use Codexpert\Plugin\Base;
-use Codexpert\Plugin\Settings as Settings_API;
+use WpPluginHub\Plugin\Base;
+use WpPluginHub\Plugin\Settings as Settings_API;
 
 /**
  * @package Plugin

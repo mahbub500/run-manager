@@ -11,7 +11,7 @@
  */
 
 namespace Codexpert\Run_Manager;
-use Codexpert\Plugin\Notice;
+use WpPluginHub\Plugin\Notice;
 
 /**
  * if accessed directly, exit.

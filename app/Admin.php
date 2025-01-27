@@ -3,8 +3,8 @@
  * All admin facing functions
  */
 namespace Codexpert\Run_Manager\App;
-use Codexpert\Plugin\Base;
-use Codexpert\Plugin\Metabox;
+use WpPluginHub\Plugin\Base;
+use WpPluginHub\Plugin\Metabox;
 
 /**
  * if accessed directly, exit.

@@ -3,7 +3,7 @@
  * All Shortcode related functions
  */
 namespace Codexpert\Run_Manager\App;
-use Codexpert\Plugin\Base;
+use WpPluginHub\Plugin\Base;
 
 /**
  * if accessed directly, exit.
