@@ -43,10 +43,39 @@ jQuery(document).ready(function ($) {
         });
     });
 
+    $('#run-manager-import-button').prop('disabled', true);
+   
+    $('#excel_file').on('change', function () {
+        if ($(this).val()) {
+            $('#run-manager-import-button').prop('disabled', false);
+        } else {
+            $('#run-manager-import-button').prop('disabled', true);
+        }
+    });
+
 
     $("#run-manager-import-button").on( 'click', function(e){
         e.preventDefault();
-        console.log( 'Hello' );
+
+        var xl_file = $('#excel_file')[0].files[0];
+        console.log( xl_file );       
+        //  $.ajax({
+        //     url: RUN_MANAGER.ajaxurl,
+        //     type: "POST",
+        //     data: {
+        //         nonce: RUN_MANAGER._wpnonce,
+        //         action: "import_woocommerce_orders",
+        //     },
+        //     processData: false,
+        //     contentType: false,
+        //     success: function (response) {
+        //     $('#status').text(response.message);
+        //     runm_modal(false);
+        //     },
+        //     error: function () {
+        //         $('#status').text('Something went wrong!');
+        //     },
+        // });
     } )
 });
 
