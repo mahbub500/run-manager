@@ -53,21 +53,24 @@ try {
         $final_data[] = array_combine($headers, $row);    
     }
 
-    foreach ( $final_data as $key => $row) {
-    	$is_certified = $row['certified'];
+    foreach ( $final_data as $key => $row ) {
+	    $is_certified = $row['certified'];
+	    $order_id = $row['Order ID'];
 
+	    if ( $order_id ) {
+	        $order = wc_get_order( $order_id );
 
-    	// unset($key[0]); 	
+	        if ( $order ) {
+	            $certificate_meta = $order->get_meta( 'is_certified' );
 
-    	// $certified = $row
+	            if ( empty( $certificate_meta ) ) {
+	                $order->update_meta_data( 'is_certified', $is_certified );
+	                $order->save();
+	            }
+	        }
+	    }
+	}
 
-    	// if ( $order_id ) {
-    	// 	$order = wc_get_order( $order_id );
-    	// 	if ( $order ) {
-    	// 	}
-    	// }
-    			Helper::pri( $row );
-    }
 
 
 
