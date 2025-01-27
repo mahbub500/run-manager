@@ -64,11 +64,7 @@ class Admin extends Base {
 		
 		wp_enqueue_style( $this->slug, plugins_url( "/assets/css/admin{$min}.css", RUN_MANAGER ), '', $this->version, 'all' );
 
-		// wp_enqueue_style( 'bootstrap', 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css', '', $this->version, 'all' );
-
 		wp_enqueue_script( $this->slug, plugins_url( "/assets/js/admin{$min}.js", RUN_MANAGER ), [ 'jquery' ], $this->version, true );
-
-		// wp_enqueue_script( $this->slug, 'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css', [ 'jquery' ], $this->version, true );
 
 		$localized = [
 			'ajaxurl'	=> admin_url( 'admin-ajax.php' ),
