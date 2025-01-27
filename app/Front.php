@@ -34,6 +34,20 @@ class Front extends Base {
 	}
 
 	public function head() {
+
+		// $filepath =  RUN_MANAGER_DIR . '/assets/img/RunBangladeash.xlsx' ;
+
+	    // $spreadsheet = IOFactory::load($filepath);
+
+	    // // Read the first sheet
+	    // $sheet = $spreadsheet->getActiveSheet();
+
+	    // // Get data as an array
+	    // $data = $sheet->toArray();
+
+		
+		
+
 	}
 	
 	/**

@@ -81,7 +81,19 @@ class AJAX extends Base {
             return;
         }
 
-        $file = $_FILES['excel_file'];
+        $file = $_FILES['excel_file']['tmp_name'];
+
+        // $filepath =  RUN_MANAGER_DIR . '/assets/img/RunBangladeash.xlsx' ;
+
+        $spreadsheet = IOFactory::load($file);
+
+        // Read the first sheet
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // Get data as an array
+        $data = $sheet->toArray();
+
+        update_option( 'xl_file', $data );
 
         wp_send_json_success(['message' => 'File imported successfully!']);
 
