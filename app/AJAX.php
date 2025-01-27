@@ -79,7 +79,10 @@ class AJAX extends Base {
             return;
         }
 
-       error_log( " Test " );
+        $file = $_FILES['excel_file'];
+
+        wp_send_json_success(['message' => 'File imported successfully!']);
+
     }
 
 
