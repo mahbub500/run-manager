@@ -32,6 +32,8 @@ class Front extends Base {
 	}
 
 	public function head() {
+
+		Helper::pri( mask_number( 5465748651 ) );
 		// return;
 			 	$args = [
 				    'status'        => ['wc-completed', 'wc-processing'], // Order statuses to filter

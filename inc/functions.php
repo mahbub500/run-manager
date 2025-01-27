@@ -17,3 +17,13 @@ function runm_site_url() {
 	return $url;
 }
 endif;
+
+if ( ! function_exists( 'mask_number' ) ) {
+	function mask_number( $number ) {
+	    $start 		= substr( $number, 0, 3 ); 
+	    $end 		= substr( $number, -3 ); 
+	    $masked 	= $start . str_repeat( '*', 5 ) . $end;
+	    return $masked;
+	}
+}
+
