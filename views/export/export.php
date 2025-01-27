@@ -2,13 +2,14 @@
 use Codexpert\Plugin\Table;
 ?>
 
-<div class="container mt-4">
-  <div class="mb-3">
-    <label for="order-text" class="form-label">Export Order Data To excel :</label>
- 
-  <button id="run-manager-export-button" class="btn btn-primary">
-    <i class="bi bi-download"></i> Export  to Excel
+<div class="wph-row  ">
+  <div class="wph-label-wrap">
+    <label >Export Order Data To excel :</label>
+  </div>
+  <div class="wph-field-wrap ">
+    <button id="run-manager-export-button" class="button button-hero button-primary ">
+    <i class="bi bi-download"></i>Export
   </button>
-   </div>
+    <p class="wph-desc">This will export your completed order data to excel.</p>
+  </div>
 </div>
-
