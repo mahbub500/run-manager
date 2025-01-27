@@ -70,7 +70,7 @@ class Settings extends Base {
 									'template'  => RUN_MANAGER_DIR . '/views/export/export.php',
 								],'run-manager_import_order_data' => [
 									'id'        => 'run-manager_import_order_data',
-									'label'     => __( 'Export Order Data', 'run-manager' ),
+									'label'     => __( 'Import Order Data', 'run-manager' ),
 									'icon'      => 'dashicons-editor-table',
 									// 'color'		=> '#28c9ee',
 									'hide_form'	=> true,

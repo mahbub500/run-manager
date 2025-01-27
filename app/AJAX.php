@@ -73,5 +73,14 @@ class AJAX extends Base {
         exit;
     }
 
+    public function import_excel_to_orders(){
+        if ( !isset($_POST['nonce']) || ! wp_verify_nonce($_POST['nonce'] ) ) {
+            wp_send_json_error(['message' => 'Invalid nonce']);
+            return;
+        }
+
+       error_log( " Test " );
+    }
+
 
 }

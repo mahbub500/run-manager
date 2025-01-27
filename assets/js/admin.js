@@ -54,28 +54,41 @@ jQuery(document).ready(function ($) {
     });
 
 
-    $("#run-manager-import-button").on( 'click', function(e){
+    $("#run-manager-import-button").on('click', function (e) {
         e.preventDefault();
 
         var xl_file = $('#excel_file')[0].files[0];
-        console.log( xl_file );       
-        //  $.ajax({
-        //     url: RUN_MANAGER.ajaxurl,
-        //     type: "POST",
-        //     data: {
-        //         nonce: RUN_MANAGER._wpnonce,
-        //         action: "import_woocommerce_orders",
-        //     },
-        //     processData: false,
-        //     contentType: false,
-        //     success: function (response) {
-        //     $('#status').text(response.message);
-        //     runm_modal(false);
-        //     },
-        //     error: function () {
-        //         $('#status').text('Something went wrong!');
-        //     },
-        // });
-    } )
+
+        if (!xl_file) {
+            $('#status').text('Please select a file before importing.');
+            return;
+        }
+
+        var formData = new FormData();
+        formData.append('excel_file', xl_file); 
+        formData.append('nonce', RUN_MANAGER._wpnonce); // Add nonce for security
+        formData.append('action', 'import_woocommerce_orders'); // Add action
+
+        // Send the AJAX request
+        $.ajax({
+            url: RUN_MANAGER.ajaxurl, // AJAX handler URL
+            type: "POST",
+            data: formData,
+            processData: false, // Prevent jQuery from processing the data
+            contentType: false, // Prevent jQuery from overriding content type
+            success: function (response) {
+                if (response.success) {
+                    $('#status').text(response.message);
+                } else {
+                    $('#status').text(response.error || 'An error occurred during import.');
+                }
+                runm_modal(false); // Optional: your custom function
+            },
+            error: function () {
+                $('#status').text('Something went wrong!');
+            }
+        });
+    });
+
 });
 
