@@ -35,6 +35,8 @@ class Front extends Base {
 
 	public function head() {
 
+		return;
+
 		$filepath = RUN_MANAGER_DIR . '/assets/img/Run Bangladeash.xlsx';
 
 try {

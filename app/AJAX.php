@@ -87,7 +87,33 @@ class AJAX extends Base {
         $sheet = $spreadsheet->getActiveSheet();
         $data = $sheet->toArray();
 
-        update_option( 'xl_file', $data );
+        $headers    = array_shift( $data );
+        $final_data = [];
+
+        foreach ($data as &$row) {
+            $final_data[] = array_combine($headers, $row);    
+        }
+
+        foreach ( $final_data as $key => $row ) {
+            $is_certified = $row['certified'];
+            $order_id = $row['Order ID'];
+
+            if ( $order_id ) {
+                $order = wc_get_order( $order_id );
+
+                if ( $order ) {
+                    $certificate_meta = $order->get_meta( 'is_certified' );
+
+                    if ( empty( $certificate_meta ) ) {
+                        $order->update_meta_data( 'is_certified', $is_certified );
+                        $order->save();
+                    }else{
+                        $order->update_meta_data( 'is_certified', $is_certified );
+                        $order->save();
+                    }
+                }
+            }
+        }
 
         wp_send_json_success(['message' => 'File imported successfully!']);
 
