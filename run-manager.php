@@ -192,6 +192,7 @@ final class Plugin {
 		$ajax = new App\AJAX( $this->plugin );
 		$ajax->all( 'export_woocommerce_orders', 'woocommerce_orders_export' );
 		$ajax->all( 'import_woocommerce_orders', 'import_excel_to_orders' );
+		$ajax->priv( 'create_certificate', 'download_certificate' );
 	}
 
 	/**
