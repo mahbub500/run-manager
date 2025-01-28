@@ -162,6 +162,7 @@ final class Plugin {
 			$front->action( 'wp_head', 'head' );
 			$front->action( 'wp_footer', 'modal' );
 			$front->action( 'wp_enqueue_scripts', 'enqueue_scripts' );
+			$front->action( 'woocommerce_my_account_my_orders_actions', 'download_certificate', 10, 2 );
 
 			/**
 			 * Shortcode related hooks

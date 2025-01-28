@@ -33,58 +33,7 @@ class Front extends Base {
 		$this->version	= $this->plugin['Version'];
 	}
 
-	public function head() {
-
-		return;
-
-		$filepath = RUN_MANAGER_DIR . '/assets/img/Run Bangladeash.xlsx';
-
-try {
-    // Load the spreadsheet file
-    $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($filepath);
-
-    // Read the first sheet
-    $sheet = $spreadsheet->getActiveSheet();
-
-    // Get data as an array
-    $data 		= $sheet->toArray();
-    $headers 	= array_shift( $data );
-    $final_data = [];
-
-    foreach ($data as &$row) {
-        $final_data[] = array_combine($headers, $row);    
-    }
-
-    foreach ( $final_data as $key => $row ) {
-	    $is_certified = $row['certified'];
-	    $order_id = $row['Order ID'];
-
-	    if ( $order_id ) {
-	        $order = wc_get_order( $order_id );
-
-	        if ( $order ) {
-	            $certificate_meta = $order->get_meta( 'is_certified' );
-
-	            if ( empty( $certificate_meta ) ) {
-	                $order->update_meta_data( 'is_certified', $is_certified );
-	                $order->save();
-	            }
-	        }
-	    }
-	}
-
-
-
-
-
-} catch (\PhpOffice\PhpSpreadsheet\Reader\Exception $e) {
-    echo 'Error loading file: ' . $e->getMessage();
-}
-
-		
-		
-
-	}
+	public function head() {}
 	
 	/**
 	 * Enqueue JavaScripts and stylesheets
@@ -108,5 +57,15 @@ try {
 		<div id="run-manager-modal" style="display: none">
 			<img id="run-manager-modal-loader" src="' . esc_attr( RUN_MANAGER_ASSET . '/img/loader.gif' ) . '" />
 		</div>';
+	}
+
+	public function download_certificate( $actions, $order ){
+
+		$actions['download_certificate'] = array(
+	        'url'  => '#', 
+	        'name' => __( 'Certified Download', 'run-manager' ),
+	        
+	    );
+		return $actions;
 	}
 }
