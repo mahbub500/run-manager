@@ -8,5 +8,15 @@ let runm_modal = ( show = true ) => {
 }
 
 jQuery(function($){
-	
+	$(document).on('click', '.download_certificate', function (e) {
+	    e.preventDefault(); 
+
+	    const ariaLabel 	= $(this).attr('aria-label');
+
+	    const orderNumber 	= ariaLabel.match(/order number (\d+)/)?.[1];
+
+	    
+	});
+
+
 })

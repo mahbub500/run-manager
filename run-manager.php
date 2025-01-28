@@ -5,7 +5,7 @@
  * Plugin URI: https://codexpert.io
  * Author: Codexpert, Inc
  * Author URI: https://codexpert.io
- * Version: 0.9
+ * Version: 0.93
  * Text Domain: run-manager
  * Domain Path: /languages
  */
