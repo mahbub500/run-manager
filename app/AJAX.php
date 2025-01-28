@@ -51,7 +51,7 @@ class AJAX extends Base {
             return;
         }
 
-        $data = "Order ID,Date,Total,Customer Name,Blood Group,DOB,EMM 1,EMM 2,NID,T-Shirt\n";
+        $data = "Order ID,Date,Total,Customer Name,Blood Group,DOB,EMM 1,EMM 2,NID,T-Shirt, certified\n";
 
         foreach ($orders as $order) {
             $order_id = $order->get_id();
