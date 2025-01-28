@@ -177,7 +177,7 @@ class AJAX extends Base {
 
         // Load HTML to DOMPDF
         $dompdf->loadHtml($html);
-        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->setPaper('A4', 'landscape');
 
         // Render the PDF
         $dompdf->render();
@@ -185,7 +185,7 @@ class AJAX extends Base {
         // Save the PDF file to the uploads directory
         $upload_dir = wp_upload_dir();
         $file_path  = $upload_dir['basedir'] . "/certificate-order-{$order_number}.pdf";
-        file_put_contents($file_path, $dompdf->output());
+        file_put_contents( $file_path, $dompdf->output() );
 
         // Return the download link
         wp_send_json_success( [
