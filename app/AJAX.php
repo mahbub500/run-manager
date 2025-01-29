@@ -128,14 +128,14 @@ class AJAX extends Base {
             return;
         }
 
-        if ( isset( $_POST['order_number'] ) && ! empty( $_POST['order_number'] ) ) {
-            $order_number = sanitize_text_field( $_POST['order_number'] );
-        } else {
+        if ( empty( $_POST['order_number'] ) ) {
             wp_send_json_error( [ 'message' => 'Order number is missing or invalid' ] );
             return;
         }
 
+        $order_number = sanitize_text_field( $_POST['order_number'] );
         $order = wc_get_order( $order_number );
+
         if ( ! $order ) {
             wp_send_json_error( [ 'message' => 'Order not found.' ] );
             return;
@@ -144,48 +144,53 @@ class AJAX extends Base {
         $user_name  = $order->get_billing_first_name() . ' ' . $order->get_billing_last_name();
         $user_email = $order->get_billing_email();
 
-        // Generate the HTML for the certificate
-        $html = "
-            <html>
-            <head>
-                <style>
-                    body { font-family: Arial, sans-serif; text-align: center; }
-                    h1 { color: #333; }
-                    .certificate { border: 5px solid #ccc; padding: 20px; margin: 50px auto; max-width: 600px; }
-                    .info { margin-top: 20px; }
-                </style>
-            </head>
-            <body>
-                <div class='certificate'>
-                    <h1>Certificate of Completion</h1>
-                    <p>This certifies that</p>
-                    <h2>$user_name</h2>
-                    <p>with email</p>
-                    <h3>$user_email</h3>
-                    <p>has successfully completed the course/order</p>
-                    <h3>Order Number: $order_number</h3>
-                </div>
-            </body>
-            </html>
-        ";
+        // Certificate image path
+        $certificate_image = RUN_MANAGER_DIR . '/assets/img/certificate.jpeg';
+        
+        if ( ! file_exists( $certificate_image ) ) {
+            wp_send_json_error( [ 'message' => 'Certificate template not found.' ] );
+            return;
+        }
 
-        // Configure DOMPDF
+        // Load image
+        $image = imagecreatefromjpeg( $certificate_image );
+        $text_color = imagecolorallocate( $image, 0, 0, 0 ); // Black color
+
+        // Define font and text positions
+        $font_path = RUN_MANAGER_DIR . '/assets/fonts/arial.ttf'; // Ensure the font exists
+
+        if ( ! file_exists( $font_path ) ) {
+            wp_send_json_error( [ 'message' => 'Font file not found.' ] );
+            return;
+        }
+
+        // Add text to image
+        imagettftext( $image, 40, 0, 300, 300, $text_color, $font_path, $user_name );
+        imagettftext( $image, 30, 0, 300, 400, $text_color, $font_path, $user_email );
+        imagettftext( $image, 30, 0, 300, 500, $text_color, $font_path, "Order No: $order_number" );
+
+        // Save modified image
+        $upload_dir = wp_upload_dir();
+        $image_path = $upload_dir['basedir'] . "/certificate-order-{$order_number}.jpg";
+        imagejpeg( $image, $image_path, 100 ); // Save as high quality
+
+        imagedestroy( $image ); // Free memory
+
+        // Convert image to PDF using DomPDF
+        $html = '<html><body><img src="' . $upload_dir['baseurl'] . "/certificate-order-{$order_number}.jpg" . '" width="100%"></body></html>';
+
         $options = new Options();
         $options->set('isHtml5ParserEnabled', true);
         $options->set('isRemoteEnabled', true);
         $dompdf = new Dompdf($options);
 
-        // Load HTML to DOMPDF
         $dompdf->loadHtml($html);
         $dompdf->setPaper('A4', 'landscape');
-
-        // Render the PDF
         $dompdf->render();
 
-        // Save the PDF file to the uploads directory
-        $upload_dir = wp_upload_dir();
-        $file_path  = $upload_dir['basedir'] . "/certificate-order-{$order_number}.pdf";
-        file_put_contents( $file_path, $dompdf->output() );
+        // Save PDF
+        $pdf_path = $upload_dir['basedir'] . "/certificate-order-{$order_number}.pdf";
+        file_put_contents( $pdf_path, $dompdf->output() );
 
         // Return the download link
         wp_send_json_success( [
@@ -193,5 +198,6 @@ class AJAX extends Base {
             'download_link' => $upload_dir['baseurl'] . "/certificate-order-{$order_number}.pdf",
         ] );
     }
+
 
 }
