@@ -165,9 +165,9 @@ class AJAX extends Base {
         }
 
         // Add text to image
-        imagettftext( $image, 40, 0, 300, 300, $text_color, $font_path, $user_name );
-        imagettftext( $image, 30, 0, 300, 400, $text_color, $font_path, $user_email );
-        imagettftext( $image, 30, 0, 300, 500, $text_color, $font_path, "Order No: $order_number" );
+        imagettftext( $image, 10, 0, 100, 300, $text_color, $font_path, $user_name );
+        imagettftext( $image, 10, 0, 100, 400, $text_color, $font_path, $user_email );
+        imagettftext( $image, 10, 0, 100, 500, $text_color, $font_path, "Order No: $order_number" );
 
         // Save modified image
         $upload_dir = wp_upload_dir();
@@ -177,7 +177,21 @@ class AJAX extends Base {
         imagedestroy( $image ); // Free memory
 
         // Convert image to PDF using DomPDF
-        $html = '<html><body><img src="' . $upload_dir['baseurl'] . "/certificate-order-{$order_number}.jpg" . '" width="100%"></body></html>';
+        $html = '
+        <html>
+            <head>
+                <style>
+                    img {
+                        width: 85%;
+                        margin-left: 80px;
+                    }
+                </style>
+            </head>
+            <body>
+                <img src="' . $upload_dir['baseurl'] . "/certificate-order-{$order_number}.jpg" . '" alt="Certificate">
+            </body>
+        </html>';
+
 
         $options = new Options();
         $options->set('isHtml5ParserEnabled', true);
