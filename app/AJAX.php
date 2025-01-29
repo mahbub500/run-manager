@@ -206,6 +206,10 @@ class AJAX extends Base {
         $pdf_path = $upload_dir['basedir'] . "/certificate-order-{$order_number}.pdf";
         file_put_contents( $pdf_path, $dompdf->output() );
 
+        if (file_exists( $image_path )) {
+            unlink( $image_path );            
+        }
+
         // Return the download link
         wp_send_json_success( [
             'message'       => 'Certificate created successfully!',
