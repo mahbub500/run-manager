@@ -1,14 +1,15 @@
 <?php
 /**
  * Plugin Name: Run Manager
- * Description: This plugin for manage running.
- * Plugin URI: https://codexpert.io
- * Author: Codexpert, Inc
- * Author URI: https://codexpert.io
+ * Description: This plugin is for managing running activities.
+ * Plugin URI: https://techwithmahbub.com/
+ * Author: Mahbub
+ * Author URI: https://techwithmahbub.com/
  * Version: 0.95
  * Text Domain: run-manager
  * Domain Path: /languages
  */
+
 
 namespace WpPluginHub\Run_Manager;
 use WpPluginHub\Plugin\Notice;
