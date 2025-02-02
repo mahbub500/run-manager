@@ -53,6 +53,7 @@ jQuery(document).ready(function($) {
         $('#billing_passport_field, #billing_nid_field, #billing_birth_registration_field')
             .hide()
             .find('input')
+            .val('')
             .removeAttr('required');
 
         // Show the appropriate field and add required attribute
