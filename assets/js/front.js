@@ -44,34 +44,35 @@ jQuery(function($){
 })
 
 jQuery(document).ready(function($) {
-    // Initially show #billing_birth_registration
-    $('#billing_birth_registration_field').show();
+    // Remove all '.optional' elements inside the fields
+    $('#billing_birth_registration_field .optional, #billing_nid_field .optional, #billing_passport_field .optional').remove();
 
+    // Function to handle field visibility based on selected value
     function handleFieldVisibility(selectedValue) {
-        // Hide all fields except #billing_birth_registration_field
-        $('#billing_passport_field, #billing_nid_field').hide();
+        // Hide all fields initially
+        $('#billing_passport_field, #billing_nid_field, #billing_birth_registration_field').hide();
 
+        // Show the appropriate field
         if (selectedValue === 'nid') {
             $('#billing_nid_field').show();
-            $('#billing_birth_registration_field').hide();
         } else if (selectedValue === 'passport') {
             $('#billing_passport_field').show();
-            $('#billing_birth_registration_field').hide();
         } else if (selectedValue === 'birth_reg') {
-            $('#billing_birth_registration_field').show(); // Ensure it's visible when 'birth_reg' is selected
+            $('#billing_birth_registration_field').show();
         }
     }
 
-    // Get initial value and apply conditions
+    // Get initial value, apply visibility rules
     var initialValue = $('#billing_doc').val();
     console.log('Initial Value:', initialValue);
-    handleFieldVisibility(initialValue); // Apply visibility rules on page load
+    handleFieldVisibility(initialValue);
 
-    // On change event
+    // On change event for #billing_doc
     $('#billing_doc').on('change', function() {
         var selectedValue = $(this).val();
         console.log('Selected Value:', selectedValue);
         handleFieldVisibility(selectedValue);
     });
 });
+
 
