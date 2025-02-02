@@ -41,13 +41,37 @@ jQuery(function($){
 	    });
 	});
 
+})
+
+jQuery(document).ready(function($) {
+    // Initially show #billing_birth_registration
+    $('#billing_birth_registration_field').show();
+
+    function handleFieldVisibility(selectedValue) {
+        // Hide all fields except #billing_birth_registration_field
+        $('#billing_passport_field, #billing_nid_field').hide();
+
+        if (selectedValue === 'nid') {
+            $('#billing_nid_field').show();
+            $('#billing_birth_registration_field').hide();
+        } else if (selectedValue === 'passport') {
+            $('#billing_passport_field').show();
+            $('#billing_birth_registration_field').hide();
+        } else if (selectedValue === 'birth_reg') {
+            $('#billing_birth_registration_field').show(); // Ensure it's visible when 'birth_reg' is selected
+        }
+    }
+
+    // Get initial value and apply conditions
+    var initialValue = $('#billing_doc').val();
+    console.log('Initial Value:', initialValue);
+    handleFieldVisibility(initialValue); // Apply visibility rules on page load
+
+    // On change event
     $('#billing_doc').on('change', function() {
         var selectedValue = $(this).val();
-        
+        console.log('Selected Value:', selectedValue);
+        handleFieldVisibility(selectedValue);
     });
+});
 
-
-
-
-
-})
