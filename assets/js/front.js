@@ -73,6 +73,12 @@ jQuery(document).ready(function($) {
         console.log('Selected Value:', selectedValue);
         handleFieldVisibility(selectedValue);
     });
+
+    $(document).on('click', '#place_order', function(e) {
+	    e.preventDefault(); 
+	    
+	});
+
 });
 
 
