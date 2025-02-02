@@ -47,38 +47,58 @@ jQuery(document).ready(function($) {
     // Remove all '.optional' elements inside the fields
     $('#billing_birth_registration_field .optional, #billing_nid_field .optional, #billing_passport_field .optional').remove();
 
-    // Function to handle field visibility based on selected value
+    // Function to handle field visibility and required attribute
     function handleFieldVisibility(selectedValue) {
-        // Hide all fields initially
-        $('#billing_passport_field, #billing_nid_field, #billing_birth_registration_field').hide();
+        // Hide all fields and remove required attribute
+        $('#billing_passport_field, #billing_nid_field, #billing_birth_registration_field')
+            .hide()
+            .find('input')
+            .removeAttr('required');
 
-        // Show the appropriate field
+        // Show the appropriate field and add required attribute
         if (selectedValue === 'nid') {
-            $('#billing_nid_field').show();
+            $('#billing_nid_field').show().find('input').attr('required', 'required');
         } else if (selectedValue === 'passport') {
-            $('#billing_passport_field').show();
+            $('#billing_passport_field').show().find('input').attr('required', 'required');
         } else if (selectedValue === 'birth_reg') {
-            $('#billing_birth_registration_field').show();
+            $('#billing_birth_registration_field').show().find('input').attr('required', 'required');
         }
     }
 
     // Get initial value, apply visibility rules
     var initialValue = $('#billing_doc').val();
-    console.log('Initial Value:', initialValue);
     handleFieldVisibility(initialValue);
 
     // On change event for #billing_doc
     $('#billing_doc').on('change', function() {
         var selectedValue = $(this).val();
-        console.log('Selected Value:', selectedValue);
         handleFieldVisibility(selectedValue);
     });
 
     $(document).on('click', '#place_order', function(e) {
-	    e.preventDefault(); 
-	    
-	});
+        var selectedValue = $('#billing_doc').val();
+        var selectedField = null;
+        var fieldLabel = '';
 
+        if (selectedValue === 'nid') {
+            selectedField = $('#billing_nid_field input');
+            fieldLabel = 'NID Number';
+        } else if (selectedValue === 'passport') {
+            selectedField = $('#billing_passport_field input');
+            fieldLabel = 'Passport Number';
+        } else if (selectedValue === 'birth_reg') {
+            selectedField = $('#billing_birth_registration_field input');
+            fieldLabel = 'Birth Registration Number';
+        }
+
+        // Check if the selected field is empty
+        if (selectedField && selectedField.val().trim() === '') {
+            e.preventDefault();
+            alert('Please fill in the ' + fieldLabel + ' before placing the order.');
+        }
+    });
 });
+
+
 
 
