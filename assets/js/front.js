@@ -41,6 +41,13 @@ jQuery(function($){
 	    });
 	});
 
+    $('#billing_doc').on('change', function() {
+        var selectedValue = $(this).val();
+        
+    });
+
+
+
 
 
 })
