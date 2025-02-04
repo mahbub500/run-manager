@@ -80,6 +80,7 @@ jQuery(document).ready(function ($) {
             success: function (response) {
                 if (response.success) {
                     $('#status').text(response.message);
+                    $('#excel_file').val('');
                 } else {
                     $('#status').text(response.error || 'An error occurred during import.');
                 }
