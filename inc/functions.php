@@ -27,5 +27,18 @@ if ( ! function_exists( 'mask_number' ) ) {
 	}
 }
 
+/**
+ * Sends an email to the customer with the certification number.
+ */
+if ( function_exists( 'send_certificate_email' ) ) {
+	function send_certificate_email( $email, $certificate_number, $order_id ) {
+	    $subject = "Your Certification Number for Order #$order_id";
+	    $message = "Dear Customer,\n\nYour certification number for Order #$order_id is: $certificate_number.\n\nThank you!";
+	    $headers = ['Content-Type: text/plain; charset=UTF-8'];
+
+	    wp_mail($email, $subject, $message, $headers);
+}
+}
+
 
 

@@ -78,49 +78,67 @@ class AJAX extends Base {
         exit;
     }
 
-    public function import_excel_to_orders(){
-        if ( !isset($_POST['nonce']) || ! wp_verify_nonce($_POST['nonce'] ) ) {
+    public function import_excel_to_orders() {
+        if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'] )) {
             wp_send_json_error(['message' => 'Invalid nonce']);
+            return;
+        }
+
+        if (empty($_FILES['excel_file']['tmp_name'])) {
+            wp_send_json_error(['message' => 'No file uploaded']);
             return;
         }
 
         $file = $_FILES['excel_file']['tmp_name'];
 
-        $spreadsheet = IOFactory::load($file);
-        $sheet = $spreadsheet->getActiveSheet();
-        $data = $sheet->toArray();
+        try {
+            $spreadsheet = IOFactory::load($file);
+            $sheet = $spreadsheet->getActiveSheet();
+            $data = $sheet->toArray();
 
-        $headers    = array_shift( $data );
-        $final_data = [];
+            // Extract headers and prepare final data
+            $headers = array_shift($data);
+            $final_data = array_map(fn($row) => array_combine($headers, $row), $data);
 
-        foreach ($data as &$row) {
-            $final_data[] = array_combine($headers, $row);    
-        }
+            foreach ( $final_data as $row ) {
+                $order_id = $row['Order ID'] ?? null;
+                $is_certified = $row['certified'] ?? null;
 
-        foreach ( $final_data as $key => $row ) {
-            $is_certified = $row['certified'];
-            $order_id = $row['Order ID'];
-
-            if ( $order_id ) {
-                $order = wc_get_order( $order_id );
-
-                if ( $order ) {
-                    $certificate_meta = $order->get_meta( 'is_certified' );
-
-                    if ( empty( $certificate_meta ) ) {
-                        $order->update_meta_data( 'is_certified', $is_certified );
+                if ( $order_id && $is_certified ) {
+                    $order = wc_get_order( $order_id );
+                    if ($order) {
+                        // Assign the certificate number
+                        $certificate_number = $is_certified;
+                        $order->update_meta_data('is_certified', $certificate_number);
                         $order->save();
-                    }else{
-                        $order->update_meta_data( 'is_certified', $is_certified );
-                        $order->save();
+
+                        // Send email to the billing email
+                        $billing_email = $order->get_billing_email();
+                        if ($billing_email) {
+                            $this->send_certificate_email( $billing_email, $certificate_number, $order_id );
+                        }
                     }
                 }
             }
+
+            wp_send_json_success( ['message' => 'File imported and emails sent successfully!']);
+
+        } catch ( Exception $e ) {
+            wp_send_json_error(['message' => 'Error processing file: ' . $e->getMessage()]);
         }
-
-        wp_send_json_success(['message' => 'File imported successfully!']);
-
     }
+
+    /**
+     * Sends an email to the customer with the certification number.
+     */
+    private function send_certificate_email( $email, $certificate_number, $order_id ) {
+        $subject = "Your Certification Number for Order #$order_id";
+        $message = "Dear Customer,\n\nYour certification number for Order #$order_id is: $certificate_number.\n\nThank you!";
+        $headers = ['Content-Type: text/plain; charset=UTF-8'];
+
+        wp_mail( $email, $subject, $message, $headers );
+    }
+
     
     public function download_certificate() {
         if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'] ) ) {
