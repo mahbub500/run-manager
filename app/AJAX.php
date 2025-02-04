@@ -131,13 +131,22 @@ class AJAX extends Base {
     /**
      * Sends an email to the customer with the certification number.
      */
-    private function send_certificate_email( $email, $certificate_number, $order_id ) {
+   private function send_certificate_email($email, $certificate_number, $order_id) {
+        $order_url = esc_url(admin_url("post.php?post=$order_id&action=edit"));
+        
         $subject = "Your Certification Number for Order #$order_id";
-        $message = "Dear Customer,\n\nYour certification number for Order #$order_id is: $certificate_number.\n\nThank you!";
-        $headers = ['Content-Type: text/plain; charset=UTF-8'];
+        
+        $message = "Dear Customer,<br><br>";
+        $message .= "Your certification number for Order #$order_id is: <strong>$certificate_number</strong>.<br><br>";
+        $message .= "You can view your order details by clicking the link below:<br>";
+        $message .= "<a href='$order_url' target='_blank'>View Order #$order_id</a><br><br>";
+        $message .= "Thank you!";
+        
+        $headers = ['Content-Type: text/html; charset=UTF-8'];
 
-        wp_mail( $email, $subject, $message, $headers );
+        wp_mail($email, $subject, $message, $headers);
     }
+
 
     
     public function download_certificate() {
