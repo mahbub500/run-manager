@@ -92,6 +92,44 @@ jQuery(document).ready(function ($) {
         });
     });
 
+    jQuery(document).ready(function ($) {
+        $('#run-manager-upload-race-data').click(function (e) {
+            e.preventDefault();
+
+            
+
+            var fileInput = $('#race_excel_file')[0].files[0];
+            if (!fileInput) {
+                alert("Please select a file.");
+                return;
+            }
+
+            var formData = new FormData();
+            formData.append('nonce', RUN_MANAGER._wpnonce); 
+            formData.append('action', 'upload_race_data'); 
+            formData.append('race_excel_file', fileInput);
+
+            $.ajax({
+                 url: RUN_MANAGER.ajaxurl, 
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    if (response.success) {
+                        alert(response.data.message);
+                    } else {
+                        alert('Error: ' + response.data.message);
+                    }
+                },
+                error: function () {
+                    alert('File upload failed.');
+                }
+            });
+        });
+    });
+
+
     
 
 

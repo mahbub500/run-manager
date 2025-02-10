@@ -13,4 +13,16 @@ use Codexpert\Plugin\Table;
   </button>
     <p class="wph-desc">This will import your excel data to order meta.</p>
   </div>
+
+
+  <div class="wph-label-wrap">
+    <label >Upload your race data</label>
+  </div>
+  <div class="wph-field-wrap ">
+    <input type="file" name="race_excel_file" id="race_excel_file" accept=".xlsx, .xls">
+    <button id="run-manager-upload-race-data" class="button button-hero button-primary ">
+    <i class="bi bi-download"></i>Upload
+  </button>
+    <p class="wph-desc">Upload Your Race Data</p>
+  </div>
 </div>

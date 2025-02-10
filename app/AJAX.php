@@ -266,5 +266,32 @@ public function import_excel_to_orders() {
         ] );
     }
 
+    function upload_race_data_callback() {
+
+        if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'] ) ) {
+            wp_send_json_error( [ 'message' => 'Invalid nonce' ] );
+            return;
+        }
+
+        if (!isset($_FILES['race_excel_file'])) {
+            wp_send_json_error(['message' => 'No file uploaded.']);
+        }
+
+        $file = $_FILES['race_excel_file'];
+
+        // Get the upload directory
+        $upload_dir = wp_upload_dir();
+        $upload_path = $upload_dir['path'] . '/' . basename($file['name']);
+
+        // Move the uploaded file to the uploads directory
+        if (move_uploaded_file($file['tmp_name'], $upload_path)) {
+            wp_send_json_success(['message' => 'File uploaded successfully!']);
+        } else {
+            wp_send_json_error(['message' => 'File upload failed.']);
+        }
+    }
+
+
+
 
 }

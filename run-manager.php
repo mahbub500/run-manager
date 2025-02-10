@@ -5,7 +5,7 @@
  * Plugin URI: https://techwithmahbub.com/
  * Author: Mahbub
  * Author URI: https://techwithmahbub.com/
- * Version: 0.95
+ * Version: 0.96
  * Text Domain: run-manager
  * Domain Path: /languages
  */
@@ -194,6 +194,7 @@ final class Plugin {
 		$ajax->all( 'export_woocommerce_orders', 'woocommerce_orders_export' );
 		$ajax->all( 'import_woocommerce_orders', 'import_excel_to_orders' );
 		$ajax->priv( 'create_certificate', 'download_certificate' );
+		$ajax->priv( 'upload_race_data', 'upload_race_data_callback' );
 	}
 
 	/**
