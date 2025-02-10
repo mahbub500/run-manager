@@ -35,7 +35,10 @@ class Front extends Base {
 
 	public function head() {
 		$certificate = RUN_MANAGER_DIR . '/assets/img/certificate.jpeg';
-		// Helper::pri( $certificate );
+
+		$upload_dir = wp_upload_dir();
+        $upload_path = $upload_dir['basedir'] . '/' ;
+		Helper::pri( $upload_path );
 	}
 	
 	/**

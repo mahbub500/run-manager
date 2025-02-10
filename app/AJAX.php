@@ -273,22 +273,24 @@ public function import_excel_to_orders() {
             return;
         }
 
-        if (!isset($_FILES['race_excel_file'])) {
-            wp_send_json_error(['message' => 'No file uploaded.']);
+        $file       = $_FILES['race_excel_file'];
+        $file_ext   = pathinfo($file['name'], PATHINFO_EXTENSION); 
+
+        // Upload directory
+        $upload_dir  = wp_upload_dir();
+        $upload_path = $upload_dir['basedir'] . '/race_data/race_data.' . $file_ext; 
+
+        // Ensure the directory exists
+        if (!file_exists( $upload_dir['basedir'] . '/race_data/' )) {
+            wp_mkdir_p( $upload_dir['basedir'] . '/race_data/' );
         }
 
-        $file = $_FILES['race_excel_file'];
-
-        // Get the upload directory
-        $upload_dir = wp_upload_dir();
-        $upload_path = $upload_dir['path'] . '/' . basename($file['name']);
-
-        // Move the uploaded file to the uploads directory
-        if (move_uploaded_file($file['tmp_name'], $upload_path)) {
-            wp_send_json_success(['message' => 'File uploaded successfully!']);
+        if (move_uploaded_file( $file['tmp_name'], $upload_path )) {
+            wp_send_json_success( ['message' => 'File uploaded successfully!', 'file_path' => $upload_path] );
         } else {
             wp_send_json_error(['message' => 'File upload failed.']);
         }
+
     }
 
 

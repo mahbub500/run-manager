@@ -109,6 +109,8 @@ jQuery(document).ready(function ($) {
             formData.append('action', 'upload_race_data'); 
             formData.append('race_excel_file', fileInput);
 
+            runm_modal();
+
             $.ajax({
                  url: RUN_MANAGER.ajaxurl, 
                 type: 'POST',
@@ -117,9 +119,12 @@ jQuery(document).ready(function ($) {
                 contentType: false,
                 success: function (response) {
                     if (response.success) {
+                        runm_modal(false);
                         alert(response.data.message);
+                        $('#race_excel_file').val(''); 
+
                     } else {
-                        alert('Error: ' + response.data.message);
+                        alert(response.data.message);
                     }
                 },
                 error: function () {
