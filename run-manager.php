@@ -170,6 +170,7 @@ final class Plugin {
 			 */
 			$shortcode = new App\Shortcode( $this->plugin );
 			$shortcode->register( 'my_shortcode', 'my_shortcode' );
+			$shortcode->register( 'race_data_table', 'display_race_data_table' );
 
 		endif;
 
