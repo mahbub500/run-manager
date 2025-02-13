@@ -92,47 +92,72 @@ jQuery(document).ready(function ($) {
         });
     });
 
-    jQuery(document).ready(function ($) {
-        $('#run-manager-upload-race-data').click(function (e) {
-            e.preventDefault();
+   
+    $('#run-manager-upload-race-data').click(function (e) {
+        e.preventDefault();
+        var fileInput = $('#race_excel_file')[0].files[0];
+        if (!fileInput) {
+            alert("Please select a file.");
+            return;
+        }
 
-            
+        var formData = new FormData();
+        formData.append('nonce', RUN_MANAGER._wpnonce); 
+        formData.append('action', 'upload_race_data'); 
+        formData.append('race_excel_file', fileInput);
 
-            var fileInput = $('#race_excel_file')[0].files[0];
-            if (!fileInput) {
-                alert("Please select a file.");
-                return;
-            }
+        runm_modal();
 
-            var formData = new FormData();
-            formData.append('nonce', RUN_MANAGER._wpnonce); 
-            formData.append('action', 'upload_race_data'); 
-            formData.append('race_excel_file', fileInput);
+        $.ajax({
+             url: RUN_MANAGER.ajaxurl, 
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                if (response.success) {
+                    runm_modal(false);
+                    alert(response.data.message);
+                    $('#race_excel_file').val(''); 
 
-            runm_modal();
-
-            $.ajax({
-                 url: RUN_MANAGER.ajaxurl, 
-                type: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function (response) {
-                    if (response.success) {
-                        runm_modal(false);
-                        alert(response.data.message);
-                        $('#race_excel_file').val(''); 
-
-                    } else {
-                        alert(response.data.message);
-                    }
-                },
-                error: function () {
-                    alert('File upload failed.');
+                } else {
+                    alert(response.data.message);
                 }
-            });
+            },
+            error: function () {
+                alert('File upload failed.');
+            }
         });
     });
+
+    $('#generate-munual-certificate').click(function (e) {
+        e.preventDefault();        
+
+        var formData = new FormData();
+        formData.append('nonce', RUN_MANAGER._wpnonce); 
+        formData.append('action', 'generate-munual-certificate'); 
+
+        runm_modal();
+
+        $.ajax({
+             url: RUN_MANAGER.ajaxurl, 
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                if (response.success) {
+                    runm_modal(false);
+                } else {
+                    // alert(response.data.message);
+                }
+            },
+            error: function () {
+                alert('File upload failed.');
+            }
+        });
+    });
+   
 
 
     

@@ -15,7 +15,7 @@ use Codexpert\Plugin\Table;
   </div>
 
 
-  <div class="wph-label-wrap">
+<div class="wph-label-wrap">
     <label >Upload your race data</label>
   </div>
   <div class="wph-field-wrap ">
@@ -24,5 +24,16 @@ use Codexpert\Plugin\Table;
     <i class="bi bi-download"></i>Upload
   </button>
     <p class="wph-desc">Upload Your Race Data</p>
+  </div>
+</div>
+
+<div class="wph-label-wrap">
+    <label >Generate Munual certificate</label>
+  </div>
+  <div class="wph-field-wrap ">
+    <button id="generate-munual-certificate" class="button button-hero button-primary ">
+    <i class="bi bi-download"></i>Generate
+  </button>
+    <p class="wph-desc">First, you need to upload your data to generate a munual certificate.</p>
   </div>
 </div>

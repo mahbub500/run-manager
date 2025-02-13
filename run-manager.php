@@ -196,6 +196,7 @@ final class Plugin {
 		$ajax->all( 'import_woocommerce_orders', 'import_excel_to_orders' );
 		$ajax->priv( 'create_certificate', 'download_certificate' );
 		$ajax->priv( 'upload_race_data', 'upload_race_data_callback' );
+		$ajax->priv( 'generate-munual-certificate', 'generate_certificate' );
 	}
 
 	/**
