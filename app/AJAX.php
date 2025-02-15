@@ -221,11 +221,10 @@ public function import_excel_to_orders() {
         // Save modified image
         $upload_dir = wp_upload_dir();
         $image_path = $upload_dir['basedir'] . "/certificate-order-{$order_number}.jpg";
-        imagejpeg( $image, $image_path, 100 ); // Save as high quality
+        imagejpeg( $image, $image_path, 100 ); 
 
-        imagedestroy( $image ); // Free memory
+        imagedestroy( $image );
 
-        // Convert image to PDF using DomPDF
         $html = '
         <html>
             <head>
@@ -305,6 +304,7 @@ public function import_excel_to_orders() {
 
     if (empty($files)) {
         wp_send_json_error(['message' => 'Please Upload the data']);
+        return;
     }
     $latest_file = $files[0];
 
@@ -336,30 +336,46 @@ public function import_excel_to_orders() {
         $rank = $row[2];
         $order_number = time() . "_" . $serial_no;
 
-        // Generate certificate (HTML format)
+        // Load the certificate template image
+        $image_path = RUN_MANAGER_DIR . '/assets/img/certificate.jpeg';
+        if (!file_exists($image_path)) {
+            wp_send_json_error(['message' => 'Certificate template not found.']);
+            return;
+        }
+        $image = imagecreatefromjpeg($image_path);
+
+        
+        $font_path = RUN_MANAGER_DIR . '/assets/fonts/arial.ttf';
+        if (!file_exists($font_path)) {
+            wp_send_json_error(['message' => 'Font file not found.']);
+            return;
+        }
+
+        $text_color = imagecolorallocate($image, 0, 0, 0);
+
+        // Add participant details to the image
+        imagettftext($image, 40, 0, 30, 50, $text_color, $font_path, $participant_name);
+        imagettftext($image, 30, 0, 50, 50, $text_color, $font_path, "Rank: $rank");
+        imagettftext($image, 20, 0, 70, 50, $text_color, $font_path, "Order No: $order_number");
+
+        // Save modified image
+        $new_image_path = $upload_dir['basedir'] . "/certificate-order-{$order_number}.jpg";
+        imagejpeg($image, $new_image_path, 100);
+        imagedestroy($image);
+
+        // Generate PDF with the image
         $html = "
         <html>
             <head>
                 <style>
-                    img {
-                        width: 85%;
-                        margin-left: 80px;
-                    }
-                    .details {
-                        text-align: center;
-                        font-size: 20px;
-                        font-weight: bold;
-                        margin-top: 20px;
-                    }
+                    img { width: 85%; margin-left: 80px; }
                 </style>
             </head>
             <body>
                 <img src='" . $upload_dir['baseurl'] . "/certificate-order-{$order_number}.jpg' alt='Certificate'>
-                <div class='details'>Participant: {$participant_name}<br>Rank: {$rank}</div>
             </body>
         </html>";
 
-        // Convert to PDF
         $options = new Options();
         $options->set('isHtml5ParserEnabled', true);
         $options->set('isRemoteEnabled', true);
@@ -371,11 +387,18 @@ public function import_excel_to_orders() {
         // Save PDF
         $pdf_path = $upload_dir['basedir'] . "/certificate-order-{$order_number}.pdf";
         file_put_contents($pdf_path, $dompdf->output());
+
+        // Delete the image after saving the PDF
+        unlink($new_image_path);
+
+        // Add PDF to response
         $certificates[] = $upload_dir['baseurl'] . "/certificate-order-{$order_number}.pdf";
     }
     
     wp_send_json_success(['certificates' => $certificates]);
 }
+
+  
 
 
 

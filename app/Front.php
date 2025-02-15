@@ -34,6 +34,7 @@ class Front extends Base {
 	}
 
 	public function head() {
+		return;
 		$upload_dir  = wp_upload_dir();
         $upload_path = $upload_dir['basedir'] . '/race_data';
 
