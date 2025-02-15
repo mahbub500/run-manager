@@ -293,49 +293,51 @@ public function import_excel_to_orders() {
 
     }
 
-    public function generate_certificate() {
+   public function generate_certificate() {
+    if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'])) {
+        wp_send_json_error(['message' => 'Invalid nonce']);
+        return;
+    }
 
-        if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'] ) ) {
-            wp_send_json_error( [ 'message' => 'Invalid nonce' ] );
-            return;
+    $upload_dir  = wp_upload_dir();
+    $upload_path = $upload_dir['basedir'] . '/race_data';
+    $files = glob($upload_path . '/*.xlsx');
+
+    if (empty($files)) {
+        wp_send_json_error(['message' => 'Please Upload the data']);
+    }
+    $latest_file = $files[0];
+
+    // Load the Excel file (Sheet 2)
+    $spreadsheet = IOFactory::load($latest_file);
+    $worksheet = $spreadsheet->getSheet(1);
+
+    $data = [];
+    foreach ($worksheet->getRowIterator() as $row) {
+        $cellIterator = $row->getCellIterator();
+        $cellIterator->setIterateOnlyExistingCells(false);
+        
+        $rowData = [];
+        foreach ($cellIterator as $cell) {
+            $rowData[] = trim($cell->getValue());
         }
-
-        $upload_dir  = wp_upload_dir();
-        $upload_path = $upload_dir['basedir'] . '/race_data';
-
-        $files = glob($upload_path . '/*.xlsx');
-
-       
-
-
-        if ( empty( $files )) {
-            wp_send_json_error(['message' => 'Please Upload the data']);
-        }
-        $latest_file = $files[0]; 
-
-        // Load the Excel file (Sheet 2)
-        $spreadsheet = IOFactory::load($latest_file);
-        $worksheet = $spreadsheet->getSheet(1); // Sheet 2 (index starts from 0)
-
-        $data = [];
-        foreach ($worksheet->getRowIterator() as $row) {
-            $cellIterator = $row->getCellIterator();
-            $cellIterator->setIterateOnlyExistingCells(false);
-            
-            $rowData = [];
-            foreach ($cellIterator as $cell) {
-                $rowData[] = $cell->getValue();
-            }
+        
+        if (!empty(array_filter($rowData))) { // Remove empty rows
             $data[] = $rowData;
         }
-
-        // Process the extracted data (Example: Get name & rank from columns)
-        $participant_name = $data[1][0]; // Example: First column
-        $rank = $data[1][1]; // Example: Second column
-        $order_number = time(); // Unique ID
+    }
+    
+    $certificates = [];
+    foreach ($data as $index => $row) {
+        if ($index === 0) continue; // Skip the header row
+        
+        $serial_no = $row[0];
+        $participant_name = $row[1];
+        $rank = $row[2];
+        $order_number = time() . "_" . $serial_no;
 
         // Generate certificate (HTML format)
-        $html = '
+        $html = "
         <html>
             <head>
                 <style>
@@ -352,17 +354,16 @@ public function import_excel_to_orders() {
                 </style>
             </head>
             <body>
-                <img src="' . $upload_dir['baseurl'] . "/certificate-order-{$order_number}.jpg" . '" alt="Certificate">
-                <div class="details">Participant: ' . $participant_name . '<br>Rank: ' . $rank . '</div>
+                <img src='" . $upload_dir['baseurl'] . "/certificate-order-{$order_number}.jpg' alt='Certificate'>
+                <div class='details'>Participant: {$participant_name}<br>Rank: {$rank}</div>
             </body>
-        </html>';
+        </html>";
 
         // Convert to PDF
         $options = new Options();
         $options->set('isHtml5ParserEnabled', true);
         $options->set('isRemoteEnabled', true);
         $dompdf = new Dompdf($options);
-
         $dompdf->loadHtml($html);
         $dompdf->setPaper('A4', 'landscape');
         $dompdf->render();
@@ -370,18 +371,11 @@ public function import_excel_to_orders() {
         // Save PDF
         $pdf_path = $upload_dir['basedir'] . "/certificate-order-{$order_number}.pdf";
         file_put_contents($pdf_path, $dompdf->output());
-
-        echo "Certificate generated: " . $pdf_path;
-
-
-        error_log( 'file_exists' );
-
-        
-
-        
-
+        $certificates[] = $upload_dir['baseurl'] . "/certificate-order-{$order_number}.pdf";
     }
-
+    
+    wp_send_json_success(['certificates' => $certificates]);
+}
 
 
 

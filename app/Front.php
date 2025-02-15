@@ -34,27 +34,35 @@ class Front extends Base {
 	}
 
 	public function head() {
-		// $certificate = RUN_MANAGER_DIR . '/assets/img/certificate.jpeg';
-		// $upload_dir  = wp_upload_dir();
-		// $upload_path = $upload_dir['basedir'] . '/race_data';
+		$upload_dir  = wp_upload_dir();
+        $upload_path = $upload_dir['basedir'] . '/race_data';
 
-		// $files = glob($upload_path . '/*.xlsx');
+        $files = glob($upload_path . '/*.xlsx');
 
-		// if (empty($files)) {
-		//     die('No file found in the race_data directory.');
-		// }
+        $latest_file = $files[0]; 
 
-		// $latest_file = $files[0]; 
+        // Load the Excel file (Sheet 2)
+        $spreadsheet = IOFactory::load($latest_file);
+        $worksheet = $spreadsheet->getSheet(1); // Sheet 2 (index starts from 0)
 
+        $data = [];
+        foreach ($worksheet->getRowIterator() as $row) {
+            $cellIterator = $row->getCellIterator();
+            $cellIterator->setIterateOnlyExistingCells(false);
+            
+            $rowData = [];
+            foreach ($cellIterator as $cell) {
+                $rowData[] = $cell->getValue();
+            }
+            $data[] = $rowData;
+        }
 
+        $participant_name = $data[1][0]; 
+        $rank = $data[1][1];
+        $order_number = time(); 
 
-
-		// // $upload_dir = wp_upload_dir();
-        // // $upload_path = $upload_dir['basedir'] . '/' ;
-        // if (file_exists($upload_path)) {
-        //     // wp_send_json_error(['message' => 'Please Upload the data']);
-		// Helper::pri( $upload_path );
-        // }
+		Helper::pri( $data );
+       
 	}
 	
 	/**

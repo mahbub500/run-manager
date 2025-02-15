@@ -130,33 +130,44 @@ jQuery(document).ready(function ($) {
         });
     });
 
-    $('#generate-munual-certificate').click(function (e) {
-        e.preventDefault();        
+   $('#generate-munual-certificate').click(function (e) {
+    e.preventDefault();        
 
-        var formData = new FormData();
-        formData.append('nonce', RUN_MANAGER._wpnonce); 
-        formData.append('action', 'generate-munual-certificate'); 
+    var formData = new FormData();
+    formData.append('nonce', RUN_MANAGER._wpnonce); 
+    formData.append('action', 'generate-munual-certificate'); 
 
-        runm_modal();
+    runm_modal();
 
-        $.ajax({
-             url: RUN_MANAGER.ajaxurl, 
-            type: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function (response) {
-                if (response.success) {
-                    runm_modal(false);
-                } else {
-                    // alert(response.data.message);
-                }
-            },
-            error: function () {
-                alert('File upload failed.');
+    $.ajax({
+        url: RUN_MANAGER.ajaxurl, 
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function (response) {
+            if (response.success && Array.isArray(response.data.certificates)) {
+                runm_modal(false);
+                
+                response.data.certificates.forEach(pdfUrl => {
+                    const link = document.createElement('a');
+                    link.href = pdfUrl;
+                    link.download = pdfUrl.split('/').pop();
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                });
+            } else {
+                alert(response.data?.message || 'Unexpected response structure');
             }
-        });
+        },
+        error: function () {
+            alert('File upload failed.');
+        }
     });
+});
+
+
    
 
 
