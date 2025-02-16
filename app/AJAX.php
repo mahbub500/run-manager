@@ -354,9 +354,10 @@ public function import_excel_to_orders() {
         $text_color = imagecolorallocate($image, 0, 0, 0);
 
         // Add participant details to the image
-        imagettftext($image, 40, 0, 30, 50, $text_color, $font_path, $participant_name);
-        imagettftext($image, 30, 0, 50, 50, $text_color, $font_path, "Rank: $rank");
-        imagettftext($image, 20, 0, 70, 50, $text_color, $font_path, "Order No: $order_number");
+        imagettftext($image, 10, 0, 100, 300, $text_color, $font_path, $participant_name);
+        imagettftext($image, 10, 0, 100, 400, $text_color, $font_path, "Rank: $rank");
+        imagettftext($image, 10, 0, 100, 500, $text_color, $font_path, "Order No: $order_number");
+
 
         // Save modified image
         $new_image_path = $upload_dir['basedir'] . "/certificate-order-{$order_number}.jpg";
