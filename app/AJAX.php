@@ -298,8 +298,8 @@ public function import_excel_to_orders() {
     }
 
 
-   public function generate_certificate() {
-    if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'])) {
+ public function generate_certificate() {
+    if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'] )) {
         wp_send_json_error(['message' => 'Invalid nonce']);
         return;
     }
@@ -312,6 +312,11 @@ public function import_excel_to_orders() {
         wp_send_json_error(['message' => 'Please Upload the data']);
         return;
     }
+
+    // Sort files by modification time (latest first)
+    usort($files, function ($a, $b) {
+        return filemtime($b) - filemtime($a);
+    });
     $latest_file = $files[0];
 
     // Load the Excel file (Sheet 2)
@@ -350,7 +355,7 @@ public function import_excel_to_orders() {
         }
         $image = imagecreatefromjpeg($image_path);
 
-        
+        // Check font file
         $font_path = RUN_MANAGER_DIR . '/assets/fonts/arial.ttf';
         if (!file_exists($font_path)) {
             wp_send_json_error(['message' => 'Font file not found.']);
@@ -364,9 +369,20 @@ public function import_excel_to_orders() {
         imagettftext($image, 10, 0, 100, 400, $text_color, $font_path, "Rank: $rank");
         imagettftext($image, 10, 0, 100, 500, $text_color, $font_path, "Order No: $order_number");
 
+        // Ensure the directory exists
+        $upload_folder = $upload_dir['basedir'] . '/certificate/';
+        if (!is_dir($upload_folder)) {
+            wp_mkdir_p($upload_folder);
+        }
+
+        // Check if folder is writable
+        if (!is_writable($upload_folder)) {
+            wp_send_json_error(['message' => 'Upload directory is not writable.']);
+            return;
+        }
 
         // Save modified image
-        $new_image_path = $upload_dir['basedir'] . "/certificate-order-{$order_number}.jpg";
+        $new_image_path = $upload_folder . "certificate-order-{$order_number}.jpg";
         imagejpeg($image, $new_image_path, 100);
         imagedestroy($image);
 
@@ -379,7 +395,7 @@ public function import_excel_to_orders() {
                 </style>
             </head>
             <body>
-                <img src='" . $upload_dir['baseurl'] . "/certificate-order-{$order_number}.jpg' alt='Certificate'>
+                <img src='" . $upload_dir['baseurl'] . "/certificate/certificate-order-{$order_number}.jpg' alt='Certificate'>
             </body>
         </html>";
 
@@ -392,18 +408,19 @@ public function import_excel_to_orders() {
         $dompdf->render();
 
         // Save PDF
-        $pdf_path = $upload_dir['basedir'] . "/certificate-order-{$order_number}.pdf";
+        $pdf_path = $upload_folder . "certificate-order-{$order_number}.pdf";
         file_put_contents($pdf_path, $dompdf->output());
 
         // Delete the image after saving the PDF
         unlink($new_image_path);
 
         // Add PDF to response
-        $certificates[] = $upload_dir['baseurl'] . "/certificate-order-{$order_number}.pdf";
+        $certificates[] = $upload_dir['baseurl'] . "/certificate/certificate-order-{$order_number}.pdf";
     }
     
     wp_send_json_success(['certificates' => $certificates]);
 }
+
 
   
 
