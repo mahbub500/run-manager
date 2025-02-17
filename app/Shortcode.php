@@ -53,9 +53,7 @@ class Shortcode extends Base {
 
         $cache_key = 'race_data_file_' . md5($file_path);
 
-        $cached_data = get_transient($cache_key);
-        
-        if ($cached_data === false) {
+       
             require_once ABSPATH . 'wp-load.php'; 
             require_once ABSPATH . 'wp-admin/includes/file.php'; 
             
@@ -64,10 +62,8 @@ class Shortcode extends Base {
             $worksheet = $spreadsheet->getActiveSheet();
             $data = $worksheet->toArray();
 
-            set_transient($cache_key, $data, 3600); 
-        } else {
-            $data = $cached_data;
-        }
+            
+       
 
         $html = '<table id="raceDataTable" class="display"><thead><tr>';
 

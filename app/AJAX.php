@@ -266,31 +266,37 @@ public function import_excel_to_orders() {
     }
 
     public function upload_race_data_callback() {
-
-        if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'] ) ) {
-            wp_send_json_error( [ 'message' => 'Invalid nonce' ] );
+        if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'])) {
+            wp_send_json_error(['message' => 'Invalid nonce']);
             return;
         }
 
-        $file       = $_FILES['race_excel_file'];
-        $file_ext   = pathinfo($file['name'], PATHINFO_EXTENSION); 
+        $file = $_FILES['race_excel_file'];
+        $file_ext = pathinfo($file['name'], PATHINFO_EXTENSION);
 
         // Upload directory
         $upload_dir  = wp_upload_dir();
-        $upload_path = $upload_dir['basedir'] . '/race_data/race_data.' . $file_ext; 
+        $upload_folder = $upload_dir['basedir'] . '/race_data/';
+        $upload_path = $upload_folder . 'race_data.' . $file_ext;
 
         // Ensure the directory exists
-        if (!file_exists( $upload_dir['basedir'] . '/race_data/' )) {
-            wp_mkdir_p( $upload_dir['basedir'] . '/race_data/' );
+        if (!file_exists($upload_folder)) {
+            wp_mkdir_p($upload_folder);
         }
 
-        if (move_uploaded_file( $file['tmp_name'], $upload_path )) {
-            wp_send_json_success( ['message' => 'File uploaded successfully!', 'file_path' => $upload_path] );
+        // Remove existing file
+        if (file_exists($upload_path)) {
+            unlink($upload_path);
+        }
+
+        // Move the uploaded file
+        if (move_uploaded_file($file['tmp_name'], $upload_path)) {
+            wp_send_json_success(['message' => 'File uploaded successfully!', 'file_path' => $upload_path]);
         } else {
             wp_send_json_error(['message' => 'File upload failed.']);
         }
-
     }
+
 
    public function generate_certificate() {
     if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'])) {
