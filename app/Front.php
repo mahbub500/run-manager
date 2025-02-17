@@ -93,13 +93,13 @@ class Front extends Base {
 	public function download_certificate( $actions, $order ){
 		$certificate_meta = $order->get_meta( 'is_certified' );
 
-		// if ( $certificate_meta == 1 ) {
+		if ( $certificate_meta == 1 ) {
 			$actions['download_certificate'] = array(
 		        'url'  => '#', 
 		        'name' => __( 'Get Certified', 'run-manager' ),
 		        
 		    );
-		// }
+		}
 
 
 		
