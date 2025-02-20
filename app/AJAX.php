@@ -343,9 +343,9 @@ public function import_excel_to_orders() {
         if ($index === 0) continue; // Skip the header row
         
         $serial_no = $row[0];
-        $participant_name = $row[1];
-        $rank = $row[2];
-        $order_number = time() . "_" . $serial_no;
+        $rank = $row[1];
+        $participant_name = $row[2];
+        // $order_number =  $serial_no;
 
         // Load the certificate template image
         $image_path = RUN_MANAGER_DIR . '/assets/img/certificate.jpeg';
@@ -365,9 +365,9 @@ public function import_excel_to_orders() {
         $text_color = imagecolorallocate($image, 0, 0, 0);
 
         // Add participant details to the image
-        imagettftext($image, 10, 0, 100, 300, $text_color, $font_path, $participant_name);
+        imagettftext($image, 10, 0, 100, 300, $text_color, $font_path, "Name : $participant_name");
         imagettftext($image, 10, 0, 100, 400, $text_color, $font_path, "Rank: $rank");
-        imagettftext($image, 10, 0, 100, 500, $text_color, $font_path, "Order No: $order_number");
+        imagettftext($image, 10, 0, 100, 500, $text_color, $font_path, "Sl No: $serial_no");
 
         // Ensure the directory exists
         $upload_folder = $upload_dir['basedir'] . '/certificate/';
@@ -382,7 +382,7 @@ public function import_excel_to_orders() {
         }
 
         // Save modified image
-        $new_image_path = $upload_folder . "certificate-order-{$order_number}.jpg";
+        $new_image_path = $upload_folder . "certificate-order-{$serial_no}.jpg";
         imagejpeg($image, $new_image_path, 100);
         imagedestroy($image);
 
@@ -395,7 +395,7 @@ public function import_excel_to_orders() {
                 </style>
             </head>
             <body>
-                <img src='" . $upload_dir['baseurl'] . "/certificate/certificate-order-{$order_number}.jpg' alt='Certificate'>
+                <img src='" . $upload_dir['baseurl'] . "/certificate/certificate-order-{$serial_no}.jpg' alt='Certificate'>
             </body>
         </html>";
 
@@ -408,14 +408,14 @@ public function import_excel_to_orders() {
         $dompdf->render();
 
         // Save PDF
-        $pdf_path = $upload_folder . "certificate-order-{$order_number}.pdf";
+        $pdf_path = $upload_folder . "certificate-order-{$serial_no}.pdf";
         file_put_contents($pdf_path, $dompdf->output());
 
         // Delete the image after saving the PDF
         unlink($new_image_path);
 
         // Add PDF to response
-        $certificates[] = $upload_dir['baseurl'] . "/certificate/certificate-order-{$order_number}.pdf";
+        $certificates[] = $upload_dir['baseurl'] . "/certificate/certificate-order-{$serial_no}.pdf";
     }
     
     wp_send_json_success(['certificates' => $certificates]);
