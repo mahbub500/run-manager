@@ -4,6 +4,7 @@
  */
 namespace WpPluginHub\Run_Manager\App;
 use WpPluginHub\Plugin\Base;
+use WpPluginHub\Run_Manager\Helper;
 
  use PhpOffice\PhpSpreadsheet\IOFactory;
 
@@ -38,7 +39,7 @@ class Shortcode extends Base {
     }
 
   
-    function display_race_data_table() {
+    function display_race_data_table( $args ) {
         $upload_dir     = wp_upload_dir();
         $file_path_xlsx = $upload_dir['basedir'] . '/race_data/race_data.xlsx';
         $file_path_xls  = $upload_dir['basedir'] . '/race_data/race_data.xls';
@@ -51,22 +52,17 @@ class Shortcode extends Base {
             return "<p>File not found.</p>";
         }
 
-        $cache_key = 'race_data_file_' . md5($file_path);
+        require_once ABSPATH . 'wp-load.php'; 
+        require_once ABSPATH . 'wp-admin/includes/file.php'; 
 
-       
-            require_once ABSPATH . 'wp-load.php'; 
-            require_once ABSPATH . 'wp-admin/includes/file.php'; 
-            
+        $spreadsheet = IOFactory::load($file_path);
+        $total_sheets = $spreadsheet->getSheetCount();
 
-            $spreadsheet = IOFactory::load($file_path);
-            $worksheet = $spreadsheet->getActiveSheet();
-            $data = $worksheet->toArray();
-
-            
-       
+        $sheet_index = isset( $args['sheet'] ) && $args['sheet'] - 1 < $total_sheets ? $args['sheet'] - 1 : 0;
+        $worksheet = $spreadsheet->getSheet($sheet_index);
+        $data = $worksheet->toArray();
 
         $html = '<table id="raceDataTable" class="display"><thead><tr>';
-
         foreach ($data[0] as $header) {
             $html .= "<th>{$header}</th>";
         }
@@ -76,14 +72,11 @@ class Shortcode extends Base {
             if (array_filter($row)) {
                 $html .= '<tr>';
                 foreach ($row as $cell) {
-                    if (!empty($cell)) {
-                        $html .= "<td>{$cell}</td>";
-                    }
+                    $html .= "<td>{$cell}</td>";
                 }
                 $html .= '</tr>';
             }
         }
-
         $html .= '</tbody></table>';
 
         wp_enqueue_script('jquery');
@@ -98,6 +91,7 @@ class Shortcode extends Base {
 
         return $html;
     }
+
 
 
 }
