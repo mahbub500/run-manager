@@ -168,11 +168,24 @@ jQuery(document).ready(function ($) {
 });
 
 
+    $(document).ready(function () {
+        function toggleButtonState() {
+            let inputVal = $(".certificate-number").val().trim();
+
+            $("#generate-munual-certificate").prop("disabled", inputVal === "" || isNaN(inputVal));
+        }
+
+        // Disable button on page load
+        toggleButtonState();
+
+        // Check input on keyup, change, and input events
+        $(".certificate-number").on("input change", function(){
+            toggleButtonState();
+            console.log( 'Hello' );
+        } );
+});
+
    
-
-
-    
-
 
 });
 

@@ -16,7 +16,7 @@ use Codexpert\Plugin\Table;
 
 
 <div class="wph-label-wrap">
-    <label >Upload your race data</label>
+    <label >Upload your race data :</label>
   </div>
   <div class="wph-field-wrap ">
     <input type="file" name="race_excel_file" id="race_excel_file" accept=".xlsx, .xls">
@@ -28,9 +28,11 @@ use Codexpert\Plugin\Table;
 </div>
 
 <div class="wph-label-wrap">
-    <label >Generate Munual certificate</label>
+    <label >Generate Munual certificate :</label>
   </div>
+
   <div class="wph-field-wrap ">
+    <input type="number" class="certificate-number" name="certificate-number">
     <button id="generate-munual-certificate" class="button button-hero button-primary ">
     <i class="bi bi-download"></i>Generate
   </button>

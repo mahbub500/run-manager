@@ -106,7 +106,7 @@ final class Plugin {
 		$this->plugin['min_php']		= '5.6';
 		$this->plugin['min_wp']			= '4.0';
 		$this->plugin['icon']			= RUN_MANAGER_ASSET . '/img/icon.png';
-		$this->plugin['depends']		= [ 'woocommerce/woocommerce.php' => 'WooCommerce' ];
+		// $this->plugin['depends']		= [ 'woocommerce/woocommerce.php' => 'WooCommerce' ];
 		
 	}
 

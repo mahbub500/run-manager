@@ -62,9 +62,9 @@ class Admin extends Base {
 	public function enqueue_scripts() {
 		$min = defined( 'RUN_MANAGER_DEBUG' ) && RUN_MANAGER_DEBUG ? '' : '.min';
 		
-		wp_enqueue_style( $this->slug, plugins_url( "/assets/css/admin{$min}.css", RUN_MANAGER ), '', $this->version, 'all' );
+		wp_enqueue_style( $this->slug, plugins_url( "/assets/css/admin{$min}.css", RUN_MANAGER ), '', time(), 'all' );
 
-		wp_enqueue_script( $this->slug, plugins_url( "/assets/js/admin{$min}.js", RUN_MANAGER ), [ 'jquery' ], $this->version, true );
+		wp_enqueue_script( $this->slug, plugins_url( "/assets/js/admin{$min}.js", RUN_MANAGER ), [ 'jquery' ], time(), true );
 
 		$localized = [
 			'ajaxurl'	=> admin_url( 'admin-ajax.php' ),
