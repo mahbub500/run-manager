@@ -298,11 +298,18 @@ public function import_excel_to_orders() {
     }
 
 
- public function generate_certificate() {
-    if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'] )) {
+   public function generate_certificate() {
+    if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'])) {
         wp_send_json_error(['message' => 'Invalid nonce']);
         return;
     }
+
+    if (!isset($_POST['sheet_number']) || !is_numeric($_POST['sheet_number'])) {
+        wp_send_json_error(['message' => 'Invalid sheet number']);
+        return;
+    }
+
+    $sheet_index = intval($_POST['sheet_number']) - 1; // Convert input to zero-based index
 
     $upload_dir  = wp_upload_dir();
     $upload_path = $upload_dir['basedir'] . '/race_data';
@@ -317,11 +324,25 @@ public function import_excel_to_orders() {
     usort($files, function ($a, $b) {
         return filemtime($b) - filemtime($a);
     });
+
     $latest_file = $files[0];
 
-    // Load the Excel file (Sheet 2)
-    $spreadsheet = IOFactory::load($latest_file);
-    $worksheet = $spreadsheet->getSheet(1);
+    // Load the Excel file
+    try {
+        $spreadsheet = IOFactory::load($latest_file);
+    } catch (Exception $e) {
+        wp_send_json_error(['message' => 'Error loading Excel file: ' . $e->getMessage()]);
+        return;
+    }
+
+    // Validate sheet index
+    $sheet_count = $spreadsheet->getSheetCount();
+    if ($sheet_index < 0 || $sheet_index >= $sheet_count) {
+        wp_send_json_error(['message' => 'Sheet number out of range.']);
+        return;
+    }
+
+    $worksheet = $spreadsheet->getSheet($sheet_index);
 
     $data = [];
     foreach ($worksheet->getRowIterator() as $row) {
@@ -337,7 +358,7 @@ public function import_excel_to_orders() {
             $data[] = $rowData;
         }
     }
-    
+
     $certificates = [];
     foreach ($data as $index => $row) {
         if ($index === 0) continue; // Skip the header row
@@ -345,7 +366,6 @@ public function import_excel_to_orders() {
         $serial_no = $row[0];
         $rank = $row[1];
         $participant_name = $row[2];
-        // $order_number =  $serial_no;
 
         // Load the certificate template image
         $image_path = RUN_MANAGER_DIR . '/assets/img/certificate.jpeg';
@@ -353,6 +373,7 @@ public function import_excel_to_orders() {
             wp_send_json_error(['message' => 'Certificate template not found.']);
             return;
         }
+
         $image = imagecreatefromjpeg($image_path);
 
         // Check font file
@@ -417,9 +438,10 @@ public function import_excel_to_orders() {
         // Add PDF to response
         $certificates[] = $upload_dir['baseurl'] . "/certificate/certificate-order-{$serial_no}.pdf";
     }
-    
+
     wp_send_json_success(['certificates' => $certificates]);
 }
+
 
 
   
