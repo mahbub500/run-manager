@@ -133,9 +133,17 @@ jQuery(document).ready(function ($) {
    $('#generate-munual-certificate').click(function (e) {
     e.preventDefault();        
 
+    let sheet_number = $('.certificate-number').val().trim();
+
+    if (sheet_number === "") {
+        alert("Please enter a sheet number.");
+        return;
+    }
+
     var formData = new FormData();
     formData.append('nonce', RUN_MANAGER._wpnonce); 
     formData.append('action', 'generate-munual-certificate'); 
+    formData.append('sheet_number', sheet_number); 
 
     runm_modal();
 
@@ -146,9 +154,9 @@ jQuery(document).ready(function ($) {
         processData: false,
         contentType: false,
         success: function (response) {
+            runm_modal(false);
+
             if (response.success && Array.isArray(response.data.certificates)) {
-                runm_modal(false);
-                
                 response.data.certificates.forEach(pdfUrl => {
                     const link = document.createElement('a');
                     link.href = pdfUrl;
@@ -168,22 +176,20 @@ jQuery(document).ready(function ($) {
 });
 
 
-    $(document).ready(function () {
-        function toggleButtonState() {
-            let inputVal = $(".certificate-number").val().trim();
 
-            $("#generate-munual-certificate").prop("disabled", inputVal === "" || isNaN(inputVal));
-        }
+  
+function toggleButtonState() {
+    let inputVal = $(".certificate-number").val().trim();
+    $("#generate-munual-certificate").prop("disabled", inputVal === "" || isNaN(inputVal));
+}
 
-        // Disable button on page load
-        toggleButtonState();
+toggleButtonState();
 
-        // Check input on keyup, change, and input events
-        $(".certificate-number").on("input change", function(){
-            toggleButtonState();
-            console.log( 'Hello' );
-        } );
-});
+$(".certificate-number").on("input change", function(){
+    toggleButtonState();
+    console.log( 'Hello' );
+} );
+
 
    
 
