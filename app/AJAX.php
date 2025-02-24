@@ -51,7 +51,7 @@ class AJAX extends Base {
             return;
         }
 
-        $data = "Order ID,Date,Total,Customer Name,Blood Group,DOB,EMM 1,EMM 2,NID,T-Shirt, certified\n";
+        $data = "Order ID,Date,Total,Customer Name,Blood Group,DOB,EMM 1,EMM 2,NID,T-Shirt, Bib Id\n";
 
         foreach ($orders as $order) {
             $order_id = $order->get_id();
@@ -60,12 +60,12 @@ class AJAX extends Base {
             $customer_name = $order->get_formatted_billing_full_name();
 
             // Get order meta data
-            $blood_group = $order->get_meta('billing_blood_group');
-            $dob = $order->get_meta('billing_dob');
-            $emm_1 = $order->get_meta('billing_emm_1');
-            $emm_2 = $order->get_meta('billing_emm_2');
-            $nid = $order->get_meta('billing_nid');
-            $tshirt = $order->get_meta('billing_tshirt');
+            $blood_group    = $order->get_meta('billing_blood_group');
+            $dob            = $order->get_meta('billing_dob');
+            $emm_1          = $order->get_meta('billing_emm_1');
+            $emm_2          = $order->get_meta('billing_emm_2');
+            $nid            = $order->get_meta('billing_nid');
+            $tshirt         = $order->get_meta('billing_tshirt');
 
             // Append data row to CSV
             $data .= "$order_id,$date,$total,$customer_name,$blood_group,$dob,$emm_1,$emm_2,$nid,$tshirt\n";
@@ -101,10 +101,11 @@ public function import_excel_to_orders() {
         $final_data = array_map(fn($row) => array_combine($headers, $row), $data);
 
         foreach ($final_data as $row) {
+            // error_log( $row );
             $order_id = $row['Order ID'] ?? null;
-            $is_certified = $row['certified'] ?? null;
+            $is_certified = $row['Bib Id'] ?? null;
 
-            if ($order_id && $is_certified) {
+            if ($order_id) {
                 $order = wc_get_order($order_id);
                 if ($order) {
                     // Assign the certificate number
