@@ -42,7 +42,7 @@ class Settings extends Base {
 			'label'         => $this->name,
 			'title'         => "{$this->name} v{$this->version}",
 			'header'        => $this->name,
-			// 'parent'     => 'woocommerce',
+			'parent'     => 'woocommerce',
 			// 'priority'   => 10,
 			// 'capability' => 'manage_options',
 			// 'icon'       => 'dashicons-wordpress',
