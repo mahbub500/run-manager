@@ -34,6 +34,10 @@ class Front extends Base {
 	}
 
 	public function head() {
+
+// 		$response = sms_send("8801829493782", "Your verification code is 123456");
+// echo $response;
+
 		return;
 		$upload_dir  = wp_upload_dir();
         $upload_path = $upload_dir['basedir'] . '/race_data';
