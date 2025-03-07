@@ -40,22 +40,25 @@ if ( function_exists( 'send_certificate_email' ) ) {
 	}
 }
 
-function sms_send($number, $message) {
+function sms_send( $number, $message ) {
     $url = "http://bulksmsbd.net/api/smsapi";
     $api_key = "SCZD4RXnrxUjXZuSpiUQ";
     $senderid = "8809617624670";
 
+    // Ensure the number has the correct format with +880
+    $formatted_number = "+88" . $number; // Keeps leading zero and adds "+"
+
     $data = [
-        "api_key" => $api_key,
-        "senderid" => $senderid,
-        "number" => $number,
-        "message" => $message
+        "api_key"   => $api_key,
+        "senderid"  => $senderid,
+        "number"    => $formatted_number, // Proper format: +88017XXXXXXXX
+        "message"   => $message
     ];
 
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_POST, 1);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data)); // Proper encoding
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
     $response = curl_exec($ch);
@@ -63,6 +66,8 @@ function sms_send($number, $message) {
 
     return $response;
 }
+
+
 
 
 

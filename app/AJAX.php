@@ -92,48 +92,77 @@ public function import_excel_to_orders() {
     $file = $_FILES['excel_file']['tmp_name'];
 
     try {
-        $spreadsheet = IOFactory::load($file);
-        $sheet = $spreadsheet->getActiveSheet();
-        $data = $sheet->toArray();
+    $spreadsheet = IOFactory::load($file);
+    $sheet = $spreadsheet->getActiveSheet();
+    $data = $sheet->toArray();
 
-        // Extract headers and prepare final data
-        $headers = array_shift($data);
-        $final_data = array_map(fn($row) => array_combine($headers, $row), $data);
+    // Extract headers and prepare final data
+    $headers = array_shift($data);
+    $final_data = array_map(fn($row) => array_combine($headers, $row), $data);
 
-        foreach ($final_data as $row) {
-            // error_log( $row );
-            $order_id = $row['Order ID'] ?? null;
-            $is_certified = $row['Bib Id'] ?? null;
+    $response = null; // Initialize response to avoid undefined variable
 
-            if ($order_id) {
-                $order = wc_get_order($order_id);
-                if ($order) {
-                    // Assign the certificate number
-                    $certificate_number = $is_certified;
-                    $order->update_meta_data('is_certified', $certificate_number);
-                    $order->save();
+    foreach ($final_data as $row) {
+        $order_id     = $row['Order ID'] ?? null;
+        $is_certified = $row['Bib Id'] ?? null;
 
-                    // Check if the email was already sent
-                    $is_email_sent = $order->get_meta('is_email_sent');
+        if ($order_id) {
+            $order = wc_get_order($order_id);
+            if ($order) {
+                // Assign the certificate number
+                $certificate_number = $is_certified;
+                $order->update_meta_data('is_certified', $certificate_number);
+                $order->save();
 
-                    if (!$is_email_sent) {
-                        // Send email to the billing email
-                        $billing_email = $order->get_billing_email();
-                        if ($billing_email) {
-                            $this->send_certificate_email($billing_email, $certificate_number, $order_id);
-                            $order->update_meta_data('is_email_sent', true);
-                            $order->save();
-                        }
+                // Check if the email was already sent
+                $is_email_sent = $order->get_meta('is_email_sent');
+                if (!$is_email_sent) {
+                    $billing_email = $order->get_billing_email();
+                    if ($billing_email) {
+                        $this->send_certificate_email($billing_email, $certificate_number, $order_id);
+                        $order->update_meta_data('is_email_sent', true);
+                        $order->save();
+                    }
+                }
+
+                // Check if the SMS was already sent
+                $is_sms_sent = $order->get_meta('is_sms_sent');
+                if (!$is_sms_sent) {
+                    $get_billing_phone = $order->get_billing_phone();
+                    if ($get_billing_phone) {
+                        // Generate random verification code
+                        $random_number = mt_rand(100000, 999999);
+
+                        // Save random number in order meta
+                        $order->update_meta_data('verification_code', $random_number);
+                        $order->save();
+
+                        // Get billing name
+                        $billing_name = $order->get_billing_first_name();
+                        $message = "Hi $billing_name, your bib is $certificate_number and your verification code is $random_number. Thanks Run Bangladesh.";
+
+                        // Send SMS
+                        $response = sms_send($get_billing_phone, $message);
+
+                        $order->update_meta_data('is_sms_sent', true);
+                        $order->save();
                     }
                 }
             }
         }
-
-        wp_send_json_success(['message' => 'File imported and emails sent successfully!']);
-
-    } catch (Exception $e) {
-        wp_send_json_error(['message' => 'Error processing file: ' . $e->getMessage()]);
     }
+
+    // Return JSON response
+    wp_send_json_success([
+        'message'  => 'File imported, emails, and SMS sent successfully!',
+        'response' => $response
+    ]);
+
+} catch (Exception $e) {
+    wp_send_json_error(['message' => 'Error: ' . $e->getMessage()]);
+}
+
+
 }
 
 

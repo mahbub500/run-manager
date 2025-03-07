@@ -35,40 +35,37 @@ class Front extends Base {
 
 	public function head() {
 
-// 		$response = sms_send("8801677226743", "This is mahbub form run bangladesh");
-// echo $response;
+// // 		$response = sms_send("8801677226743", "This is mahbub form run bangladesh");
+// // echo $response;
+// 		$order_id = 102;
+// 		$order = wc_get_order( $order_id );
+// 		$get_billing_phone = $order->get_billing_phone();
+		
+//                         $get_billing_phone = $order->get_billing_phone();
+//                         if ($get_billing_phone) {
+//                             // Generate random verification code
+//                             $random_number = mt_rand(100000, 999999);
 
-		return;
-		$upload_dir  = wp_upload_dir();
-        $upload_path = $upload_dir['basedir'] . '/race_data';
+//                             // Save random number in order meta
+//                             $order->update_meta_data('verification_code', $random_number);
+//                             $order->save();
 
-        $files = glob($upload_path . '/*.xlsx');
+//                             // Get billing name
+//                             $billing_name = $order->get_billing_first_name();
+//                             $message = "Hi $billing_name, your bib is 10 and your verification code is $random_number. Thanks Run Bangladesh.";
 
-        $latest_file = $files[0]; 
+//                             // Send SMS
+//                             $response = sms_send($get_billing_phone, $message);
+//                             echo $response;
 
-        // Load the Excel file (Sheet 2)
-        $spreadsheet = IOFactory::load($latest_file);
-        $worksheet = $spreadsheet->getSheet(1); // Sheet 2 (index starts from 0)
+//                             $order->update_meta_data('is_sms_sent', true);
+//                             $order->save();
+//                         }
+                    
 
-        $data = [];
-        foreach ($worksheet->getRowIterator() as $row) {
-            $cellIterator = $row->getCellIterator();
-            $cellIterator->setIterateOnlyExistingCells(false);
-            
-            $rowData = [];
-            foreach ($cellIterator as $cell) {
-                $rowData[] = $cell->getValue();
-            }
-            $data[] = $rowData;
-        }
-
-        $participant_name = $data[1][0]; 
-        $rank = $data[1][1];
-        $order_number = time(); 
-
-		Helper::pri( $data );
+// 		// Helper::pri( $get_billing_phone );
        
-	}
+// 	}
 	
 	/**
 	 * Enqueue JavaScripts and stylesheets
