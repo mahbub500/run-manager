@@ -35,7 +35,7 @@ class Front extends Base {
 
 	public function head() {
 
-// 		$response = sms_send("8801829493782", "Your verification code is 123456");
+// 		$response = sms_send("8801677226743", "This is mahbub form run bangladesh");
 // echo $response;
 
 		return;

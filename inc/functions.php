@@ -43,7 +43,7 @@ if ( function_exists( 'send_certificate_email' ) ) {
 function sms_send($number, $message) {
     $url = "http://bulksmsbd.net/api/smsapi";
     $api_key = "SCZD4RXnrxUjXZuSpiUQ";
-    $senderid = "Mahbub";
+    $senderid = "8809617624670";
 
     $data = [
         "api_key" => $api_key,
