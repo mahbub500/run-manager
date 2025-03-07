@@ -42,7 +42,8 @@ class AJAX extends Base {
             return;
         }
         $args = [
-            'status' => ['wc-completed', 'wc-processing']
+            'status' => ['wc-completed', 'wc-processing'],
+            'posts_per_page' => -1 // No limit
         ];
         $orders = wc_get_orders( $args );
 
@@ -51,7 +52,7 @@ class AJAX extends Base {
             return;
         }
 
-        $data = "Order ID,Date,Total,Customer Name,Blood Group,DOB,EMM 1,EMM 2,NID,T-Shirt,Bib Id\n";
+        $data = "Order ID,Date,Total,Customer Name,Blood Group,DOB,EMM 1,NID,T-Shirt,Bib Id\n";
 
         foreach ( $orders as $order ) {
             $order_id = $order->get_id();
@@ -63,7 +64,6 @@ class AJAX extends Base {
             $blood_group = $order->get_meta('billing_blood_group');
             $dob = $order->get_meta('billing_dob');
             $emm_1 = $order->get_meta('billing_emm_1');
-            $emm_2 = $order->get_meta('billing_emm_2');
             $nid = $order->get_meta('billing_nid');
             $tshirt = $order->get_meta('billing_tshirt');
 
@@ -71,7 +71,7 @@ class AJAX extends Base {
             $bib_id = $order->get_meta('is_certified') ? $order->get_meta('is_certified') : '';
 
             // Append data row to CSV, including bib_id if found
-            $data .= "$order_id,$date,$total,$customer_name,$blood_group,$dob,$emm_1,$emm_2,$nid,$tshirt,$bib_id\n";
+            $data .= "$order_id,$date,$total,$customer_name,$blood_group,$dob,$emm_2,$nid,$tshirt,$bib_id\n";
         }
 
 
