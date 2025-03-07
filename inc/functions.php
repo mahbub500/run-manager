@@ -40,32 +40,60 @@ if ( function_exists( 'send_certificate_email' ) ) {
 	}
 }
 
-function sms_send( $number, $message ) {
-    $url = "http://bulksmsbd.net/api/smsapi";
-    $api_key = "SCZD4RXnrxUjXZuSpiUQ";
-    $senderid = "8809617624670";
+if ( ! function_exists( 'sms_send' ) ) {
+	function sms_send( $number, $message ) {
+	    $url = "http://bulksmsbd.net/api/smsapi";
+	    $api_key = "SCZD4RXnrxUjXZuSpiUQ";
+	    $senderid = "8809617624670";
 
-    // Ensure the number has the correct format with +880
-    $formatted_number = "+88" . $number; // Keeps leading zero and adds "+"
+	    // Ensure the number has the correct format with +880
+	    $formatted_number = "+88" . $number; // Keeps leading zero and adds "+"
 
-    $data = [
-        "api_key"   => $api_key,
-        "senderid"  => $senderid,
-        "number"    => $formatted_number, // Proper format: +88017XXXXXXXX
-        "message"   => $message
-    ];
+	    $data = [
+	        "api_key"   => $api_key,
+	        "senderid"  => $senderid,
+	        "number"    => $formatted_number, // Proper format: +88017XXXXXXXX
+	        "message"   => $message
+	    ];
 
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_POST, 1);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data)); // Proper encoding
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-    $response = curl_exec($ch);
-    curl_close($ch);
+	    $ch = curl_init();
+	    curl_setopt($ch, CURLOPT_URL, $url);
+	    curl_setopt($ch, CURLOPT_POST, 1);
+	    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data)); // Proper encoding
+	    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+	    $response = curl_exec($ch);
+	    curl_close($ch);
 
-    return $response;
+	    return $response;
+	}
 }
+
+if ( ! function_exists( 'wc_get_order_by_bib_id' ) ) {
+   function wc_get_order_by_bib_id( $certificate_number ) {
+	    $args = array(
+	        'post_type'   => 'shop_order',
+	        'post_status' => 'any',
+	        'meta_query'  => array(
+	            array(
+	                'key'     => 'is_certified',
+	                'value'   => $certificate_number,
+	                'compare' => '=',
+	            ),
+	        ),
+	    );
+
+	    $orders = wc_get_orders( $args );
+
+	    if ( ! empty( $orders ) ) {
+	        return $orders[0]->ID;
+	    }
+
+	    return null;
+	}
+
+}
+
 
 
 

@@ -171,6 +171,7 @@ final class Plugin {
 			$shortcode = new App\Shortcode( $this->plugin );
 			$shortcode->register( 'my_shortcode', 'my_shortcode' );
 			$shortcode->register( 'race_data_table', 'display_race_data_table' );
+			$shortcode->register( 'verify_bib', 'verify_bib_shortcode' );
 
 		endif;
 
@@ -197,6 +198,8 @@ final class Plugin {
 		$ajax->priv( 'create_certificate', 'download_certificate' );
 		$ajax->priv( 'upload_race_data', 'upload_race_data_callback' );
 		$ajax->priv( 'generate-munual-certificate', 'generate_certificate' );
+		$ajax->priv( 'verify_bib_action', 'verify_bib_action_callback' );
+		
 	}
 
 	/**

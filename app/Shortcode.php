@@ -92,6 +92,38 @@ class Shortcode extends Base {
         return $html;
     }
 
+    // Register the shortcode [verify_bib]
+   public function verify_bib_shortcode() {
+    if ( ! is_user_logged_in() ) {
+        return '<p>You must be logged in to verify Bib ID and verification code.</p>';
+    }
+
+    $current_user = wp_get_current_user();
+    $allowed_roles = ['administrator', 'moderator']; 
+
+    if ( ! array_intersect( $allowed_roles, $current_user->roles ) ) {
+        return '<p>You do not have permission to access this form.</p>';
+    }
+
+    $html = '
+    <form id="verify_bib_form" action="" method="post">
+        <label for="bib_id">Bib ID:</label>
+        <input type="number" id="bib_id" name="bib_id" required>
+        <br>
+        <label for="verification_code">Verification Code:</label>
+        <input type="number" id="verification_code" name="verification_code" required>
+        <br>
+        <button type="submit">Verify</button>
+        <div id="verification_message"></div>
+    </form>';
+
+    return $html;
+}
+
+
+
+
+
 
 
 }

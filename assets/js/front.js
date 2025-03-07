@@ -100,6 +100,39 @@ jQuery(document).ready(function($) {
     });
 });
 
+jQuery(document).ready(function($){
+    $("#verify_bib_form").on("submit", function(e){
+        e.preventDefault();
+        
+        var bib_id = $("#bib_id").val();
+        var verification_code = $("#verification_code").val();
+
+        $.ajax({
+            url: RUN_MANAGER.ajaxurl,
+            type: "POST",
+            data: {
+                nonce: RUN_MANAGER._wpnonce,
+                action: 'verify_bib_action',
+                bib_id: bib_id,
+                verification_code: verification_code
+            },
+            success: function (response) {
+                if(response.success) {
+                    $("#verification_message").html(response.data.message);
+                } else {
+                    $("#verification_message").html(response.data.message);
+                }
+            },
+            error: function () {
+                alert('Something went wrong!');
+            }
+        });
+    });
+});
+
+
+
+
 
 
 

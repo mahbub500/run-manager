@@ -35,37 +35,14 @@ class Front extends Base {
 
 	public function head() {
 
-// // 		$response = sms_send("8801677226743", "This is mahbub form run bangladesh");
-// // echo $response;
-// 		$order_id = 102;
-// 		$order = wc_get_order( $order_id );
-// 		$get_billing_phone = $order->get_billing_phone();
-		
-//                         $get_billing_phone = $order->get_billing_phone();
-//                         if ($get_billing_phone) {
-//                             // Generate random verification code
-//                             $random_number = mt_rand(100000, 999999);
-
-//                             // Save random number in order meta
-//                             $order->update_meta_data('verification_code', $random_number);
-//                             $order->save();
-
-//                             // Get billing name
-//                             $billing_name = $order->get_billing_first_name();
-//                             $message = "Hi $billing_name, your bib is 10 and your verification code is $random_number. Thanks Run Bangladesh.";
-
-//                             // Send SMS
-//                             $response = sms_send($get_billing_phone, $message);
-//                             echo $response;
-
-//                             $order->update_meta_data('is_sms_sent', true);
-//                             $order->save();
-//                         }
+ // $order = wc_get_order_id_by_certificate_number(2001);
                     
 
-// 		// Helper::pri( $get_billing_phone );
+// 		Helper::pri( $order );
+
+
        
-// 	}
+ 	}
 	
 	/**
 	 * Enqueue JavaScripts and stylesheets
