@@ -471,21 +471,26 @@ public function import_excel_to_orders() {
 
     wp_send_json_success(['certificates' => $certificates]);
 }
-function verify_bib_action_callback() {
-        if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'] )) {
+    public function verify_bib_action_callback() {
+        if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'])) {
             wp_send_json_error(['message' => 'Invalid nonce.']);
         }
 
-        $bib_id             = sanitize_text_field($_POST['bib_id']);
-        $verification_code  = sanitize_text_field($_POST['verification_code']);
-        
-        $order_id   = wc_get_order_by_bib_id( $bib_id );
-        $order      = wc_get_order( $order_id );
+        $bib_id = sanitize_text_field($_POST['bib_id']);
+        $verification_code = sanitize_text_field($_POST['verification_code']);
 
+        $order_id = wc_get_order_by_bib_id($bib_id);
+        $order = wc_get_order($order_id);
 
         if ($order) {
+            $is_verified = $order->get_meta('is_verified');
+
+            if ($is_verified) {
+                wp_send_json_error(['message' => 'This Bib ID has already been verified.']);
+            }
+
             $stored_code = $order->get_meta('verification_code');
-            
+
             if ($stored_code === $verification_code) {
                 $order->update_meta_data('is_verified', true);
                 $order->save();
@@ -499,6 +504,7 @@ function verify_bib_action_callback() {
         }
 
         wp_die();
-}
+    }
+
 
 }
