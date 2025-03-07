@@ -33,16 +33,8 @@ class Front extends Base {
 		$this->version	= $this->plugin['Version'];
 	}
 
-	public function head() {
+	public function head() {}
 
- // $order = wc_get_order_id_by_certificate_number(2001);
-                    
-
-// 		Helper::pri( $order );
-
-
-       
- 	}
 	
 	/**
 	 * Enqueue JavaScripts and stylesheets

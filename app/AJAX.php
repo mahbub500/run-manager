@@ -44,32 +44,36 @@ class AJAX extends Base {
         $args = [
             'status' => ['wc-completed', 'wc-processing']
         ];
-        $orders = wc_get_orders($args);
+        $orders = wc_get_orders( $args );
 
-        if (empty($orders)) {
+        if ( empty( $orders )) {
             wp_send_json_error(['message' => 'No orders found.']);
             return;
         }
 
-        $data = "Order ID,Date,Total,Customer Name,Blood Group,DOB,EMM 1,EMM 2,NID,T-Shirt, Bib Id\n";
+        $data = "Order ID,Date,Total,Customer Name,Blood Group,DOB,EMM 1,EMM 2,NID,T-Shirt,Bib Id\n";
 
-        foreach ($orders as $order) {
+        foreach ( $orders as $order ) {
             $order_id = $order->get_id();
             $date = $order->get_date_created()->date('Y-m-d H:i:s');
             $total = $order->get_total();
             $customer_name = $order->get_formatted_billing_full_name();
 
             // Get order meta data
-            $blood_group    = $order->get_meta('billing_blood_group');
-            $dob            = $order->get_meta('billing_dob');
-            $emm_1          = $order->get_meta('billing_emm_1');
-            $emm_2          = $order->get_meta('billing_emm_2');
-            $nid            = $order->get_meta('billing_nid');
-            $tshirt         = $order->get_meta('billing_tshirt');
+            $blood_group = $order->get_meta('billing_blood_group');
+            $dob = $order->get_meta('billing_dob');
+            $emm_1 = $order->get_meta('billing_emm_1');
+            $emm_2 = $order->get_meta('billing_emm_2');
+            $nid = $order->get_meta('billing_nid');
+            $tshirt = $order->get_meta('billing_tshirt');
 
-            // Append data row to CSV
-            $data .= "$order_id,$date,$total,$customer_name,$blood_group,$dob,$emm_1,$emm_2,$nid,$tshirt\n";
+            // Check if the order has a 'is_certified' meta key and set bib_id
+            $bib_id = $order->get_meta('is_certified') ? $order->get_meta('is_certified') : '';
+
+            // Append data row to CSV, including bib_id if found
+            $data .= "$order_id,$date,$total,$customer_name,$blood_group,$dob,$emm_1,$emm_2,$nid,$tshirt,$bib_id\n";
         }
+
 
         // Set headers for CSV download
         header('Content-Type: text/csv');
