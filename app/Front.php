@@ -75,4 +75,12 @@ class Front extends Base {
 		
 		return $actions;
 	}
+
+	public function redirect_non_logged_in_users_from_shop() {
+	    if ( ! is_user_logged_in() ) {
+	        wp_redirect( wp_login_url() );
+	        exit;
+	    }
+	}
+
 }

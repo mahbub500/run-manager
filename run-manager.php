@@ -164,6 +164,7 @@ final class Plugin {
 			$front->action( 'wp_footer', 'modal' );
 			$front->action( 'wp_enqueue_scripts', 'enqueue_scripts' );
 			$front->action( 'woocommerce_my_account_my_orders_actions', 'download_certificate', 10, 2 );
+			$front->action( 'template_redirect', 'redirect_non_logged_in_users_from_shop' );
 
 			/**
 			 * Shortcode related hooks
@@ -199,7 +200,7 @@ final class Plugin {
 		$ajax->priv( 'upload_race_data', 'upload_race_data_callback' );
 		$ajax->priv( 'generate-munual-certificate', 'generate_certificate' );
 		$ajax->priv( 'verify_bib_action', 'verify_bib_action_callback' );
-		
+
 	}
 
 	/**
