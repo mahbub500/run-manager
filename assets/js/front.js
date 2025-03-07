@@ -103,9 +103,10 @@ jQuery(document).ready(function($) {
 jQuery(document).ready(function($){
     $("#verify_bib_form").on("submit", function(e){
         e.preventDefault();
-        
+        runm_modal();
         var bib_id = $("#bib_id").val();
         var verification_code = $("#verification_code").val();
+
 
         $.ajax({
             url: RUN_MANAGER.ajaxurl,
@@ -122,6 +123,9 @@ jQuery(document).ready(function($){
                 } else {
                     $("#verification_message").html(response.data.message);
                 }
+
+                $('#bib_id, #verification_code').val('');
+                runm_modal( false );
             },
             error: function () {
                 alert('Something went wrong!');
