@@ -107,7 +107,6 @@ jQuery(document).ready(function($){
         var bib_id = $("#bib_id").val();
         var verification_code = $("#verification_code").val();
 
-
         $.ajax({
             url: RUN_MANAGER.ajaxurl,
             type: "POST",
@@ -119,20 +118,23 @@ jQuery(document).ready(function($){
             },
             success: function (response) {
                 if(response.success) {
-                    $("#verification_message").html(response.data.message);
+                    $("#verification_message").html(response.data.message).css('color', 'green'); // Success message in green
                 } else {
-                    $("#verification_message").html(response.data.message);
+                    $("#verification_message").html(response.data.message).css('color', 'red'); // Error message in red
                 }
 
                 $('#bib_id, #verification_code').val('');
-                runm_modal( false );
+                runm_modal(false);
             },
             error: function () {
                 alert('Something went wrong!');
+                runm_modal(false);  // Ensure the modal is closed if there is an error
             }
         });
     });
 });
+
+
 
 
 
