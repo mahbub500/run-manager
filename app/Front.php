@@ -33,7 +33,11 @@ class Front extends Base {
 		$this->version	= $this->plugin['Version'];
 	}
 
-	public function head() {}
+	public function head() {
+		
+		
+
+	}
 
 	
 	/**
@@ -85,7 +89,7 @@ class Front extends Base {
 
 	
 
-	function restrict_multiple_additions( $passed, $product_id, $quantity ) {
+	public function restrict_multiple_additions( $passed, $product_id, $quantity ) {
 	    $cart_items = WC()->cart->get_cart();
 
 	    if ( count( $cart_items ) > 0 ) {

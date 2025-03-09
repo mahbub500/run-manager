@@ -169,16 +169,20 @@ public function import_excel_to_orders() {
      */
    private function send_certificate_email($email, $certificate_number, $order_id) {
 	    $order_url = esc_url(admin_url("post.php?post=$order_id&action=edit"));
-	    
-	    $subject = "Your Certification Number for Order #$order_id";
-	    
-	    $message = "Dear Customer,<br><br>";
-	    $message .= "Your certification number for Order #$order_id is: <strong>$certificate_number</strong>.<br><br>";
-	    $message .= "You can view your order details by clicking the link below:<br>";
-	    $message .= "<a href='$order_url' target='_blank'>View Order #$order_id</a><br><br>";
-	    $message .= "Thank you!";
-	    
-	    $headers = ['Content-Type: text/html; charset=UTF-8'];
+
+        $subject = "Your Certification Number for Order #$order_id";
+
+        // Encode the subject to handle special characters properly
+        $encoded_subject = "=?UTF-8?B?" . base64_encode($subject) . "?=";
+
+        $message = "Dear Customer,<br><br>";
+        $message .= "Your certification number for Order #$order_id is: <strong>$certificate_number</strong>.<br><br>";
+        $message .= "You can view your order details by clicking the link below:<br>";
+        $message .= "<a href='$order_url' target='_blank'>View Order #$order_id</a><br><br>";
+        $message .= "Thank you!";
+
+        $headers = ['Content-Type: text/html; charset=UTF-8'];
+        wp_mail($email, $encoded_subject, $message, $headers);
 	
 	    // // Temporarily change sender email and name
 	    // add_filter('wp_mail_from', function() {
@@ -189,7 +193,7 @@ public function import_excel_to_orders() {
 	    //     return get_bloginfo('name'); // Get site title as sender name
 	    // });
 	
-	    // wp_mail($email, $subject, $message, $headers);
+	   
 	
 	    // // Remove filters after sending the email
 	    // remove_filter('wp_mail_from', 'custom_mail_from');
