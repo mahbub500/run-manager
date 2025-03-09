@@ -250,8 +250,7 @@ Plugin::instance();
   
   
   
-// Austrian  
-// Azerbaijani  
+  
 // Bahamian  
 // Bahraini  
 // Bangladeshi  
