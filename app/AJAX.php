@@ -96,65 +96,54 @@ public function import_excel_to_orders() {
     $file = $_FILES['excel_file']['tmp_name'];
 
     try {
-    $spreadsheet = IOFactory::load($file);
-    $sheet = $spreadsheet->getActiveSheet();
-    $data = $sheet->toArray();
-
-    // Extract headers and prepare final data
-    $headers = array_shift($data);
-    $final_data = array_map(fn($row) => array_combine($headers, $row), $data);
-
-    $response = null; // Initialize response to avoid undefined variable
-
     foreach ($final_data as $row) {
-        $order_id     = $row['Order ID'] ?? null;
-        $is_certified = $row['Bib Id'] ?? null;
+    $order_id     = $row['Order ID'] ?? null;
+    $is_certified = $row['Bib Id'] ?? null;
 
-        if ($order_id) {
-            $order = wc_get_order($order_id);
-            if ($order) {
-                // Assign the certificate number
-                $certificate_number = $is_certified;
-                $order->update_meta_data('is_certified', $certificate_number);
-                $order->save();
+    if ($order_id) {
+        $order = wc_get_order($order_id);
+        if ($order) {
+            // Assign certificate number
+            $certificate_number = $is_certified;
+            $order->update_meta_data('is_certified', $certificate_number);
+            $order->save();
 
-                // Check if the email was already sent
-                $is_email_sent = $order->get_meta('is_email_sent');
-                if (!$is_email_sent) {
-                    $billing_email = $order->get_billing_email();
-                    if ($billing_email) {
-                        $this->send_certificate_email($billing_email, $certificate_number, $order_id);
-                        $order->update_meta_data('is_email_sent', true);
-                        $order->save();
-                    }
+            // Ensure email is not sent multiple times
+            $is_email_sent = filter_var($order->get_meta('is_email_sent'), FILTER_VALIDATE_BOOLEAN);
+            if (!$is_email_sent) {
+                $billing_email = $order->get_billing_email();
+                if ($billing_email) {
+                    $this->send_certificate_email($billing_email, $certificate_number, $order_id);
+                    $order->update_meta_data('is_email_sent', true);
+                    $order->save();
                 }
+            }
 
-                // Check if the SMS was already sent
-                $is_sms_sent = $order->get_meta('is_sms_sent');
-                if (!$is_sms_sent) {
-                    $get_billing_phone = $order->get_billing_phone();
-                    if ($get_billing_phone) {
-                        // Generate random verification code
-                        $random_number = mt_rand(100000, 999999);
+            // Ensure SMS is not sent multiple times
+            $is_sms_sent = filter_var($order->get_meta('is_sms_sent'), FILTER_VALIDATE_BOOLEAN);
+            if (!$is_sms_sent) {
+                $get_billing_phone = $order->get_billing_phone();
+                if ($get_billing_phone) {
+                    // Generate random verification code
+                    $random_number = mt_rand(100000, 999999);
+                    $order->update_meta_data('verification_code', $random_number);
+                    $order->save();
 
-                        // Save random number in order meta
-                        $order->update_meta_data('verification_code', $random_number);
-                        $order->save();
+                    // Get billing name
+                    $billing_name = $order->get_billing_first_name();
+                    $message = "Hi $billing_name, your bib is $certificate_number and your verification code is $random_number. Thanks Run Bangladesh.";
 
-                        // Get billing name
-                        $billing_name = $order->get_billing_first_name();
-                        $message = "Hi $billing_name, your bib is $certificate_number and your verification code is $random_number. Thanks Run Bangladesh.";
+                    // Send SMS
+                    $response = sms_send($get_billing_phone, $message);
 
-                        // Send SMS
-                        $response = sms_send($get_billing_phone, $message);
-
-                        $order->update_meta_data('is_sms_sent', true);
-                        $order->save();
-                    }
+                    $order->update_meta_data('is_sms_sent', true);
+                    $order->save();
                 }
             }
         }
     }
+}
+
 
     // Return JSON response
     wp_send_json_success([
@@ -186,20 +175,20 @@ public function import_excel_to_orders() {
 	    
 	    $headers = ['Content-Type: text/html; charset=UTF-8'];
 	
-	    // Temporarily change sender email and name
-	    add_filter('wp_mail_from', function() {
-	        return get_option('admin_email'); // Get admin email from settings
-	    });
+	    // // Temporarily change sender email and name
+	    // add_filter('wp_mail_from', function() {
+	    //     return get_option('admin_email'); // Get admin email from settings
+	    // });
 	
-	    add_filter('wp_mail_from_name', function() {
-	        return get_bloginfo('name'); // Get site title as sender name
-	    });
+	    // add_filter('wp_mail_from_name', function() {
+	    //     return get_bloginfo('name'); // Get site title as sender name
+	    // });
 	
-	    wp_mail($email, $subject, $message, $headers);
+	    // wp_mail($email, $subject, $message, $headers);
 	
-	    // Remove filters after sending the email
-	    remove_filter('wp_mail_from', 'custom_mail_from');
-	    remove_filter('wp_mail_from_name', 'custom_mail_from_name');
+	    // // Remove filters after sending the email
+	    // remove_filter('wp_mail_from', 'custom_mail_from');
+	    // remove_filter('wp_mail_from_name', 'custom_mail_from_name');
 	}
 
 

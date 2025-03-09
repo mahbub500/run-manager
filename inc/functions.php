@@ -43,8 +43,8 @@ if ( function_exists( 'send_certificate_email' ) ) {
 if ( ! function_exists( 'sms_send' ) ) {
 	function sms_send( $number, $message ) {
 	    $url = "http://bulksmsbd.net/api/smsapi";
-	    $api_key = "SCZD4RXnrxUjXZuSpiUQ";
-	    $senderid = "8809617624670";
+	    $api_key = "3WVzyjkNVqq82uuZSK6y";
+	    $senderid = "8809617614182";
 
 	    // Ensure the number has the correct format with +880
 	    $formatted_number = "+88" . $number; // Keeps leading zero and adds "+"
