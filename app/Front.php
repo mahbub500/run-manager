@@ -76,10 +76,24 @@ class Front extends Base {
 		return $actions;
 	}
 
-	function redirect_non_logged_in_users_from_shop() {
+	public function redirect_non_logged_in_users_from_shop() {
 	    if ( ! is_user_logged_in() && is_shop() ) {
 	        wp_redirect( wp_login_url() );
 	        exit;
 	    }
 	}
+
+	
+
+	function restrict_multiple_additions( $passed, $product_id, $quantity ) {
+	    $cart_items = WC()->cart->get_cart();
+
+	    if ( count( $cart_items ) > 0 ) {
+	        wc_add_notice( 'You can only add one product to your cart at a time. Please remove the existing product first.', 'error' );
+	        return false; 
+	    }
+
+		    return $passed;
+		}
+
 }
