@@ -103,10 +103,8 @@ class Front extends Base {
 	    if (!empty($phone)) {
 	   
 	        sms_send($phone, $message);
-	        error_log("SMS sent to {$phone} for Order #{$order_id}");
-	    } else {
-	        error_log("No phone number found for Order #{$order_id}");
-	    }
+	       
+	    } 
 	}
 
 
