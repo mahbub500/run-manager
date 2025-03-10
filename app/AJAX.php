@@ -86,9 +86,8 @@ class AJAX extends Base {
     exit;
 }
 
-
 public function import_excel_to_orders() {
-    if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'])) {
+    if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'] )) {
         wp_send_json_error(['message' => 'Invalid nonce']);
         return;
     }
@@ -99,69 +98,77 @@ public function import_excel_to_orders() {
     }
 
     $file = $_FILES['excel_file']['tmp_name'];
+    error_log("Processing file: " . $file);
 
     try {
-    foreach ($final_data as $row) {
-    $order_id     = $row['Order ID'] ?? null;
-    $is_certified = $row['Bib Id'] ?? null;
+        require_once ABSPATH . 'wp-load.php';
+     
 
-    if ($order_id) {
-        $order = wc_get_order($order_id);
-        if ($order) {
-            // Assign certificate number
-            $certificate_number = $is_certified;
-            $order->update_meta_data('is_certified', $certificate_number);
-            $order->save();
+        // use PhpOffice\PhpSpreadsheet\IOFactory;
 
-            // Ensure email is not sent multiple times
-            $is_email_sent = filter_var($order->get_meta('is_email_sent'), FILTER_VALIDATE_BOOLEAN);
-            if (!$is_email_sent) {
-                $billing_email = $order->get_billing_email();
-                if ($billing_email) {
-                    $this->send_certificate_email($billing_email, $certificate_number, $order_id);
-                    $order->update_meta_data('is_email_sent', true);
-                    $order->save();
-                }
+        // Load the Excel file
+        $spreadsheet = IOFactory::load($file);
+        $sheetData = $spreadsheet->getActiveSheet()->toArray(null, true, true, true);
+
+        $final_data = [];
+        foreach ($sheetData as $row) {
+            if (!empty($row['A'])) { // Assuming 'A' column contains Order ID
+                $final_data[] = [
+                    'Order ID' => $row['A'],
+                    'Bib Id'   => $row['J'] ?? null, // Assuming 'B' column contains Bib ID
+                ];
             }
+        }
 
-            // Ensure SMS is not sent multiple times
-            $is_sms_sent = filter_var($order->get_meta('is_sms_sent'), FILTER_VALIDATE_BOOLEAN);
-            if (!$is_sms_sent) {
-                $get_billing_phone = $order->get_billing_phone();
-                if ($get_billing_phone) {
-                    // Generate random verification code
-                    $random_number = mt_rand(100000, 999999);
-                    $order->update_meta_data('verification_code', $random_number);
+        foreach ($final_data as $row) {
+            $order_id = $row['Order ID'] ?? null;
+            $is_certified = $row['Bib Id'] ?? null;
+
+            if ($order_id) {
+                $order = wc_get_order($order_id);
+                if ($order) {
+                    $order->update_meta_data('is_certified', $is_certified);
                     $order->save();
 
-                    // Get billing name
-                    $billing_name = $order->get_billing_first_name();
-                    $message = "Hi $billing_name, your bib is $certificate_number and your verification code is $random_number. Thanks Run Bangladesh.";
+                    // Send email if not sent
+                    if (!$order->get_meta('is_email_sent')) {
+                        $billing_email = $order->get_billing_email();
+                        if ($billing_email) {
+                            $this->send_certificate_email($billing_email, $is_certified, $order_id);
+                            $order->update_meta_data('is_email_sent', true);
+                            $order->save();
+                            error_log("Email sent to: " . $billing_email);
+                        }
+                    }
 
-                    // Send SMS
-                    $response = sms_send($get_billing_phone, $message);
+                    // Send SMS if not sent
+                    if (!$order->get_meta('is_sms_sent')) {
+                        $get_billing_phone = $order->get_billing_phone();
+                        if ($get_billing_phone) {
+                            $random_number = mt_rand(100000, 999999);
+                            $order->update_meta_data('verification_code', $random_number);
+                            $order->save();
 
-                    $order->update_meta_data('is_sms_sent', true);
-                    $order->save();
+                            $billing_name = $order->get_billing_first_name();
+                            $message = "Hi $billing_name, your bib is $is_certified and your verification code is $random_number. Thanks Run Bangladesh.";
+
+                            $response = sms_send($get_billing_phone, $message);
+                            $order->update_meta_data('is_sms_sent', true);
+                            $order->save();
+                        }
+                    }
                 }
             }
         }
+
+        wp_send_json_success(['message' => 'File imported, emails, and SMS sent successfully!']);
+
+    } catch (Exception $e) {
+        error_log('Import Error: ' . $e->getMessage());
+        wp_send_json_error(['message' => 'Error: ' . $e->getMessage()]);
     }
 }
 
-
-    // Return JSON response
-    wp_send_json_success([
-        'message'  => 'File imported, emails, and SMS sent successfully!',
-        'response' => $response
-    ]);
-
-} catch (Exception $e) {
-    wp_send_json_error(['message' => 'Error: ' . $e->getMessage()]);
-}
-
-
-}
 
 
     /**
