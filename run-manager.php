@@ -165,7 +165,7 @@ final class Plugin {
 			$front->action( 'wp_enqueue_scripts', 'enqueue_scripts' );
 			$front->action( 'woocommerce_my_account_my_orders_actions', 'download_certificate', 10, 2 );
 			$front->filter( 'woocommerce_add_to_cart_validation', 'restrict_multiple_additions', 10, 3 );
-			$front->action( 'woocommerce_order_status_processing', 'send_confirmation_sms', 10, 2 );
+			$front->action( 'woocommerce_order_status_processing', 'send_confirmation_sms', 10, 1 );
 
 			/**
 			 * Shortcode related hooks
