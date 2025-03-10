@@ -88,7 +88,7 @@ class AJAX extends Base {
 
 public function import_excel_to_orders() {
     // Check nonce for security
-    if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'] )) {
+    if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'])) {
         wp_send_json_error(['message' => __('Invalid nonce.', 'run-manager')]);
         return;
     }
@@ -138,12 +138,21 @@ public function import_excel_to_orders() {
                     $order->update_meta_data('is_certified', $bib_id);
                     $order->save();
 
+                    // Generate message once
+                    $billing_name       = $order->get_billing_first_name();
+                    $verification_code  = wp_rand(100000, 999999);
+                    $message            = sprintf(
+                        __('Hi %s, your bib is %s and your verification code is %s. Thanks Run Bangladesh.', 'run-manager'),
+                        $billing_name,
+                        $bib_id,
+                        $verification_code
+                    );
+
                     // Send email if not already sent
                     if (!$order->get_meta('is_email_sent')) {
                         $billing_email = $order->get_billing_email();
-
                         if ($billing_email) {
-                            $this->send_certificate_email($billing_email, $bib_id, $order_id);
+                            $this->send_certificate_email($billing_email, $message, $order_id);
                             $order->update_meta_data('is_email_sent', true);
                             $order->save();
                             $logger->info("Email sent to: $billing_email", ['source' => 'import_excel']);
@@ -153,20 +162,7 @@ public function import_excel_to_orders() {
                     // Send SMS if not already sent
                     if (!$order->get_meta('is_sms_sent')) {
                         $billing_phone = $order->get_billing_phone();
-
                         if ($billing_phone) {
-                            $verification_code = wp_rand(100000, 999999);
-                            $order->update_meta_data('verification_code', $verification_code);
-                            $order->save();
-
-                            $billing_name = $order->get_billing_first_name();
-                            $message = sprintf(
-                                __('Hi %s, your bib is %s and your verification code is %s. Thanks Run Bangladesh.', 'run-manager'),
-                                $billing_name,
-                                $bib_id,
-                                $verification_code
-                            );
-
                             sms_send($billing_phone, $message);
                             $order->update_meta_data('is_sms_sent', true);
                             $order->save();
@@ -184,44 +180,17 @@ public function import_excel_to_orders() {
         wp_send_json_error(['message' => __('Error: ', 'run-manager') . $e->getMessage()]);
     }
 }
-
-
-
-
     /**
      * Sends an email to the customer with the certification number.
      */
-   private function send_certificate_email($email, $certificate_number, $order_id) {
+   private function send_certificate_email($email, $message, $order_id ) {
 	    $order_url = esc_url(admin_url("post.php?post=$order_id&action=edit"));
-
         $subject = "Your Certification Number for Order #$order_id";
-
-        // Encode the subject to handle special characters properly
         $encoded_subject = "=?UTF-8?B?" . base64_encode($subject) . "?=";
-
-        $message = "Dear Customer,<br><br>";
-        $message .= "Your certification number for Order #$order_id is: <strong>$certificate_number</strong>.<br><br>";
-        $message .= "You can view your order details by clicking the link below:<br>";
-        $message .= "<a href='$order_url' target='_blank'>View Order #$order_id</a><br><br>";
-        $message .= "Thank you!";
-
         $headers = ['Content-Type: text/html; charset=UTF-8'];
+
         wp_mail($email, $encoded_subject, $message, $headers);
-	
-	    // // Temporarily change sender email and name
-	    // add_filter('wp_mail_from', function() {
-	    //     return get_option('admin_email'); // Get admin email from settings
-	    // });
-	
-	    // add_filter('wp_mail_from_name', function() {
-	    //     return get_bloginfo('name'); // Get site title as sender name
-	    // });
-	
-	   
-	
-	    // // Remove filters after sending the email
-	    // remove_filter('wp_mail_from', 'custom_mail_from');
-	    // remove_filter('wp_mail_from_name', 'custom_mail_from_name');
+	  
 	}
 
 
