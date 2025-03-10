@@ -79,14 +79,6 @@ class Front extends Base {
 		
 		return $actions;
 	}
-
-	public function redirect_non_logged_in_users_from_shop() {
-	    if ( ! is_user_logged_in() && is_shop() ) {
-	        wp_redirect( wp_login_url() );
-	        exit;
-	    }
-	}
-
 	
 
 	public function restrict_multiple_additions( $passed, $product_id, $quantity ) {
@@ -98,6 +90,25 @@ class Front extends Base {
 	    }
 
 		    return $passed;
-		}
+	}
+
+
+
+	function send_order_confirmation_sms($order_id) {
+	    $order = wc_get_order($order_id);
+	    $phone = $order->get_billing_phone(); // Get customer phone number
+	    $message = "Thank you for your order #{$order_id}. Your order is now processing.";
+
+	    // Ensure phone number is in correct format
+	    if (!empty($phone)) {
+	   
+	        sms_send($phone, $message);
+	        error_log("SMS sent to {$phone} for Order #{$order_id}");
+	    } else {
+	        error_log("No phone number found for Order #{$order_id}");
+	    }
+	}
+
+
 
 }
