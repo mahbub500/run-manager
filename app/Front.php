@@ -94,7 +94,7 @@ class Front extends Base {
 
 
 
-	function send_order_confirmation_sms($order_id) {
+	function send_confirmation_sms($order_id) {
 	    $order = wc_get_order($order_id);
 	    $phone = $order->get_billing_phone(); // Get customer phone number
 	    $message = "Thank you for your order #{$order_id}. Your order is now processing.";
