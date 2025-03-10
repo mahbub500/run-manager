@@ -87,87 +87,104 @@ class AJAX extends Base {
 }
 
 public function import_excel_to_orders() {
+    // Check nonce for security
     if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'] )) {
-        wp_send_json_error(['message' => 'Invalid nonce']);
+        wp_send_json_error(['message' => __('Invalid nonce.', 'run-manager')]);
         return;
     }
 
+    // Check if file is uploaded
     if (empty($_FILES['excel_file']['tmp_name'])) {
-        wp_send_json_error(['message' => 'No file uploaded']);
+        wp_send_json_error(['message' => __('No file uploaded.', 'run-manager')]);
         return;
     }
 
-    $file = $_FILES['excel_file']['tmp_name'];
-    error_log("Processing file: " . $file);
+    $file = sanitize_text_field($_FILES['excel_file']['tmp_name']);
+    $logger = wc_get_logger();
+    $logger->info("Processing file: " . $file, ['source' => 'import_excel']);
 
     try {
-        require_once ABSPATH . 'wp-load.php';
-     
-
-        // use PhpOffice\PhpSpreadsheet\IOFactory;
+        // Check if PhpSpreadsheet is available
+        if (!class_exists('PhpOffice\PhpSpreadsheet\IOFactory')) {
+            throw new Exception(__('PhpSpreadsheet library is missing.', 'run-manager'));
+        }
 
         // Load the Excel file
-        $spreadsheet = IOFactory::load($file);
+        $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($file);
         $sheetData = $spreadsheet->getActiveSheet()->toArray(null, true, true, true);
 
+        // Extract headers from the first row
+        $headers = array_shift($sheetData);
         $final_data = [];
+
         foreach ($sheetData as $row) {
             if (!empty($row['A'])) { // Assuming 'A' column contains Order ID
                 $final_data[] = [
-                    'Order ID' => $row['A'],
-                    'Bib Id'   => $row['J'] ?? null, // Assuming 'B' column contains Bib ID
+                    'Order ID' => sanitize_text_field($row['A']),
+                    'Bib Id'   => isset($row['J']) ? sanitize_text_field($row['J']) : null, // Assuming 'J' column contains Bib ID
                 ];
             }
         }
 
+        // Process each order
         foreach ($final_data as $row) {
             $order_id = $row['Order ID'] ?? null;
-            $is_certified = $row['Bib Id'] ?? null;
+            $bib_id = $row['Bib Id'] ?? null;
 
             if ($order_id) {
                 $order = wc_get_order($order_id);
+
                 if ($order) {
-                    $order->update_meta_data('is_certified', $is_certified);
+                    $order->update_meta_data('is_certified', $bib_id);
                     $order->save();
 
-                    // Send email if not sent
+                    // Send email if not already sent
                     if (!$order->get_meta('is_email_sent')) {
                         $billing_email = $order->get_billing_email();
+
                         if ($billing_email) {
-                            $this->send_certificate_email($billing_email, $is_certified, $order_id);
+                            $this->send_certificate_email($billing_email, $bib_id, $order_id);
                             $order->update_meta_data('is_email_sent', true);
                             $order->save();
-                            error_log("Email sent to: " . $billing_email);
+                            $logger->info("Email sent to: $billing_email", ['source' => 'import_excel']);
                         }
                     }
 
-                    // Send SMS if not sent
+                    // Send SMS if not already sent
                     if (!$order->get_meta('is_sms_sent')) {
-                        $get_billing_phone = $order->get_billing_phone();
-                        if ($get_billing_phone) {
-                            $random_number = mt_rand(100000, 999999);
-                            $order->update_meta_data('verification_code', $random_number);
+                        $billing_phone = $order->get_billing_phone();
+
+                        if ($billing_phone) {
+                            $verification_code = wp_rand(100000, 999999);
+                            $order->update_meta_data('verification_code', $verification_code);
                             $order->save();
 
                             $billing_name = $order->get_billing_first_name();
-                            $message = "Hi $billing_name, your bib is $is_certified and your verification code is $random_number. Thanks Run Bangladesh.";
+                            $message = sprintf(
+                                __('Hi %s, your bib is %s and your verification code is %s. Thanks Run Bangladesh.', 'run-manager'),
+                                $billing_name,
+                                $bib_id,
+                                $verification_code
+                            );
 
-                            $response = sms_send($get_billing_phone, $message);
+                            sms_send($billing_phone, $message);
                             $order->update_meta_data('is_sms_sent', true);
                             $order->save();
+                            $logger->info("SMS sent to: $billing_phone", ['source' => 'import_excel']);
                         }
                     }
                 }
             }
         }
 
-        wp_send_json_success(['message' => 'File imported, emails, and SMS sent successfully!']);
+        wp_send_json_success(['message' => __('File imported successfully. Emails and SMS sent!', 'run-manager')]);
 
     } catch (Exception $e) {
-        error_log('Import Error: ' . $e->getMessage());
-        wp_send_json_error(['message' => 'Error: ' . $e->getMessage()]);
+        $logger->error('Import Error: ' . $e->getMessage(), ['source' => 'import_excel']);
+        wp_send_json_error(['message' => __('Error: ', 'run-manager') . $e->getMessage()]);
     }
 }
+
 
 
 
