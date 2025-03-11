@@ -550,76 +550,7 @@ foreach ($tshirt_counts as $size => $count) {
 }
 
 $html .= '</table>';
-
-$html .= '<br/><br/>';
-$html .= '<div style="page-break-before: always;"></div>';
-$html .= '<h2 style="text-align: center;">T-Shirt Size List</h2>';
-
-$html .= '<table border="1" cellpadding="8" cellspacing="0" style="width: 100%; border-collapse: collapse; text-align: center;">
-            <tr style="background-color: #f2f2f2;">
-                <th>Sl No</th>
-                <th>Actual Size</th>
-            </tr>
-            <tr>
-                <td>1</td>
-                <td>3-4 Year\'s: (Chest=26", Length=18")</td>
-            </tr>
-            <tr>
-                <td>2</td>
-                <td>5-6 Year\'s: (Chest=28", Length=19")</td>
-            </tr>
-            <tr>
-                <td>3</td>
-                <td>7-8 Year\'s: (Chest=30", Length=20")</td>
-            </tr>
-            <tr>
-                <td>4</td>
-                <td>9-10 Year\'s: (Chest=32", Length=21")</td>
-            </tr>
-            <tr>
-                <td>5</td>
-                <td>11-12 Year\'s: (Chest=34", Length=22")</td>
-            </tr>
-            <tr>
-                <td>6</td>
-                <td>12-14 Year\'s: (Chest=36", Length=23")</td>
-            </tr>
-            <tr>
-                <td>7</td>
-                <td>XS (Chest=36", Length=25")</td>
-            </tr>
-            <tr>
-                <td>8</td>
-                <td>S (Chest=38", Length=26")</td>
-            </tr>
-            <tr>
-                <td>9</td>
-                <td>M (Chest=40", Length=27")</td>
-            </tr>
-            <tr>
-                <td>10</td>
-                <td>L (Chest=42", Length=28")</td>
-            </tr>
-            <tr>
-                <td>11</td>
-                <td>XL (Chest=44", Length=29")</td>
-            </tr>
-            <tr>
-                <td>12</td>
-                <td>XXL (Chest=46", Length=30")</td>
-            </tr>
-            <tr>
-                <td>13</td>
-                <td>3XL (Chest=48", Length=31")</td>
-            </tr>
-            <tr>
-                <td>14</td>
-                <td>4XL (Chest=50", Length=32")</td>
-            </tr>
-          </table>';
-
-
-    // Initialize DomPDF
+// Initialize DomPDF
     $options = new Options();
     $options->set('defaultFont', 'Helvetica');
     $dompdf = new Dompdf($options);
