@@ -205,7 +205,7 @@ $('#run-manager-tshirt-chart').click(function (e) {
             runm_modal(false); // Hide loader/modal
 
             if (response.success) {
-                alert(response.data.message); // Success message
+               
 
                 if (response.data.url) {
                     const a = document.createElement("a");
