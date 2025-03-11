@@ -35,7 +35,7 @@ class Front extends Base {
 
 	public function head() {
 
-		// Helper::pri( Helper::get_option( 'run-manager_save_message', 'email_text' ) );
+		// Helper::pri( Helper::get_option( 'run-manager_basic', 'campain_name' ) );
 
 	}
 

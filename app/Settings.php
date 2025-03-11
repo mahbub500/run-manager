@@ -77,25 +77,25 @@ class Settings extends Base {
 									'hide_form'	=> true,
 									'template'  => RUN_MANAGER_DIR . '/views/export/import.php',
 								],
-								// 'run-manager_save_message' => [
-								// 	'id'        => 'run-manager_save_message',
-								// 	'label'     => __( 'Email Subject', 'run-manager' ),
-								// 	'icon'      => 'dashicons-editor-table',
-								// 	// 'color'		=> '#28c9ee',
-								// 	'hide_form'	=> true,
-								// 	'fields'    => [
-								// 		'email_text' => [
-								// 			'id'        => 'email_text',
-								// 			'label'     => __( 'Email Subject', 'run-manager' ),
-								// 			'type'      => 'text',
-								// 			'desc'      => __( 'Enter your email subject.', 'run-manager' ),
-								// 			// 'class'     => '',
-								// 			'default'   => 'Hello World!',
-								// 			'readonly'  => false, // true|false
-								// 			'disabled'  => false, // true|false
-								// 		],
-								// 	],
-								// ],
+								'run-manager_save_message' => [
+									'id'        => 'run-manager_save_message',
+									'label'     => __( 'Campain ', 'run-manager' ),
+									'icon'      => 'dashicons-editor-table',
+									// 'color'		=> '#28c9ee',
+									'hide_form'	=> true,
+									'fields'    => [
+										'campain_name' => [
+											'id'        => 'campain_name',
+											'label'     => __( 'Campain Name', 'run-manager' ),
+											'type'      => 'text',
+											'desc'      => __( 'Enter your Campain Name.', 'run-manager' ),
+											// 'class'     => '',
+											'default'   => 'Hello World!',
+											'readonly'  => false, // true|false
+											'disabled'  => false, // true|false
+										],
+									],
+								],
 								
 							],
 						],
