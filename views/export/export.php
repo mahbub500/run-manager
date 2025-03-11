@@ -13,3 +13,15 @@ use Codexpert\Plugin\Table;
     <p class="wph-desc">This will export your completed order data to excel.</p>
   </div>
 </div>
+
+<div class="wph-row  ">
+  <div class="wph-label-wrap">
+    <label >Get Tshirt chart :</label>
+  </div>
+  <div class="wph-field-wrap ">
+    <button id="run-manager-tshirt-chart" class="button button-hero button-primary ">
+    <i class="bi bi-download"></i>Downloade
+  </button>
+    <p class="wph-desc">This will downloade your size chart or order</p>
+  </div>
+</div>
