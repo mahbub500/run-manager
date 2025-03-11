@@ -101,7 +101,6 @@ class Front extends Base {
 	    $name 		= $order->get_billing_first_name(); 
 	    $message 	= "Hi {$name}, congratulations! You're registered for the Dhaka Metro Marathon 2025. Your order ID is {$order_id}. Thank you, Team {$campain_name}.";
 
-	    // Ensure phone number is in correct format
 	    if ( ! empty( $phone )) {
 	        sms_send( $phone, $message );
 	    } 
