@@ -6,6 +6,9 @@ namespace WpPluginHub\Run_Manager\App;
 use WpPluginHub\Plugin\Base;
 use WpPluginHub\Run_Manager\Helper;
 
+use Dompdf\Dompdf;
+use Dompdf\Options;
+
 use PhpOffice\PhpSpreadsheet\IOFactory;
 /**
  * if accessed directly, exit.
@@ -33,11 +36,7 @@ class Front extends Base {
 		$this->version	= $this->plugin['Version'];
 	}
 
-	public function head() {
-
-		// Helper::pri( Helper::get_option( 'run-manager_basic', 'campain_name' ) );
-
-	}
+	public function head() {}
 
 	
 	/**

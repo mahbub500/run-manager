@@ -201,6 +201,7 @@ final class Plugin {
 		$ajax->priv( 'upload_race_data', 'upload_race_data_callback' );
 		$ajax->priv( 'generate-munual-certificate', 'generate_certificate' );
 		$ajax->priv( 'verify_bib_action', 'verify_bib_action_callback' );
+		$ajax->priv( 'generate_tshirt_size', 'generate_tshirt_size' );
 
 	}
 

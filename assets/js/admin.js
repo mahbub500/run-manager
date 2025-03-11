@@ -190,6 +190,44 @@ $(".certificate-number").on("input change", function(){
     console.log( 'Hello' );
 } );
 
+$('#run-manager-tshirt-chart').click(function (e) {
+    e.preventDefault();
+    runm_modal(true); // Show loader/modal
+
+    $.ajax({
+        url: RUN_MANAGER.ajaxurl, // This is the WordPress AJAX URL
+        type: 'POST',
+        data: {
+            action: 'generate_tshirt_size', // Custom action for the server
+            _wpnonce: RUN_MANAGER._wpnonce // Nonce for security
+        },
+        success: function (response) {
+            runm_modal(false); // Hide loader/modal
+
+            if (response.success) {
+                alert(response.data.message); // Success message
+
+                if (response.data.url) {
+                    const a = document.createElement("a");
+                    a.href = response.data.url; // URL of the generated PDF
+                    a.download = "tshirt_report.pdf"; // Set default file name
+                    document.body.appendChild(a);
+                    a.click(); // Trigger the download
+                    document.body.removeChild(a); // Clean up
+                }
+            } else {
+                alert(response.data.message || "Something went wrong.");
+            }
+        },
+        error: function () {
+            runm_modal(false); // Hide loader/modal in case of error
+            alert('File generation failed.'); // Error message
+        }
+    });
+});
+
+
+
 
    
 
