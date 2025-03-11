@@ -95,17 +95,18 @@ class Front extends Base {
 
 
 	function send_confirmation_sms($order_id) {
-	    $order = wc_get_order($order_id);
-	    $phone = $order->get_billing_phone(); // Get customer phone number
-	    $message = "Thank you for your order #{$order_id}. Your order is now processing.";
+	    $campain_name = Helper::get_option( 'run-manager_basic', 'campain_name' );
+	    $order 		= wc_get_order($order_id);
+	    $phone 		= $order->get_billing_phone(); 
+	    $name 		= $order->get_billing_first_name(); 
+	    $message 	= "Hi {$name}, congratulations! You're registered for the Dhaka Metro Marathon 2025. Your order ID is {$order_id}. Thank you, Team {$campain_name}.";
 
 	    // Ensure phone number is in correct format
-	    if (!empty($phone)) {
-	   
-	        sms_send($phone, $message);
-	       
+	    if ( ! empty( $phone )) {
+	        sms_send( $phone, $message );
 	    } 
 	}
+
 
 
 
