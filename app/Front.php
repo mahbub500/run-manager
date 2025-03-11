@@ -105,8 +105,4 @@ class Front extends Base {
 	        sms_send( $phone, $message );
 	    } 
 	}
-
-
-
-
 }

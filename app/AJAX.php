@@ -60,28 +60,24 @@ class AJAX extends Base {
     $data = "Order ID,Date,Total,Customer Name,Blood Group,DOB,EMM 1,NID,T-Shirt,Bib Id\n";
 
     foreach ( $orders as $order ) {
-        $order_id = $order->get_id();
-        $date = $order->get_date_created()->date('Y-m-d H:i:s');
-        $total = $order->get_total();
-        $customer_name = $order->get_formatted_billing_full_name();
+        $order_id       = $order->get_id();
+        $date           = $order->get_date_created()->date('Y-m-d H:i:s');
+        $total          = $order->get_total();
+        $customer_name  = $order->get_formatted_billing_full_name();
 
         // Get order meta data
-        $blood_group = $order->get_meta('billing_blood_group');
-        $dob = $order->get_meta('billing_dob');
-        $emm_1 = $order->get_meta('billing_emm_1');
-        $nid = $order->get_meta('billing_nid');
-        $tshirt = $order->get_meta('billing_tshirt');
-
-        // Check if the order has a 'is_certified' meta key and set bib_id
-        $bib_id = $order->get_meta('is_certified') ? $order->get_meta('is_certified') : '';
-
-        // Append data row to CSV, including bib_id if found
-        $data .= "$order_id,$date,$total,$customer_name,$blood_group,$dob,$emm_1,$nid,$tshirt,$bib_id\n";
+        $blood_group    = $order->get_meta('billing_blood_group');
+        $dob            = $order->get_meta('billing_dob');
+        $emm_1          = $order->get_meta('billing_emm_1');
+        $nid            = $order->get_meta('billing_nid');
+        $tshirt         = $order->get_meta('billing_tshirt');
+        $bib_id         = $order->get_meta('is_certified') ? $order->get_meta('is_certified') : '';
+        $data           .= "$order_id,$date,$total,$customer_name,$blood_group,$dob,$emm_1,$nid,$tshirt,$bib_id\n";
     }
 
     // Set headers for CSV download
-    header('Content-Type: text/csv');
-    header('Content-Disposition: attachment; filename="orders_export.csv"');
+    header( 'Content-Type: text/csv' );
+    header( 'Content-Disposition: attachment; filename="orders_export.csv"' );
     echo $data;
     exit;
 }
@@ -114,8 +110,9 @@ public function import_excel_to_orders() {
         $sheetData = $spreadsheet->getActiveSheet()->toArray(null, true, true, true);
 
         // Extract headers from the first row
-        $headers = array_shift($sheetData);
-        $final_data = [];
+        $headers        = array_shift($sheetData);
+        $final_data     = [];
+        $campain_name   = Helper::get_option( 'run-manager_basic', 'campain_name' );
 
         foreach ($sheetData as $row) {
             if (!empty($row['A'])) { // Assuming 'A' column contains Order ID
@@ -141,12 +138,15 @@ public function import_excel_to_orders() {
                     // Generate message once
                     $billing_name       = $order->get_billing_first_name();
                     $verification_code  = wp_rand(100000, 999999);
-                    $message            = sprintf(
-                        __('Hi %s, your bib is %s and your verification code is %s. Thanks Run Bangladesh.', 'run-manager'),
+                    $message = sprintf(
+                        __('Hi %s, your bib number for the Dhaka Metro Half Marathon is %s. Your kit collection verification code is %s. Thank you, Team %s', 'run-manager'),
                         $billing_name,
                         $bib_id,
-                        $verification_code
+                        $verification_code,
+                        $campain_name
                     );
+
+                    
 
                     // Send email if not already sent
                     if (!$order->get_meta('is_email_sent')) {
