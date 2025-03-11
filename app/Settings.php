@@ -90,7 +90,7 @@ class Settings extends Base {
 											'type'      => 'text',
 											'desc'      => __( 'Enter your Campain Name.', 'run-manager' ),
 											// 'class'     => '',
-											'default'   => 'Hello World!',
+											'default'   => 'DMHM2025',
 											'readonly'  => false, // true|false
 											'disabled'  => false, // true|false
 										],
