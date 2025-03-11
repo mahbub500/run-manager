@@ -552,6 +552,7 @@ foreach ($tshirt_counts as $size => $count) {
 $html .= '</table>';
 
 $html .= '<br/><br/>';
+$html .= '<h2 style="text-align: center;">T-Shirt Size List</h2>';
 
 $html .= '<table border="1" cellpadding="8" cellspacing="0" style="width: 100%; border-collapse: collapse; text-align: center;">
             <tr style="background-color: #f2f2f2;">
