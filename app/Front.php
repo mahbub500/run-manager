@@ -36,7 +36,10 @@ class Front extends Base {
 		$this->version	= $this->plugin['Version'];
 	}
 
-	public function head() {}
+	public function head() {
+		// $config = RUN_MANAGER_DIR . '/classes/config/config.php';
+		// Helper::pri( $config );
+	}
 
 	
 	/**

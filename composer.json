@@ -12,9 +12,10 @@
     },
     "autoload": {
         "psr-4": {
-            "WpPluginHub\\Run_Manager\\" : "classes/",
-            "WpPluginHub\\Run_Manager\\App\\" : "app/",
-            "WpPluginHub\\Run_Manager\\API\\" : "api/"
+            "WpPluginHub\\Run_Manager\\"        : "classes/",
+            "WpPluginHub\\AdnSms\\"             : "classes/lib/",
+            "WpPluginHub\\Run_Manager\\App\\"   : "app/",
+            "WpPluginHub\\Run_Manager\\API\\"   : "api/"
         },
         "files": [ "inc/functions.php" ]
     }
