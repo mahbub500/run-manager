@@ -94,6 +94,33 @@ if ( ! function_exists( 'wc_get_order_by_bib_id' ) ) {
 
 }
 
+if ( ! function_exists( 'get_woocommerce_product_sales' ) ) {
+	function get_woocommerce_product_sales() {
+	    $args = array(
+	        'post_type'      => 'product',
+	        'posts_per_page' => -1,
+	        'post_status'    => 'publish',
+	    );
+
+	    $products = get_posts($args);
+
+	    echo '<h2>Product Sales Report</h2>';
+	    echo '<table border="1" cellpadding="5" cellspacing="0">';
+	    echo '<tr><th>Product Name</th><th>Sales Count</th></tr>';
+
+	    foreach ($products as $product) {
+	        $product_id = $product->ID;
+	        $sales_count = get_post_meta($product_id, 'total_sales', true);
+	        echo '<tr>';
+	        echo '<td>' . get_the_title($product_id) . '</td>';
+	        echo '<td>' . ($sales_count ? $sales_count : 0) . '</td>';
+	        echo '</tr>';
+	    }
+
+	    echo '</table>';
+	}
+}
+
 
 
 

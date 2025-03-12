@@ -1,5 +1,6 @@
 <?php
 use Codexpert\Plugin\Table;
+get_woocommerce_product_sales();
 ?>
 
 <div class="wph-row  ">
