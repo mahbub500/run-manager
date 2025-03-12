@@ -1,6 +1,23 @@
 <?php
 namespace WpPluginHub\AdnSms;
 
+use WpPluginHub\AdnSms\AbstractAdnSms;
+
+
+
+if (!defined('API_DOMAIN_URL')) {
+    define('API_DOMAIN_URL', 'https://portal.adnsms.com');
+}
+
+if (!defined('API_KEY')) {
+    define('API_KEY', 'KEY-momn007dsihx5x1v49oq7ake1gnw8wmk');
+}
+
+if (!defined('API_SECRET')) {
+    define('API_SECRET', '0x5nJE0bPkMwxsEN');
+}
+
+
 class AdnSmsNotification extends AbstractAdnSms
 {
     /**
@@ -8,7 +25,19 @@ class AdnSmsNotification extends AbstractAdnSms
      */
     public function __construct()
     {
-        $this->config = RUN_MANAGER_DIR . '/classes/config/config.php';
+        $this->config = [
+            'domain' => API_DOMAIN_URL,
+            'apiCredentials' => [
+                'api_key' => API_KEY,
+                'api_secret' => API_SECRET,
+            ],
+            'apiUrl' => [
+                'check_balance' => "/api/v1/secure/check-balance",
+                'send_sms' => "/api/v1/secure/send-sms",
+                'check_campaign_status' => "/api/v1/secure/campaign-status",
+                'check_sms_status' => "/api/v1/secure/sms-status",
+            ],
+        ];
 
         $this->setApiKey($this->config['apiCredentials']['api_key']);
         $this->setApiSecret($this->config['apiCredentials']['api_secret']);
@@ -17,10 +46,10 @@ class AdnSmsNotification extends AbstractAdnSms
     public function checkBalance()
     {
         $this->setApiUrl($this->config['apiUrl']['check_balance']);
-
+        
         $data = [
             'api_key' => $this->getApiKey(),
-            'api_secret' => $this->getApiSecret()
+            'api_secret' => $this->getApiSecret(),
         ];
 
         $response = $this->callToApi($data);
@@ -42,7 +71,7 @@ class AdnSmsNotification extends AbstractAdnSms
             'request_type' => $this->getRequestType(),
             'message_type' => $this->getMessageType(),
             'mobile' => $this->getRecipient(),
-            'message_body' => $this->getMessageBody()
+            'message_body' => $this->getMessageBody(),
         ];
 
         if ($this->getRequestType() == 'GENERAL_CAMPAIGN') {
@@ -58,29 +87,7 @@ class AdnSmsNotification extends AbstractAdnSms
 
     public function sendBulkSms($message, $recipient, $messageType, $campaignTitle)
     {
-        $this->setApiUrl($this->config['apiUrl']['send_sms']);
-        $this->setRequestType('GENERAL_CAMPAIGN');
-        $this->setMessageBody($message);
-        $this->setRecipient($recipient);
-        $this->setMessageType($messageType);
-        $this->setCampaignTitle($campaignTitle);
-
-        $data = [
-            'api_key' => $this->getApiKey(),
-            'api_secret' => $this->getApiSecret(),
-            'request_type' => $this->getRequestType(),
-            'message_type' => $this->getMessageType(),
-            'mobile' => $this->getRecipient(),
-            'message_body' => $this->getMessageBody()
-        ];
-
-        if ($campaignTitle == null) {
-            throw new \Exception('Campaign Title is required for bulk campaign');
-        }
-        $data['campaign_title'] = $this->getCampaignTitle();
-
-        $response = $this->callToApi($data);
-        print_r($response);
+        $this->sendSms('GENERAL_CAMPAIGN', $message, $recipient, $messageType, $campaignTitle);
     }
 
     public function multibodyCampaign($smsArray, $messageType, $campaignTitle = null)
@@ -113,27 +120,20 @@ class AdnSmsNotification extends AbstractAdnSms
         print_r($response);
     }
 
-    /**
-     * @param $campaignUid
-     */
     public function checkCampaignStatus($campaignUid)
     {
         $this->setApiUrl($this->config['apiUrl']['check_campaign_status']);
-
+        
         $data = [
             'api_key' => $this->getApiKey(),
             'api_secret' => $this->getApiSecret(),
-            'campaign_uid' => $campaignUid
+            'campaign_uid' => $campaignUid,
         ];
-
 
         $response = $this->callToApi($data);
         print_r($response);
     }
 
-    /**
-     * @param $smsUid
-     */
     public function checkSmsStatus($smsUid)
     {
         $this->setApiUrl($this->config['apiUrl']['check_sms_status']);
@@ -141,7 +141,7 @@ class AdnSmsNotification extends AbstractAdnSms
         $data = [
             'api_key' => $this->getApiKey(),
             'api_secret' => $this->getApiSecret(),
-            'sms_uid' => $smsUid
+            'sms_uid' => $smsUid,
         ];
 
         $response = $this->callToApi($data);

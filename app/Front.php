@@ -5,6 +5,7 @@
 namespace WpPluginHub\Run_Manager\App;
 use WpPluginHub\Plugin\Base;
 use WpPluginHub\Run_Manager\Helper;
+use WpPluginHub\AdnSms\AdnSmsNotification;
 
 use Dompdf\Dompdf;
 use Dompdf\Options;
@@ -37,8 +38,26 @@ class Front extends Base {
 	}
 
 	public function head() {
+		$message = "Thank you for your purchase. We have received your payment for item #13201. John Doe Shop.";
+		$recipient="8801829493782";       // For SINGLE_SMS or OTP
+		$requestType = 'SINGLE_SMS';    // options available: "SINGLE_SMS", "OTP"
+		$messageType = 'TEXT';         // options available: "TEXT", "UNICODE"
+
+		/*
+		 * Sending Single SMS or OTP with sendSms() method
+		 * ----------
+		 * Params:
+		 * ----------
+		 * $requestType   : Required, Must contain any of the two values: "SINGLE_SMS", "OTP"
+		 * $message       : Required
+		 * $recipient     : Required
+		 * $messageType   : Must contain any of the two values: "TEXT", "UNICODE"
+		 */
+
+		$sms = new AdnSmsNotification();
+		$data = $sms->sendSms($requestType, $message, $recipient, $messageType);
 		// $config = RUN_MANAGER_DIR . '/classes/config/config.php';
-		// Helper::pri( $config );
+		Helper::pri( $data );
 	}
 
 	
