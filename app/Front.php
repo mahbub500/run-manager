@@ -108,7 +108,7 @@ class Front extends Base {
 	    $order 		= wc_get_order($order_id);
 	    $phone 		= $order->get_billing_phone(); 
 	    $name 		= $order->get_billing_first_name(); 
-	    $message 	= "Hi {$name}, congratulations! You're registered for the Dhaka Metro Marathon 2025. Your order ID is {$order_id}. Thank you, Team {$campain_name}.";
+	    $message 	= "Hi {$name}, congratulations! You're registered for the Dhaka Metro Half Marathon 2025. Your order ID is {$order_id}. Thank you, Team {$campain_name}.";
 	    $requestType = 'SINGLE_SMS';   
 		$messageType = 'TEXT';   
 
