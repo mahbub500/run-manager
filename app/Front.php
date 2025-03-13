@@ -83,9 +83,6 @@ class Front extends Base {
 		        
 		    );
 		}
-
-
-		
 		return $actions;
 	}
 	
@@ -102,7 +99,6 @@ class Front extends Base {
 	}
 
 
-
 	function send_confirmation_sms($order_id) {
 	    $campain_name = Helper::get_option( 'run-manager_basic', 'campain_name' );
 	    $order 		= wc_get_order($order_id);
@@ -113,13 +109,8 @@ class Front extends Base {
 		$messageType = 'TEXT';   
 
 	    if ( ! empty( $phone )) {
-
-			 
-			
-
-			$sms = new AdnSmsNotification();
-			$sms->sendSms( $requestType, $message, $phone, $messageType );
-		    
+	    	$sms = new AdnSmsNotification();
+			$sms->sendSms( $requestType, $message, $phone, $messageType );  
 	    } 
 	}
 }

@@ -8,7 +8,7 @@ use WpPluginHub\Plugin\Base;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Dompdf\Dompdf;
 use Dompdf\Options;
-
+use WpPluginHub\AdnSms\AdnSmsNotification;
 
 /**
  * if accessed directly, exit.
@@ -113,6 +113,8 @@ public function import_excel_to_orders() {
         $headers        = array_shift($sheetData);
         $final_data     = [];
         $campain_name   = Helper::get_option( 'run-manager_basic', 'campain_name' );
+        $requestType    = 'SINGLE_SMS';   
+        $messageType    = 'TEXT'; 
 
         foreach ($sheetData as $row) {
             if (!empty($row['A'])) { // Assuming 'A' column contains Order ID
@@ -152,7 +154,7 @@ public function import_excel_to_orders() {
                     if (!$order->get_meta('is_email_sent')) {
                         $billing_email = $order->get_billing_email();
                         if ($billing_email) {
-                            $this->send_certificate_email($billing_email, $message, $order_id);
+                            $this->send_certificate_email( $billing_email, $message, $order_id );
                             $order->update_meta_data('is_email_sent', true);
                             $order->save();
                             $logger->info("Email sent to: $billing_email", ['source' => 'import_excel']);
@@ -162,8 +164,10 @@ public function import_excel_to_orders() {
                     // Send SMS if not already sent
                     if (!$order->get_meta('is_sms_sent')) {
                         $billing_phone = $order->get_billing_phone();
-                        if ($billing_phone) {
-                            sms_send($billing_phone, $message);
+                        if ( $billing_phone ) {
+                            // sms_send($billing_phone, $message);
+                            $sms = new AdnSmsNotification();
+                            $sms->sendSms( $requestType, $message, $billing_phone, $messageType ); 
                             $order->update_meta_data('is_sms_sent', true);
                             $order->save();
                             $logger->info("SMS sent to: $billing_phone", ['source' => 'import_excel']);
