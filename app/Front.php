@@ -38,26 +38,14 @@ class Front extends Base {
 	}
 
 	public function head() {
-		$message = "Thank you for your purchase. We have received your payment for item #13201. John Doe Shop.";
-		$recipient="8801829493782";       // For SINGLE_SMS or OTP
-		$requestType = 'SINGLE_SMS';    // options available: "SINGLE_SMS", "OTP"
-		$messageType = 'TEXT';         // options available: "TEXT", "UNICODE"
+		// $message = "Thank you for your purchase. We have received your payment for item #13201. John Doe Shop.";
+		// $recipient="8801829493782";       // For SINGLE_SMS or OTP
+		// $requestType = 'SINGLE_SMS';    // options available: "SINGLE_SMS", "OTP"
+		// $messageType = 'TEXT';         // options available: "TEXT", "UNICODE"
 
-		/*
-		 * Sending Single SMS or OTP with sendSms() method
-		 * ----------
-		 * Params:
-		 * ----------
-		 * $requestType   : Required, Must contain any of the two values: "SINGLE_SMS", "OTP"
-		 * $message       : Required
-		 * $recipient     : Required
-		 * $messageType   : Must contain any of the two values: "TEXT", "UNICODE"
-		 */
-
-		$sms = new AdnSmsNotification();
-		$data = $sms->sendSms($requestType, $message, $recipient, $messageType);
-		// $config = RUN_MANAGER_DIR . '/classes/config/config.php';
-		Helper::pri( $data );
+		// $sms = new AdnSmsNotification();
+		// $sms->sendSms($requestType, $message, $recipient, $messageType);
+		
 	}
 
 	
@@ -121,9 +109,17 @@ class Front extends Base {
 	    $phone 		= $order->get_billing_phone(); 
 	    $name 		= $order->get_billing_first_name(); 
 	    $message 	= "Hi {$name}, congratulations! You're registered for the Dhaka Metro Marathon 2025. Your order ID is {$order_id}. Thank you, Team {$campain_name}.";
+	    $requestType = 'SINGLE_SMS';   
+		$messageType = 'TEXT';   
 
 	    if ( ! empty( $phone )) {
-	        sms_send( $phone, $message );
+
+			 
+			
+
+			$sms = new AdnSmsNotification();
+			$sms->sendSms( $requestType, $message, $phone, $messageType );
+		    
 	    } 
 	}
 }
