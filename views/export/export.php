@@ -1,6 +1,9 @@
 <?php
 use Codexpert\Plugin\Table;
-get_woocommerce_product_sales();
+use WpPluginHub\AdnSms\AdnSmsNotification;
+// get_woocommerce_product_sales();
+$smsNotification = new AdnSmsNotification();
+$balance = $smsNotification->checkBalance();
 ?>
 
 <div class="wph-row  ">
@@ -15,7 +18,7 @@ get_woocommerce_product_sales();
   </div>
 </div>
 
-<div class="wph-row  ">
+<div class="wph-row">
   <div class="wph-label-wrap">
     <label >Get Tshirt chart :</label>
   </div>
@@ -25,4 +28,7 @@ get_woocommerce_product_sales();
   </button>
     <p class="wph-desc">This will downloade your size chart or order</p>
   </div>
+</div>
+<div class="wph-row">
+  <p>Balance in ADN live api <strong><?php echo $balance; ?> </strong> </p>
 </div>
