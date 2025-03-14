@@ -37,5 +37,5 @@ $balance          = isset($data['balance']['sms']) ? $data['balance']['sms'] : "
 </div>
 
 <div class="wph-row">
-  <p>Your ADN Remaining balance is: <strong><?php echo $balance; ?></strong></p>
+  <p>Your ADN API Remaining balance is: <strong><?php echo $balance; ?></strong></p>
 </div>
