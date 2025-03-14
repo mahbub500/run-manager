@@ -43,36 +43,61 @@ class AJAX extends Base {
     }
 
     // Modify the query to order by date in ascending order
-    $args = [
+   $args = [
         'status' => ['wc-completed', 'wc-processing'],
         'posts_per_page' => -1, // No limit
         'orderby' => 'date', // Order by date
         'order' => 'ASC' // Ascending order
     ];
 
-    $orders = wc_get_orders( $args );
+    $sl_no = 0;
 
-    if ( empty( $orders )) {
+    $orders = wc_get_orders($args);
+
+    if (empty($orders)) {
         wp_send_json_error(['message' => 'No orders found.']);
         return;
     }
 
-    $data = "Order ID,Date,Total,Customer Name,Blood Group,DOB,EMM 1,NID,T-Shirt,Bib Id\n";
+    $data = "Sl No,Order ID,Total,Customer Name,Blood Group,DOB,EMM 1,NID/birth/passport,T-Shirt,Bib Id\n";
 
-    foreach ( $orders as $order ) {
-        $order_id       = $order->get_id();
-        $date           = $order->get_date_created()->date('Y-m-d H:i:s');
-        $total          = $order->get_total();
-        $customer_name  = $order->get_formatted_billing_full_name();
+    foreach ($orders as $order) {
+        $sl_no++;
+        $order_id      = $order->get_id();
+        $total         = $order->get_total();
+        $customer_name = $order->get_formatted_billing_full_name();
 
         // Get order meta data
-        $blood_group    = $order->get_meta('billing_blood_group');
-        $dob            = $order->get_meta('billing_dob');
-        $emm_1          = $order->get_meta('billing_emm_1');
-        $nid            = $order->get_meta('billing_nid');
-        $tshirt         = $order->get_meta('billing_tshirt');
-        $bib_id         = $order->get_meta('is_certified') ? $order->get_meta('is_certified') : '';
-        $data           .= "$order_id,$date,$total,$customer_name,$blood_group,$dob,$emm_1,$nid,$tshirt,$bib_id\n";
+        $blood_group   = $order->get_meta('billing_blood_group');
+        $dob           = $order->get_meta('billing_dob');
+        $emm_1         = $order->get_meta('billing_emm_1');
+
+        // Check for NID, Birth Registration, or Passport
+        $nid = $order->get_meta('billing_nid') ?: 
+               $order->get_meta('billing_birth_registration') ?: 
+               $order->get_meta('billing_passport');
+
+        $tshirt = $order->get_meta('billing_tshirt');
+        $bib_id = $order->get_meta('is_certified') ? $order->get_meta('is_certified') : '';
+
+        // Remove line breaks and extra spaces from all values
+        $clean = function($value) {
+            return trim(preg_replace('/\s+/', ' ', $value));
+        };
+
+        $data .= sprintf(
+            "\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"\n",
+            $sl_no,
+            $order_id,
+            $total,
+            $clean($customer_name),
+            $clean($blood_group),
+            $clean($dob),
+            $clean($emm_1),
+            $clean($nid),
+            $clean($tshirt),
+            $clean($bib_id)
+        );
     }
 
     // Set headers for CSV download

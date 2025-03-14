@@ -37,20 +37,7 @@ class Front extends Base {
 		$this->version	= $this->plugin['Version'];
 	}
 
-	public function head() {
-		// $smsNotification = new AdnSmsNotification();
-		// $balance = $smsNotification->checkBalance();
-
-		// Helper::pri( $balance );
-		// $message = "Thank you for your purchase. We have received your payment for item #13201. John Doe Shop.";
-		// $recipient="8801829493782";       // For SINGLE_SMS or OTP
-		// $requestType = 'SINGLE_SMS';    // options available: "SINGLE_SMS", "OTP"
-		// $messageType = 'TEXT';         // options available: "TEXT", "UNICODE"
-
-		// $sms = new AdnSmsNotification();
-		// $sms->sendSms($requestType, $message, $recipient, $messageType);
-		
-	}
+	public function head() {}
 
 	
 	/**
