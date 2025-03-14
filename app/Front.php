@@ -37,7 +37,15 @@ class Front extends Base {
 		$this->version	= $this->plugin['Version'];
 	}
 
-	public function head() {}
+	public function head() {
+		// $smsNotification 	= new AdnSmsNotification();
+		// $rsponse 			= $smsNotification->checkBalance();
+
+
+		// $data = json_decode( $rsponse, true);
+
+		// Helper::pri( $data['balance'] );
+	}
 
 	
 	/**

@@ -1,6 +1,15 @@
 <?php
 use Codexpert\Plugin\Table;
 
+use WpPluginHub\AdnSms\AdnSmsNotification;
+
+$smsNotification  = new AdnSmsNotification();
+$rsponse          = $smsNotification->checkBalance();
+$data             = json_decode($rsponse, true);
+
+// Fixed the issue here
+$balance          = isset($data['balance']['sms']) ? $data['balance']['sms'] : "";
+
 ?>
 
 <div class="wph-row  ">
@@ -21,8 +30,12 @@ use Codexpert\Plugin\Table;
   </div>
   <div class="wph-field-wrap ">
     <button id="run-manager-tshirt-chart" class="button button-hero button-primary ">
-    <i class="bi bi-download"></i>Downloade
+    <i class="bi bi-download"></i>Download
   </button>
-    <p class="wph-desc">This will downloade your size chart or order</p>
+    <p class="wph-desc">This will download your size chart or order</p>
   </div>
+</div>
+
+<div class="wph-row">
+  <p>Your ADN Remaining balance is: <strong><?php echo $balance; ?></strong></p>
 </div>

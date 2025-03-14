@@ -53,7 +53,7 @@ class AdnSmsNotification extends AbstractAdnSms
         ];
 
         $response = $this->callToApi($data);
-        print_r($response);
+        return $response;
     }
 
     public function sendSms($requestType, $message, $recipient, $messageType, $campaignTitle = null)
