@@ -42,7 +42,7 @@ $balance          = isset($data['balance']['sms']) ? $data['balance']['sms'] : "
   </div>
   <div class="wph-field-wrap ">
     <p> <strong><?php echo $balance; ?></strong></p>
-  </dib>
+  </div>
 </div>
 
 <div class="wph-row">
@@ -52,6 +52,6 @@ $balance          = isset($data['balance']['sms']) ? $data['balance']['sms'] : "
   <div class="wph-field-wrap ">
     
 <?php display_product_sales_count(); ?>
-  </dib>
+  </div>
 </div>
 
