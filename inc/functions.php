@@ -121,6 +121,36 @@ if ( ! function_exists( 'get_woocommerce_product_sales' ) ) {
 	}
 }
 
+function display_product_sales_count() {
+    global $wpdb;
+
+    $results = $wpdb->get_results("
+        SELECT order_item_name, COUNT(*) as item_count
+        FROM {$wpdb->prefix}woocommerce_order_items
+        WHERE order_item_type = 'line_item'
+        GROUP BY order_item_name
+        ORDER BY item_count DESC
+        LIMIT 50
+    ");
+
+    if (empty($results)) {
+        echo 'No sales data found.';
+        return;
+    }
+
+    echo '<table border="1" cellspacing="0" cellpadding="5">';
+    echo '<tr><th>Product Name</th><th>Sales Count</th></tr>';
+
+    foreach ($results as $row) {
+        echo '<tr>';
+        echo '<td>' . esc_html($row->order_item_name) . '</td>';
+        echo '<td>' . esc_html($row->item_count) . '</td>';
+        echo '</tr>';
+    }
+
+    echo '</table>';
+}
+
 
 
 

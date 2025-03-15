@@ -37,5 +37,21 @@ $balance          = isset($data['balance']['sms']) ? $data['balance']['sms'] : "
 </div>
 
 <div class="wph-row">
-  <p>Your ADN API Remaining balance is: <strong><?php echo $balance; ?></strong></p>
+  <div class="wph-label-wrap">
+    <label>Your ADN API Remaining balance is:</label>
+  </div>
+  <div class="wph-field-wrap ">
+    <p> <strong><?php echo $balance; ?></strong></p>
+  </dib>
 </div>
+
+<div class="wph-row">
+  <div class="wph-label-wrap">
+    <label>Product Sales count</label>
+  </div>
+  <div class="wph-field-wrap ">
+    
+<?php display_product_sales_count(); ?>
+  </dib>
+</div>
+
