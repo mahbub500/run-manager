@@ -4,7 +4,7 @@ use Codexpert\Plugin\Table;
 
 <div class="wph-row  ">
   <div class="wph-label-wrap">
-    <label >Import Order Data To excel :</label>
+    <label >Import Order Data From excel :</label>
   </div>
   <div class="wph-field-wrap ">
     <input type="file" name="excel_file" id="excel_file" accept=".xlsx, .xls">

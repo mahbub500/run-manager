@@ -4,6 +4,7 @@
  */
 namespace WpPluginHub\Run_Manager\App;
 use WpPluginHub\Plugin\Base;
+use WpPluginHub\Run_Manager\Helper;
 
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Dompdf\Dompdf;
@@ -144,7 +145,7 @@ public function import_excel_to_orders() {
         foreach ($sheetData as $row) {
             if (!empty($row['A'])) { // Assuming 'A' column contains Order ID
                 $final_data[] = [
-                    'Order ID' => sanitize_text_field($row['A']),
+                    'Order ID' => sanitize_text_field($row['B']),
                     'Bib Id'   => isset($row['J']) ? sanitize_text_field($row['J']) : null, // Assuming 'J' column contains Bib ID
                 ];
             }
@@ -155,10 +156,13 @@ public function import_excel_to_orders() {
             $order_id = $row['Order ID'] ?? null;
             $bib_id = $row['Bib Id'] ?? null;
 
+
             if ($order_id) {
+
                 $order = wc_get_order($order_id);
 
                 if ($order) {
+
                     $order->update_meta_data('is_certified', $bib_id);
                     $order->save();
 
@@ -172,6 +176,7 @@ public function import_excel_to_orders() {
                         $verification_code,
                         $campain_name
                     );
+
 
                     
 
@@ -495,40 +500,50 @@ public function import_excel_to_orders() {
 
     wp_send_json_success(['certificates' => $certificates]);
 }
-    public function verify_bib_action_callback() {
-        if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'])) {
-            wp_send_json_error(['message' => 'Invalid nonce.']);
-        }
-
-        $bib_id = sanitize_text_field($_POST['bib_id']);
-        $verification_code = sanitize_text_field($_POST['verification_code']);
-
-        $order_id = wc_get_order_by_bib_id($bib_id);
-        $order = wc_get_order($order_id);
-
-        if ($order) {
-            $is_verified = $order->get_meta('is_verified');
-
-            if ($is_verified) {
-                wp_send_json_error(['message' => 'This Bib ID has already been verified.']);
-            }
-
-            $stored_code = $order->get_meta('verification_code');
-
-            if ($stored_code === $verification_code) {
-                $order->update_meta_data('is_verified', true);
-                $order->save();
-
-                wp_send_json_success(['message' => 'Verification successful!']);
-            } else {
-                wp_send_json_error(['message' => 'Verification code does not match.']);
-            }
-        } else {
-            wp_send_json_error(['message' => 'Bib ID not found.']);
-        }
-
-        wp_die();
+   public function verify_bib_action_callback() {
+    if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'])) {
+        wp_send_json_error(['message' => 'Invalid nonce.']);
     }
+
+    $bib_id = sanitize_text_field($_POST['bib_id']);
+    $verification_code = sanitize_text_field($_POST['verification_code']);
+
+    $order_id = wc_get_order_by_bib_id($bib_id);
+    $order = wc_get_order($order_id);
+
+    if ($order) {
+        $is_verified = $order->get_meta('is_verified');
+
+        if ($is_verified) {
+            wp_send_json_error(['message' => 'This Bib ID has already been verified.']);
+        }
+
+        $stored_code = $order->get_meta('verification_code');
+
+        if ($stored_code === $verification_code) {
+            // Fetch billing t-shirt size from order meta
+            $tshirt_size = $order->get_meta('billing_tshirt'); 
+
+            // Mark as verified
+            $order->update_meta_data('is_verified', true);
+            $order->save();
+
+            $message = 'Verification successful!';
+            if ($tshirt_size) {
+                $message .= ' Your T-Shirt size: ' . esc_html($tshirt_size);
+            }
+
+            wp_send_json_success(['message' => $message]);
+        } else {
+            wp_send_json_error(['message' => 'Verification code does not match.']);
+        }
+    } else {
+        wp_send_json_error(['message' => 'Bib ID not found.']);
+    }
+
+    wp_die();
+}
+
 
 
 
