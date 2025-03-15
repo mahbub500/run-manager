@@ -110,7 +110,7 @@ class AJAX extends Base {
 
 public function import_excel_to_orders() {
     // Check nonce for security
-    if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'])) {
+    if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'] )) {
         wp_send_json_error(['message' => __('Invalid nonce.', 'run-manager')]);
         return;
     }
@@ -121,7 +121,12 @@ public function import_excel_to_orders() {
         return;
     }
 
-    $file = sanitize_text_field($_FILES['excel_file']['tmp_name']);
+    if ($_FILES['excel_file']['error'] !== UPLOAD_ERR_OK) {
+        wp_send_json_error(['message' => __('File upload error.', 'run-manager')]);
+        return;
+    }
+
+    $file = $_FILES['excel_file']['tmp_name'];
     $logger = wc_get_logger();
     $logger->info("Processing file: " . $file, ['source' => 'import_excel']);
 
@@ -139,14 +144,12 @@ public function import_excel_to_orders() {
         $headers        = array_shift($sheetData);
         $final_data     = [];
         $campain_name   = Helper::get_option( 'run-manager_basic', 'campain_name' );
-        $requestType    = 'SINGLE_SMS';   
-        $messageType    = 'TEXT'; 
 
         foreach ($sheetData as $row) {
             if (!empty($row['A'])) { // Assuming 'A' column contains Order ID
                 $final_data[] = [
                     'Order ID' => sanitize_text_field($row['B']),
-                    'Bib Id'   => isset($row['J']) ? sanitize_text_field($row['J']) : null, // Assuming 'J' column contains Bib ID
+                    'Bib Id'   => isset($row['J']) ? sanitize_text_field($row['J']) : null,
                 ];
             }
         }
@@ -156,19 +159,16 @@ public function import_excel_to_orders() {
             $order_id = $row['Order ID'] ?? null;
             $bib_id = $row['Bib Id'] ?? null;
 
-
             if ($order_id) {
-
                 $order = wc_get_order($order_id);
-
                 if ($order) {
-
                     $order->update_meta_data('is_certified', $bib_id);
                     $order->save();
 
-                    // Generate message once
+                    // Generate message
                     $billing_name       = $order->get_billing_first_name();
                     $verification_code  = wp_rand(100000, 999999);
+
                     $message = sprintf(
                         __('Hi %s, your bib number for the Dhaka Metro Half Marathon is %s. Your kit collection verification code is %s. Thank you, Team %s', 'run-manager'),
                         $billing_name,
@@ -177,31 +177,24 @@ public function import_excel_to_orders() {
                         $campain_name
                     );
 
-
-                    
-
-                    // Send email if not already sent
-                    if (!$order->get_meta('is_email_sent')) {
-                        $billing_email = $order->get_billing_email();
-                        if ($billing_email) {
-                            $this->send_certificate_email( $billing_email, $message, $order_id );
-                            $order->update_meta_data('is_email_sent', true);
-                            $order->save();
-                            $logger->info("Email sent to: $billing_email", ['source' => 'import_excel']);
-                        }
+                    // Update meta and send notifications
+                    if (!$order->get_meta('verification_code')) {
+                        $order->update_meta_data('verification_code', $verification_code);
                     }
 
-                    // Send SMS if not already sent
+                    // Send email and SMS if not already sent
+                    if (!$order->get_meta('is_email_sent')) {
+                        $this->send_certificate_email($order->get_billing_email(), $message, $order_id);
+                        $order->update_meta_data('is_email_sent', true);
+                        $order->save();
+                        $logger->info("Email sent to: " . $order->get_billing_email(), ['source' => 'import_excel']);
+                    }
+
                     if (!$order->get_meta('is_sms_sent')) {
-                        $billing_phone = $order->get_billing_phone();
-                        if ( $billing_phone ) {
-                            // sms_send($billing_phone, $message);
-                            $sms = new AdnSmsNotification();
-                            $sms->sendSms( $requestType, $message, $billing_phone, $messageType ); 
-                            $order->update_meta_data('is_sms_sent', true);
-                            $order->save();
-                            $logger->info("SMS sent to: $billing_phone", ['source' => 'import_excel']);
-                        }
+                        // sms_send($order->get_billing_phone(), $message);
+                        $order->update_meta_data('is_sms_sent', true);
+                        $order->save();
+                        $logger->info("SMS sent to: " . $order->get_billing_phone(), ['source' => 'import_excel']);
                     }
                 }
             }
@@ -214,6 +207,7 @@ public function import_excel_to_orders() {
         wp_send_json_error(['message' => __('Error: ', 'run-manager') . $e->getMessage()]);
     }
 }
+
     /**
      * Sends an email to the customer with the certification number.
      */
