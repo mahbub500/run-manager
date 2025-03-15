@@ -507,16 +507,20 @@ public function import_excel_to_orders() {
 
     if ($order) {
         $is_verified = $order->get_meta('is_verified');
+         $tshirt_size = $order->get_meta('billing_tshirt'); 
 
-        if ($is_verified) {
-            wp_send_json_error(['message' => 'This Bib ID has already been verified.']);
+       if ($is_verified) {
+            wp_send_json_error([
+                'message' => 'This Bib ID has already been verified. and Tshirt size is : <strong>' . esc_html($tshirt_size) . '</strong>'
+            ]);
         }
+
 
         $stored_code = $order->get_meta('verification_code');
 
         if ($stored_code === $verification_code) {
             // Fetch billing t-shirt size from order meta
-            $tshirt_size = $order->get_meta('billing_tshirt'); 
+           
 
             // Mark as verified
             $order->update_meta_data('is_verified', true);
@@ -529,7 +533,7 @@ public function import_excel_to_orders() {
 
             wp_send_json_success(['message' => $message]);
         } else {
-            wp_send_json_error(['message' => 'Verification code does not match.']);
+            wp_send_json_error(['message' => 'Verification code does not match.' ]);
         }
     } else {
         wp_send_json_error(['message' => 'Bib ID not found.']);
