@@ -125,10 +125,12 @@ function display_product_sales_count() {
     global $wpdb;
 
     $results = $wpdb->get_results("
-        SELECT order_item_name, COUNT(*) as item_count
-        FROM {$wpdb->prefix}woocommerce_order_items
-        WHERE order_item_type = 'line_item'
-        GROUP BY order_item_name
+        SELECT oi.order_item_name, COUNT(*) as item_count
+        FROM {$wpdb->prefix}woocommerce_order_items oi
+        JOIN {$wpdb->prefix}wc_orders o 
+        ON oi.order_id = o.id
+        WHERE o.status IN ('wc-processing', 'wc-completed')
+        GROUP BY oi.order_item_name
         ORDER BY item_count DESC
         LIMIT 50
     ");
@@ -137,6 +139,9 @@ function display_product_sales_count() {
         echo 'No sales data found.';
         return;
     }
+
+    // Calculate total sales count
+    $total_sales = array_sum(array_column($results, 'item_count'));
 
     echo '<table border="1" cellspacing="0" cellpadding="5">';
     echo '<tr><th>Product Name</th><th>Sales Count</th></tr>';
@@ -148,8 +153,17 @@ function display_product_sales_count() {
         echo '</tr>';
     }
 
+    // Add total sales count row
+    echo '<tr>';
+    echo '<td><strong>Total Sales:</strong></td>';
+    echo '<td><strong>' . esc_html($total_sales) . '</strong></td>';
+    echo '</tr>';
+
     echo '</table>';
 }
+
+
+
 
 
 
