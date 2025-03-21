@@ -132,12 +132,24 @@ jQuery(function($){
     });
 
 
-    let notice = $('.woocommerce-error, .woocommerce-info');
-    if (notice.text().includes('You can only add one product to your cart')) {
-        if (!notice.find('.clear-cart-button').length) {
-            notice.append('<br><button class="button clear-cart-button">Clear Cart</button>');
-        }
+    function addClearCartButton() {
+        let notice = $('.woocommerce-error, .woocommerce-info');
+        notice.each(function() {
+            let message = $(this).text().trim();
+            if (message.includes('You can only add one product to your cart') && !$(this).find('.clear-cart-button').length) {
+                let button = $('<button class="button clear-cart-button">Clear Cart</button>');
+
+                // Wrap text and button in a flex container inside .woocommerce-error
+                let textSpan = $('<span class="clear-cart-text"></span>').text(message);
+                
+                // Empty the notice and append structured content
+                $(this).empty().append(textSpan, button).addClass('clear-cart-container');
+            }
+        });
     }
+
+    // Run function on page load
+    $(document).ready( addClearCartButton );
 
     $(document).on('click', '.clear-cart-button', function(e) {
         e.preventDefault();

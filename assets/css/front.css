@@ -14,3 +14,11 @@
 #run-manager-modal-loader {
     position: absolute;
 }
+/* Apply flex styling to WooCommerce error notices */
+.clear-cart-container {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+
