@@ -161,7 +161,8 @@ jQuery(function($){
                 _wpnonce : RUN_MANAGER._wpnonce
             },
             success: function() {
-                location.reload();
+                // location.reload();
+                window.location.href = window.location.pathname;
             }
         });
     });
