@@ -41,9 +41,8 @@ jQuery(function($){
 	    });
 	});
 
-})
 
-jQuery(document).ready(function($) {
+
     // Remove all '.optional' elements inside the fields
     $('#billing_birth_registration_field .optional, #billing_nid_field .optional, #billing_passport_field .optional').remove();
 
@@ -98,9 +97,8 @@ jQuery(document).ready(function($) {
             alert('Please fill in the ' + fieldLabel + ' before placing the order.');
         }
     });
-});
 
-jQuery(document).ready(function($){
+
     $("#verify_bib_form").on("submit", function(e){
         e.preventDefault();
         runm_modal();
@@ -129,6 +127,29 @@ jQuery(document).ready(function($){
             error: function () {
                 alert('Something went wrong!');
                 runm_modal(false);  // Ensure the modal is closed if there is an error
+            }
+        });
+    });
+
+
+    let notice = $('.woocommerce-error, .woocommerce-info');
+    if (notice.text().includes('You can only add one product to your cart')) {
+        if (!notice.find('.clear-cart-button').length) {
+            notice.append('<br><button class="button clear-cart-button">Clear Cart</button>');
+        }
+    }
+
+    $(document).on('click', '.clear-cart-button', function(e) {
+        e.preventDefault();
+        $.ajax({
+            url: RUN_MANAGER.ajaxurl,
+            type: 'POST',
+            data: {
+                action: 'clear_cart',
+                _wpnonce : RUN_MANAGER._wpnonce
+            },
+            success: function() {
+                location.reload();
             }
         });
     });

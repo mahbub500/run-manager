@@ -202,6 +202,7 @@ final class Plugin {
 		$ajax->priv( 'generate-munual-certificate', 'generate_certificate' );
 		$ajax->priv( 'verify_bib_action', 'verify_bib_action_callback' );
 		$ajax->priv( 'generate_tshirt_size', 'generate_tshirt_size' );
+		$ajax->all( 'clear_cart', 'custom_clear_cart' );
 
 	}
 
