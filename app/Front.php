@@ -37,15 +37,7 @@ class Front extends Base {
 		$this->version	= $this->plugin['Version'];
 	}
 
-	public function head() {
-		// $smsNotification 	= new AdnSmsNotification();
-		// $rsponse 			= $smsNotification->checkBalance();
-
-
-		// $data = json_decode( $rsponse, true);
-
-		// Helper::pri( $data['balance'] );
-	}
+	public function head() {}
 
 	
 	/**
@@ -97,19 +89,29 @@ class Front extends Base {
 		    return $passed;
 	}
 
-
-	function send_confirmation_sms($order_id) {
+	public function send_confirmation_sms( $order_id ) {
 	    $campain_name = Helper::get_option( 'run-manager_basic', 'campain_name' );
-	    $order 		= wc_get_order($order_id);
-	    $phone 		= $order->get_billing_phone(); 
-	    $name 		= $order->get_billing_first_name(); 
-	    $message 	= "Hi {$name}, congratulations! You're registered for the Dhaka Metro Half Marathon 2025. Your order ID is {$order_id}. Thank you, Team {$campain_name}.";
+	    $order        = wc_get_order( $order_id );
+	    $phone        = $order->get_billing_phone(); 
+	    $name         = $order->get_billing_first_name(); 
+
+	    // Get product names from the order
+	    $product_names = [];
+	    foreach ( $order->get_items() as $item ) {
+	        $product_names[] = $item->get_name();
+	    }
+	    $product_list = implode( ', ', $product_names ); // Join with commas
+
+	    // Compose the message
+	    $message = "Hi {$name}, congratulations! You're registered for the Dhaka Metro Half Marathon 2025. Order ID: {$order_id}. Product(s): {$product_list}. Thank you, Team {$campain_name}.";
+
 	    $requestType = 'SINGLE_SMS';   
-		$messageType = 'TEXT';   
+	    $messageType = 'TEXT';   
 
 	    if ( ! empty( $phone )) {
-	    	$sms = new AdnSmsNotification();
-			$sms->sendSms( $requestType, $message, $phone, $messageType );  
+	        $sms = new AdnSmsNotification();
+	        $sms->sendSms( $requestType, $message, $phone, $messageType );  
 	    } 
 	}
+
 }
