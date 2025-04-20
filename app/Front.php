@@ -114,4 +114,22 @@ class Front extends Base {
 	    } 
 	}
 
+	function custom_new_order_email_subject( $subject, $order ) {
+	    if ( ! is_a( $order, 'WC_Order' ) ) {
+	        return $subject;
+	    }
+
+	    // Get the first product name
+	    $items = $order->get_items();
+	    $first_product_name = '';
+	    foreach ( $items as $item ) {
+	        $first_product_name = $item->get_name();
+	        break; 
+	    }
+
+	    // Customize subject
+	    $subject = "Confirmation – {$first_product_name}";
+	    return $subject;
+	}
+
 }
