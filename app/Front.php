@@ -103,7 +103,7 @@ class Front extends Base {
 	    $product_list = implode( ', ', $product_names ); // Join with commas
 
 	    // Compose the message
-	    $message = "Hi {$name}, congratulations! You're registered for the Dhaka Metro Half Marathon 2025. Order ID: {$order_id}. Product(s): {$product_list}. Thank you, Team {$campain_name}.";
+	    $message = "Hi {$name}, congratulations! You're registered for the {$product_list}. Order ID: {$order_id}. Thank you, Team Run Bangladesh.";
 
 	    $requestType = 'SINGLE_SMS';   
 	    $messageType = 'TEXT';   
