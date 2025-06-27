@@ -37,7 +37,13 @@ class Front extends Base {
 		$this->version	= $this->plugin['Version'];
 	}
 
-	public function head() {}
+	public function head() {
+
+		// Hi Kawser, your bib number for the Dhaka Metro Half Marathon is 001. Your kit collection verification code is 326486. Thank you, Team RunBangladesh
+
+		// $order_id = 10;
+		// $order = wc_get_order($order_id);
+	}
 
 	
 	/**

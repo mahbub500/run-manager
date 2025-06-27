@@ -121,6 +121,14 @@ if ( ! function_exists( 'get_woocommerce_product_sales' ) ) {
 	}
 }
 
+if ( ! function_exists( 'clean_phone_number' ) ) {
+	function clean_phone_number( $number ) {
+	    // Remove everything except digits and +
+	    return preg_replace('/[^\d+]/', '', $number);
+	}
+
+}
+
 function display_product_sales_count() {
     global $wpdb;
 
