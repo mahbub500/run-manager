@@ -122,10 +122,16 @@ if ( ! function_exists( 'get_woocommerce_product_sales' ) ) {
 }
 
 if ( ! function_exists( 'clean_phone_number' ) ) {
-	function clean_phone_number( $number ) {
-	    // Remove everything except digits and +
-	    return preg_replace('/[^\d+]/', '', $number);
-	}
+	function clean_phone_number($number) {
+    // Remove all non-digit characters
+    $number = preg_replace('/\D+/', '', $number);
+
+    // Remove leading +88 or 88
+    $number = preg_replace('/^88/', '', $number);
+
+    return $number;
+}
+
 
 }
 
