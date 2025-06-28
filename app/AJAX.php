@@ -190,16 +190,25 @@ public function import_excel_to_orders() {
                         $logger->info("Email sent to: " . $order->get_billing_email(), ['source' => 'import_excel']);
                     }
 
-                    if (!$order->get_meta('is_sms_sent')) {
-                        
-                        $raw_phone      = $order->get_billing_phone();
-                        $cleaned_phone  = clean_phone_number($raw_phone);
+                   if ( ! $order->get_meta('is_sms_sent') ) {
+
+                        $raw_phone     = $order->get_billing_phone();
+                        $cleaned_phone = clean_phone_number( $raw_phone );
                         sms_send( $cleaned_phone, $message );
 
+                        // Save that SMS was sent for this order
                         $order->update_meta_data( 'is_sms_sent', true );
                         $order->save();
-                        $logger->info( "SMS sent to: " . $order->get_billing_phone(), ['source' => 'import_excel']);
+
+                        // Count how many SMS have been sent
+                        $sms_sent_count = (int) get_option( 'total_sms_sent_count', 0 );
+                        $sms_sent_count++;
+                        update_option( 'total_sms_sent_count', $sms_sent_count );
+
+                        // Logging
+                        $logger->info( "SMS sent to: " . $order->get_billing_phone(), ['source' => 'import_excel'] );
                     }
+
                 }
             }
         }
