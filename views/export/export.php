@@ -10,6 +10,8 @@ $data             = json_decode($rsponse, true);
 // Fixed the issue here
 $balance          = isset($data['balance']['sms']) ? $data['balance']['sms'] : "";
 
+$sms_sent_count = (int) get_option( 'total_sms_sent_count', 0 );
+
 ?>
 
 <div class="wph-row  ">
@@ -24,6 +26,7 @@ $balance          = isset($data['balance']['sms']) ? $data['balance']['sms'] : "
   </div>
 </div>
 
+
 <div class="wph-row">
   <div class="wph-label-wrap">
     <label >Get Tshirt chart :</label>
@@ -36,6 +39,16 @@ $balance          = isset($data['balance']['sms']) ? $data['balance']['sms'] : "
   </div>
 </div>
 
+<?php if ( $sms_sent_count > 0 ) { ?>
+<div class="wph-row">
+  <div class="wph-label-wrap">
+    <label >Total Sms Send</label>
+  </div>
+  <div class="wph-field-wrap ">  
+    <p class="wph-desc"> <?php echo $sms_sent_count  ?> </p>
+  </div>
+</div>
+<?php } ?>
 <div class="wph-row">
   <div class="wph-label-wrap">
     <label>Your ADN API Remaining balance is:</label>
