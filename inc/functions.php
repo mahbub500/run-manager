@@ -139,15 +139,17 @@ function display_product_sales_count() {
     global $wpdb;
 
     $results = $wpdb->get_results("
-        SELECT oi.order_item_name, COUNT(*) as item_count
-        FROM {$wpdb->prefix}woocommerce_order_items oi
-        JOIN {$wpdb->prefix}wc_orders o 
-        ON oi.order_id = o.id
-        WHERE o.status IN ('wc-processing', 'wc-completed')
-        GROUP BY oi.order_item_name
-        ORDER BY item_count DESC
-        LIMIT 50
-    ");
+	    SELECT oi.order_item_name, COUNT(*) as item_count
+	    FROM {$wpdb->prefix}woocommerce_order_items oi
+	    JOIN {$wpdb->prefix}wc_orders o 
+	        ON oi.order_id = o.id
+	    WHERE o.status IN ('wc-processing', 'wc-completed')
+	        AND oi.order_item_type = 'line_item'  -- ✅ This line ensures only products
+	    GROUP BY oi.order_item_name
+	    ORDER BY item_count DESC
+	    LIMIT 50
+	");
+
 
     if (empty($results)) {
         echo 'No sales data found.';
