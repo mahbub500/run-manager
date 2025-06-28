@@ -512,15 +512,15 @@ public function import_excel_to_orders() {
         wp_send_json_error(['message' => 'Invalid nonce.']);
     }
 
-    $bib_id = sanitize_text_field($_POST['bib_id']);
-    $verification_code = sanitize_text_field($_POST['verification_code']);
+    $bib_id             = sanitize_text_field($_POST['bib_id']);
+    $verification_code  = sanitize_text_field($_POST['verification_code']);
 
-    $order_id = wc_get_order_by_bib_id($bib_id);
-    $order = wc_get_order($order_id);
+    $order_id   = wc_get_order_by_bib_id($bib_id);
+    $order      = wc_get_order($order_id);
 
     if ($order) {
-        $is_verified = $order->get_meta('is_verified');
-         $tshirt_size = $order->get_meta('billing_tshirt'); 
+        $is_verified    = $order->get_meta('is_verified');
+         $tshirt_size   = $order->get_meta('billing_tshirt'); 
 
        if ($is_verified) {
             wp_send_json_error([
