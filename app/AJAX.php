@@ -156,15 +156,8 @@ public function import_excel_to_orders() {
 		            'race_category' => isset($row['E']) ? sanitize_text_field($row['E']) : null,
 		        ];
 		    }
-		}
-
-
-update_option( 'xl_data', $final_data );
-        
-
-       
-
-        // Process each order
+		}   
+         // Process each order
          foreach ($final_data as $row) {
             $order_id   	= $row['order_id'] ?? null;
             $bib_id     	= $row['bib_id'] ?? null;
@@ -172,7 +165,7 @@ update_option( 'xl_data', $final_data );
             $race_name		= $row['race_name'] ?? null;
             $race_category	= $row['race_category'] ?? null;
 
-            update_option( 'xl_data', $race_catrgory );
+            // update_option( 'xl_data', $race_catrgory );
 
              if ($order_id) {
                  $order = wc_get_order($order_id);
@@ -228,25 +221,25 @@ update_option( 'xl_data', $final_data );
 
                      // Update meta and send notifications
                      if (!$order->get_meta('verification_code')) {
-                         // $order->update_meta_data('verification_code', $verification_code);
+                         $order->update_meta_data('verification_code', $verification_code);
                      }
 
                      // Send email and SMS if not already sent
-                     // if (!$order->get_meta('is_email_sent')) {
+                     if (!$order->get_meta('is_email_sent')) {
                          $this->send_certificate_email($order->get_billing_email(), $email_message, $subject, $order_id);
-                         // $order->update_meta_data('is_email_sent', true);
+                         $order->update_meta_data('is_email_sent', true);
                          $order->save();
                          $logger->info("Email sent to: " . $order->get_billing_email(), ['source' => 'import_excel']);
-                     // }
+                     }
 
-                    // if ( ! $order->get_meta('is_sms_sent') ) {
+                    if ( ! $order->get_meta('is_sms_sent') ) {
 
                          $raw_phone     = $order->get_billing_phone();
                          $cleaned_phone = clean_phone_number( $raw_phone );
                          sms_send( $cleaned_phone, $sms_message );
 
                          // Save that SMS was sent for this order
-                         // $order->update_meta_data( 'is_sms_sent', true );
+                         $order->update_meta_data( 'is_sms_sent', true );
                          $order->save();
 
                          // Count how many SMS have been sent
@@ -256,7 +249,7 @@ update_option( 'xl_data', $final_data );
 
                          // Logging
                         $logger->info( "SMS sent to: " . $order->get_billing_phone(), ['source' => 'import_excel'] );
-                    // }
+                    }
 
                 }
             }
