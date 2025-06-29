@@ -81,7 +81,7 @@ jQuery(document).ready(function ($) {
                 if (response.success) {
                     // $('#status').text(response.message);
                     $('#excel_file').val('');
-                    toastr.success(response.message);
+                    toastr.success(text(response.message));
                 } else {
                     $('#status').text(response.error || 'An error occurred during import.');
                 }

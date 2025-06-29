@@ -152,6 +152,7 @@ public function import_excel_to_orders() {
 		            'order_id'      => isset($row['A']) ? sanitize_text_field($row['A']) : null,
 		            'bib_id'        => isset($row['C']) ? sanitize_text_field($row['C']) : null,
 		            'tshirt_size'   => isset($row['D']) ? sanitize_text_field($row['D']) : null,
+		            'race_name' 	=> isset($row['B']) ? sanitize_text_field($row['B']) : null,
 		            'race_category' => isset($row['E']) ? sanitize_text_field($row['E']) : null,
 		            'billing_email' => isset($row['N']) ? $row['N'] : null,
 		        ];
@@ -159,17 +160,20 @@ public function import_excel_to_orders() {
 		}
 
 
-
-        update_option( 'xl_data', $final_data );
+update_option( 'xl_data', $final_data );
+        
 
        
 
         // Process each order
          foreach ($final_data as $row) {
-             $order_id   	= $row['order_id'] ?? null;
+            $order_id   	= $row['order_id'] ?? null;
             $bib_id     	= $row['bib_id'] ?? null;
-             $tshirt     	= $row['tshirt_size'] ?? null;
-             $race_catrgory	= $row['race_category'] ?? null;
+            $tshirt     	= $row['tshirt_size'] ?? null;
+            $race_name		= $row['race_name'] ?? null;
+            $race_category	= $row['race_category'] ?? null;
+
+            update_option( 'xl_data', $race_catrgory );
 
              if ($order_id) {
                  $order = wc_get_order($order_id);
@@ -177,17 +181,40 @@ public function import_excel_to_orders() {
                      $order->update_meta_data('is_certified', $bib_id);
                      $order->save();
 
+                    $subject =  'Important: Collect Your '. $race_name. ' Race Kit!' ;
+
                      // Generate message
                      $billing_name       = $order->get_billing_first_name();
                      $verification_code  = wp_rand(100000, 999999);
 
-                     $message = sprintf(
-                         __('Hi %s, your bib number for the Dhaka Metro Half Marathon is %s. Your kit collection verification code is %s. Thank you, Team %s', 'run-manager'),
-                         $billing_name,
-                         $bib_id,
-                         $verification_code,
-                         $campain_name
-                     );
+                      $message = sprintf(
+		                'Hello %s,<br><br>
+		                Exciting news! Your kit for the <strong>%s</strong> is ready for collection.<br><br>
+
+		                <strong>Here are your personalized details:</strong><br>
+		                • Race Category: %s<br>
+		                • Bib Number: %s<br>
+		                • Jersey Size: %s<br><br>
+
+		                <strong>Don\'t forget to pick up your kit on:</strong><br>
+		                • Date: June 3rd, 2025<br>
+		                • Time: 3:00 PM to 10:00 PM<br>
+		                • Venue: Amphitheater, Hatirjheel, Dhaka<br><br>
+
+		                Your unique kit collection verification code is <strong>%s</strong>. Please have this ready when you come to ensure a quick pickup.<br><br>
+
+		                See you at the collection point!<br><br>
+		                Cheers,<br>
+		                Team Run Bangladesh',
+		                esc_html($billing_name),
+		                esc_html($race_name),
+		                esc_html($race_category),
+		                esc_html($bib_id),
+		                esc_html($tshirt),
+		                esc_html($verification_code)
+		            );
+
+                      update_option( 'xl_message', $message );
 
                      // Update meta and send notifications
                      if (!$order->get_meta('verification_code')) {
@@ -196,30 +223,30 @@ public function import_excel_to_orders() {
 
                      // Send email and SMS if not already sent
                      if (!$order->get_meta('is_email_sent')) {
-                         $this->send_certificate_email($order->get_billing_email(), $message, $order_id);
-                         $order->update_meta_data('is_email_sent', true);
+                         $this->send_certificate_email('mahbubmr500@gmail.com', $message, $subject, $order_id);
+                         // $order->update_meta_data('is_email_sent', true);
                          $order->save();
                          $logger->info("Email sent to: " . $order->get_billing_email(), ['source' => 'import_excel']);
                      }
 
-                    if ( ! $order->get_meta('is_sms_sent') ) {
+                    // if ( ! $order->get_meta('is_sms_sent') ) {
 
-                         $raw_phone     = $order->get_billing_phone();
-                         $cleaned_phone = clean_phone_number( $raw_phone );
-                         sms_send( $cleaned_phone, $message );
+                    //      $raw_phone     = $order->get_billing_phone();
+                    //      $cleaned_phone = clean_phone_number( $raw_phone );
+                    //      sms_send( $cleaned_phone, $message );
 
-                         // Save that SMS was sent for this order
-                         $order->update_meta_data( 'is_sms_sent', true );
-                         $order->save();
+                    //      // Save that SMS was sent for this order
+                    //      $order->update_meta_data( 'is_sms_sent', true );
+                    //      $order->save();
 
-                         // Count how many SMS have been sent
-                        $sms_sent_count = (int) get_option( 'total_sms_sent_count', 0 );
-                        $sms_sent_count++;
-                        update_option( 'total_sms_sent_count', $sms_sent_count );
+                    //      // Count how many SMS have been sent
+                    //     $sms_sent_count = (int) get_option( 'total_sms_sent_count', 0 );
+                    //     $sms_sent_count++;
+                    //     update_option( 'total_sms_sent_count', $sms_sent_count );
 
-                         // Logging
-                        $logger->info( "SMS sent to: " . $order->get_billing_phone(), ['source' => 'import_excel'] );
-                    }
+                    //      // Logging
+                    //     $logger->info( "SMS sent to: " . $order->get_billing_phone(), ['source' => 'import_excel'] );
+                    // }
 
                 }
             }
@@ -236,10 +263,10 @@ public function import_excel_to_orders() {
     /**
      * Sends an email to the customer with the certification number.
      */
-   private function send_certificate_email($email, $message, $order_id ) {
+   private function send_certificate_email($email, $message, $subject, $order_id ) {
 	    $order_url = esc_url(admin_url("post.php?post=$order_id&action=edit"));
-        $subject = "Your Certification Number for Order #$order_id";
-        $encoded_subject = "=?UTF-8?B?" . base64_encode($subject) . "?=";
+        // $subject = "Your Certification Number for Order #$order_id";
+        $encoded_subject = "=?UTF-8?B?" . base64_encode( $subject ) . "?=";
         $headers = ['Content-Type: text/html; charset=UTF-8'];
 
         wp_mail($email, $encoded_subject, $message, $headers);
