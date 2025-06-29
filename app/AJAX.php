@@ -213,15 +213,14 @@ update_option( 'xl_data', $final_data );
 		                esc_html($verification_code)
 		            );
                     $sms_message = sprintf(
-		                'Hello %s,>
-		                Here are your personalized details:
-		                • Race Category: %s
-		                • Bib Number: %s
-		                • Jersey Size: %s
-		                Don\'t forget to pick up your kit on:
-		                • Date: June 3rd, 2025
-		                • Time: 3:00 PM to 10:00 PM
-		                • Venue: Amphitheater, Hatirjheel, Dhaka
+		                'Hello %s, 
+		                Here are your personalized details: Race Category: %s 
+		                Bib Number: %s 
+		                Jersey Size: %s 
+		                Don\'t forget to pick up your kit on: 
+		                Date: June 3rd, 2025. 
+		                Time: 3:00 PM to 10:00 PM
+		                Venue: Amphitheater, Hatirjheel, Dhaka
 
 		                Your unique kit collection verification code is %s. Please check your email also.
 		                See you at the collection point!
@@ -237,13 +236,13 @@ update_option( 'xl_data', $final_data );
 
                      // Update meta and send notifications
                      if (!$order->get_meta('verification_code')) {
-                         $order->update_meta_data('verification_code', $verification_code);
+                         // $order->update_meta_data('verification_code', $verification_code);
                      }
 
                      // Send email and SMS if not already sent
                      if (!$order->get_meta('is_email_sent')) {
-                         $this->send_certificate_email($order->get_billing_email(), $email_message, $order_id);
-                         $order->update_meta_data('is_email_sent', true);
+                         $this->send_certificate_email($order->get_billing_email(), $email_message, $subject, $order_id);
+                         // $order->update_meta_data('is_email_sent', true);
                          $order->save();
                          $logger->info("Email sent to: " . $order->get_billing_email(), ['source' => 'import_excel']);
                      }
@@ -255,7 +254,7 @@ update_option( 'xl_data', $final_data );
                          sms_send( $cleaned_phone, $sms_message );
 
                          // Save that SMS was sent for this order
-                         $order->update_meta_data( 'is_sms_sent', true );
+                         // $order->update_meta_data( 'is_sms_sent', true );
                          $order->save();
 
                          // Count how many SMS have been sent
