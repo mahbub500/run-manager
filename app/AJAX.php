@@ -146,72 +146,84 @@ public function import_excel_to_orders() {
         $campain_name   = Helper::get_option( 'run-manager_basic', 'campain_name' );
 
         foreach ($sheetData as $row) {
-            if (!empty($row['A'])) { // Assuming 'A' column contains Order ID
-                $final_data[] = [
-                    'Order ID' => sanitize_text_field($row['B']),
-                    'Bib Id'   => isset($row['J']) ? sanitize_text_field($row['J']) : null,
-                ];
-            }
-        }
+		    if (!empty($row['A'])) {
+
+		        $final_data[] = [
+		            'order_id'      => isset($row['A']) ? sanitize_text_field($row['A']) : null,
+		            'bib_id'        => isset($row['C']) ? sanitize_text_field($row['C']) : null,
+		            'tshirt_size'   => isset($row['D']) ? sanitize_text_field($row['D']) : null,
+		            'race_category' => isset($row['E']) ? sanitize_text_field($row['E']) : null,
+		            'billing_email' => isset($row['N']) ? $row['N'] : null,
+		        ];
+		    }
+		}
+
+
+
+        update_option( 'xl_data', $final_data );
+
+       
 
         // Process each order
-        foreach ($final_data as $row) {
-            $order_id = $row['Order ID'] ?? null;
-            $bib_id = $row['Bib Id'] ?? null;
+        // foreach ($final_data as $row) {
+        //     $order_id   = $row['order_id'] ?? null;
+        //     $bib_id     = $row[bib_id'] ?? null;
+        //     $tshirt     = $row['tshirt_size'] ?? null;
+        //     $race_catrgory	= $row['race_category'] ?? null;
 
-            if ($order_id) {
-                $order = wc_get_order($order_id);
-                if ($order) {
-                    $order->update_meta_data('is_certified', $bib_id);
-                    $order->save();
+        //     if ($order_id) {
+        //         $order = wc_get_order($order_id);
+        //         if ($order) {
+        //             $order->update_meta_data('is_certified', $bib_id);
+        //             $order->save();
 
-                    // Generate message
-                    $billing_name       = $order->get_billing_first_name();
-                    $verification_code  = wp_rand(100000, 999999);
+        //             // Generate message
+        //             $billing_name       = $order->get_billing_first_name();
+        //             $verification_code  = wp_rand(100000, 999999);
 
-                    $message = sprintf(
-                        __('Hi %s, your bib number for the Dhaka Metro Half Marathon is %s. Your kit collection verification code is %s. Thank you, Team %s', 'run-manager'),
-                        $billing_name,
-                        $bib_id,
-                        $verification_code,
-                        $campain_name
-                    );
+        //             $message = sprintf(
+        //                 __('Hi %s, your bib number for the Dhaka Metro Half Marathon is %s. Your kit collection verification code is %s. Thank you, Team %s', 'run-manager'),
+        //                 $billing_name,
+        //                 $bib_id,
+        //                 $verification_code,
+        //                 $campain_name
+        //             );
 
-                    // Update meta and send notifications
-                    if (!$order->get_meta('verification_code')) {
-                        $order->update_meta_data('verification_code', $verification_code);
-                    }
+        //             // Update meta and send notifications
+        //             if (!$order->get_meta('verification_code')) {
+        //                 $order->update_meta_data('verification_code', $verification_code);
+        //             }
 
-                    // Send email and SMS if not already sent
-                    if (!$order->get_meta('is_email_sent')) {
-                        $this->send_certificate_email($order->get_billing_email(), $message, $order_id);
-                        $order->update_meta_data('is_email_sent', true);
-                        $order->save();
-                        $logger->info("Email sent to: " . $order->get_billing_email(), ['source' => 'import_excel']);
-                    }
+        //             // Send email and SMS if not already sent
+        //             if (!$order->get_meta('is_email_sent')) {
+        //                 $this->send_certificate_email($order->get_billing_email(), $message, $order_id);
+        //                 $order->update_meta_data('is_email_sent', true);
+        //                 $order->save();
+        //                 $logger->info("Email sent to: " . $order->get_billing_email(), ['source' => 'import_excel']);
+        //             }
 
-                   if ( ! $order->get_meta('is_sms_sent') ) {
+        //            if ( ! $order->get_meta('is_sms_sent') ) {
 
-                        $raw_phone     = $order->get_billing_phone();
-                        $cleaned_phone = clean_phone_number( $raw_phone );
-                        sms_send( $cleaned_phone, $message );
+        //                 $raw_phone     = $order->get_billing_phone();
+        //                 $cleaned_phone = clean_phone_number( $raw_phone );
+        //                 sms_send( $cleaned_phone, $message );
 
-                        // Save that SMS was sent for this order
-                        $order->update_meta_data( 'is_sms_sent', true );
-                        $order->save();
+        //                 // Save that SMS was sent for this order
+        //                 $order->update_meta_data( 'is_sms_sent', true );
+        //                 $order->save();
 
-                        // Count how many SMS have been sent
-                        $sms_sent_count = (int) get_option( 'total_sms_sent_count', 0 );
-                        $sms_sent_count++;
-                        update_option( 'total_sms_sent_count', $sms_sent_count );
+        //                 // Count how many SMS have been sent
+        //                 $sms_sent_count = (int) get_option( 'total_sms_sent_count', 0 );
+        //                 $sms_sent_count++;
+        //                 update_option( 'total_sms_sent_count', $sms_sent_count );
 
-                        // Logging
-                        $logger->info( "SMS sent to: " . $order->get_billing_phone(), ['source' => 'import_excel'] );
-                    }
+        //                 // Logging
+        //                 $logger->info( "SMS sent to: " . $order->get_billing_phone(), ['source' => 'import_excel'] );
+        //             }
 
-                }
-            }
-        }
+        //         }
+        //     }
+        // }
 
         wp_send_json_success(['message' => __('File imported successfully. Emails and SMS sent!', 'run-manager')]);
 
