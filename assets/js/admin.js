@@ -79,9 +79,9 @@ jQuery(document).ready(function ($) {
             contentType: false, 
             success: function (response) {
                 if (response.success) {
-                    $('#status').text(response.message);
+                    // $('#status').text(response.message);
                     $('#excel_file').val('');
-                    toastr.success('Have fun storming the castle!', 'Miracle Max Says');
+                    toastr.success(response.message);
                 } else {
                     $('#status').text(response.error || 'An error occurred during import.');
                 }
