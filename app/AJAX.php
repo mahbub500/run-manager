@@ -191,6 +191,7 @@ update_option( 'xl_data', $final_data );
 		                Exciting news! Your kit for the <strong>%s</strong> is ready for collection.<br><br>
 
 		                <strong>Here are your personalized details:</strong><br>
+		                • Order ID: %s<br>
 		                • Race Category: %s<br>
 		                • Bib Number: %s<br>
 		                • Jersey Size: %s<br><br>
@@ -207,25 +208,14 @@ update_option( 'xl_data', $final_data );
 		                Team Run Bangladesh',
 		                esc_html($billing_name),
 		                esc_html($race_name),
+		                esc_html($order_id),
 		                esc_html($race_category),
 		                esc_html($bib_id),
 		                esc_html($tshirt),
 		                esc_html($verification_code)
 		            );
                     $sms_message = sprintf(
-		                'Hello %s, 
-		                Here are your personalized details: Race Category: %s 
-		                Bib Number: %s 
-		                Jersey Size: %s 
-		                Don\'t forget to pick up your kit on: 
-		                Date: June 3rd, 2025. 
-		                Time: 3:00 PM to 10:00 PM
-		                Venue: Amphitheater, Hatirjheel, Dhaka
-
-		                Your unique kit collection verification code is %s. Please check your email also.
-		                See you at the collection point!
-		                Cheers,
-		                Team Run Bangladesh',
+		                'Hello %s, Here are your personalized details: Race Category: %s Bib Number: %s Jersey Size: %s Don\'t forget to pick up your kit on: Date: June 3rd, 2025. Time: 3:00 PM to 10:00 PM Venue: Amphitheater, Hatirjheel, Dhaka Your unique kit collection verification code is %s. Please check your email also. See you at the collection point! Cheers, Team Run Bangladesh',
 		                esc_html($billing_name),
 		                esc_html($race_category),
 		                esc_html($bib_id),
@@ -240,14 +230,14 @@ update_option( 'xl_data', $final_data );
                      }
 
                      // Send email and SMS if not already sent
-                     if (!$order->get_meta('is_email_sent')) {
+                     // if (!$order->get_meta('is_email_sent')) {
                          $this->send_certificate_email($order->get_billing_email(), $email_message, $subject, $order_id);
                          // $order->update_meta_data('is_email_sent', true);
                          $order->save();
                          $logger->info("Email sent to: " . $order->get_billing_email(), ['source' => 'import_excel']);
-                     }
+                     // }
 
-                    if ( ! $order->get_meta('is_sms_sent') ) {
+                    // if ( ! $order->get_meta('is_sms_sent') ) {
 
                          $raw_phone     = $order->get_billing_phone();
                          $cleaned_phone = clean_phone_number( $raw_phone );
@@ -264,7 +254,7 @@ update_option( 'xl_data', $final_data );
 
                          // Logging
                         $logger->info( "SMS sent to: " . $order->get_billing_phone(), ['source' => 'import_excel'] );
-                    }
+                    // }
 
                 }
             }
