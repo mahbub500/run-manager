@@ -39,7 +39,7 @@ class Front extends Base {
 
 	public function head() {
 
-		Helper::pri( get_option( 'xl_data' ) );
+		// Helper::pri( get_option( 'xl_data' ) );
 		// $headers = ['Content-Type: text/html; charset=UTF-8'];
 		// $is_email = wp_mail('mahbubmr500@gmail.com', 'Hello', '$message', $headers);
 		// Helper::pri( $is_email );
