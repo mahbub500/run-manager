@@ -215,8 +215,10 @@ update_option( 'xl_data', $final_data );
 		                esc_html($verification_code)
 		            );
                     $sms_message = sprintf(
-		                'Hello %s, Here are your personalized details: Race Category: %s Bib Number: %s Jersey Size: %s Don\'t forget to pick up your kit on: Date: June 3rd, 2025. Time: 3:00 PM to 10:00 PM Venue: Amphitheater, Hatirjheel, Dhaka Your unique kit collection verification code is %s. Please check your email also. See you at the collection point! Cheers, Team Run Bangladesh',
+		                'Hello %s, Your order id is %s Collect your %s, race kit on June 3, (3-10) PM at Hatirjheel Amphitheater. Your Race Category: %s Bib: %s T-shirt Size: %s your kit collection verification code is %s. Please check your email also. Run Bangladesh',
 		                esc_html($billing_name),
+		                esc_html($order_id),
+		                esc_html($race_name),
 		                esc_html($race_category),
 		                esc_html($bib_id),
 		                esc_html($tshirt),
