@@ -223,8 +223,8 @@ update_option( 'xl_data', $final_data );
 
                      // Send email and SMS if not already sent
                      if (!$order->get_meta('is_email_sent')) {
-                         $this->send_certificate_email('mahbubmr500@gmail.com', $message, $subject, $order_id);
-                         // $order->update_meta_data('is_email_sent', true);
+                         $this->send_certificate_email($order->get_billing_email(), $message, $order_id);
+                         $order->update_meta_data('is_email_sent', true);
                          $order->save();
                          $logger->info("Email sent to: " . $order->get_billing_email(), ['source' => 'import_excel']);
                      }
