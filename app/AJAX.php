@@ -177,7 +177,7 @@ update_option( 'xl_data', $final_data );
              if ($order_id) {
                  $order = wc_get_order($order_id);
                  if ($order) {
-                     $order->update_meta_data('is_certified', $bib_id);
+                     $order->update_meta_data('bib_id', $bib_id);
                      $order->save();
 
                     $subject =  'Important: Collect Your '. $race_name. ' Race Kit!' ;
