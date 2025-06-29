@@ -154,7 +154,6 @@ public function import_excel_to_orders() {
 		            'tshirt_size'   => isset($row['D']) ? sanitize_text_field($row['D']) : null,
 		            'race_name' 	=> isset($row['B']) ? sanitize_text_field($row['B']) : null,
 		            'race_category' => isset($row['E']) ? sanitize_text_field($row['E']) : null,
-		            'billing_email' => isset($row['N']) ? $row['N'] : null,
 		        ];
 		    }
 		}
@@ -187,7 +186,7 @@ update_option( 'xl_data', $final_data );
                      $billing_name       = $order->get_billing_first_name();
                      $verification_code  = wp_rand(100000, 999999);
 
-                      $message = sprintf(
+                    $email_message = sprintf(
 		                'Hello %s,<br><br>
 		                Exciting news! Your kit for the <strong>%s</strong> is ready for collection.<br><br>
 
@@ -213,8 +212,28 @@ update_option( 'xl_data', $final_data );
 		                esc_html($tshirt),
 		                esc_html($verification_code)
 		            );
+                    $sms_message = sprintf(
+		                'Hello %s,>
+		                Here are your personalized details:
+		                • Race Category: %s
+		                • Bib Number: %s
+		                • Jersey Size: %s
+		                Don\'t forget to pick up your kit on:
+		                • Date: June 3rd, 2025
+		                • Time: 3:00 PM to 10:00 PM
+		                • Venue: Amphitheater, Hatirjheel, Dhaka
 
-                      update_option( 'xl_message', $message );
+		                Your unique kit collection verification code is %s. Please check your email also.
+		                See you at the collection point!
+		                Cheers,
+		                Team Run Bangladesh',
+		                esc_html($billing_name),
+		                esc_html($race_category),
+		                esc_html($bib_id),
+		                esc_html($tshirt),
+		                esc_html($verification_code)
+		            );
+
 
                      // Update meta and send notifications
                      if (!$order->get_meta('verification_code')) {
@@ -223,30 +242,30 @@ update_option( 'xl_data', $final_data );
 
                      // Send email and SMS if not already sent
                      if (!$order->get_meta('is_email_sent')) {
-                         $this->send_certificate_email($order->get_billing_email(), $message, $order_id);
+                         $this->send_certificate_email($order->get_billing_email(), $email_message, $order_id);
                          $order->update_meta_data('is_email_sent', true);
                          $order->save();
                          $logger->info("Email sent to: " . $order->get_billing_email(), ['source' => 'import_excel']);
                      }
 
-                    // if ( ! $order->get_meta('is_sms_sent') ) {
+                    if ( ! $order->get_meta('is_sms_sent') ) {
 
-                    //      $raw_phone     = $order->get_billing_phone();
-                    //      $cleaned_phone = clean_phone_number( $raw_phone );
-                    //      sms_send( $cleaned_phone, $message );
+                         $raw_phone     = $order->get_billing_phone();
+                         $cleaned_phone = clean_phone_number( $raw_phone );
+                         sms_send( $cleaned_phone, $sms_message );
 
-                    //      // Save that SMS was sent for this order
-                    //      $order->update_meta_data( 'is_sms_sent', true );
-                    //      $order->save();
+                         // Save that SMS was sent for this order
+                         $order->update_meta_data( 'is_sms_sent', true );
+                         $order->save();
 
-                    //      // Count how many SMS have been sent
-                    //     $sms_sent_count = (int) get_option( 'total_sms_sent_count', 0 );
-                    //     $sms_sent_count++;
-                    //     update_option( 'total_sms_sent_count', $sms_sent_count );
+                         // Count how many SMS have been sent
+                        $sms_sent_count = (int) get_option( 'total_sms_sent_count', 0 );
+                        $sms_sent_count++;
+                        update_option( 'total_sms_sent_count', $sms_sent_count );
 
-                    //      // Logging
-                    //     $logger->info( "SMS sent to: " . $order->get_billing_phone(), ['source' => 'import_excel'] );
-                    // }
+                         // Logging
+                        $logger->info( "SMS sent to: " . $order->get_billing_phone(), ['source' => 'import_excel'] );
+                    }
 
                 }
             }
