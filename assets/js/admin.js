@@ -81,6 +81,7 @@ jQuery(document).ready(function ($) {
                 if (response.success) {
                     $('#status').text(response.message);
                     $('#excel_file').val('');
+                    toastr.success('Have fun storming the castle!', 'Miracle Max Says');
                 } else {
                     $('#status').text(response.error || 'An error occurred during import.');
                 }
@@ -92,7 +93,7 @@ jQuery(document).ready(function ($) {
         });
     });
 
-   
+   // toastr.success('Have fun storming the castle!', 'Miracle Max Says');
     $('#run-manager-upload-race-data').click(function (e) {
         e.preventDefault();
         var fileInput = $('#race_excel_file')[0].files[0];
