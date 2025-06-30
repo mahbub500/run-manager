@@ -562,7 +562,7 @@ public function import_excel_to_orders() {
 
     if ($order) {
         $is_verified    = $order->get_meta('is_verified');
-         $tshirt_size   = $order->get_meta('billing_tshirt'); 
+        $tshirt_size   = $order->get_meta('billing_tshirt'); 
 
        if ($is_verified) {
             wp_send_json_error([

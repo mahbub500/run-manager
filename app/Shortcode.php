@@ -113,7 +113,7 @@ class Shortcode extends Base {
         <label for="verification_code">Verification Code:</label>
         <input type="number" id="verification_code" name="verification_code" required>
         <br>
-        <button type="submit">Verify</button>
+        <button class="verification_button" type="submit">Verify</button>
         <div id="verification_message"></div>
     </form>';
 
