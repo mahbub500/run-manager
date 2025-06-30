@@ -39,10 +39,17 @@ class Front extends Base {
 
 	public function head() {
 
-		// Helper::pri( get_option( 'xl_data' ) );
-		// $headers = ['Content-Type: text/html; charset=UTF-8'];
-		// $is_email = wp_mail('mahbubmr500@gmail.com', 'Hello', '$message', $headers);
-		// Helper::pri( $is_email );
+		// $bib_id = '5001';
+		// $order_id = get_order_id_by_bib_id( $bib_id );
+
+
+		// if ( $order_id ) {
+		//     $order = wc_get_order( $order_id );
+		//     // Use the $order object as needed
+		// } else {
+		//     echo 'Order not found for this BIB ID.';
+		// }
+
 		
 	}
 

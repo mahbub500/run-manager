@@ -178,6 +178,28 @@ function display_product_sales_count() {
     echo '</table>';
 }
 
+if ( ! function_exists( 'get_order_id_by_bib_id' ) ) {
+	function get_order_id_by_bib_id( $bib_id ) {
+	    if ( empty( $bib_id ) ) {
+	        return false;
+	    }
+
+	    global $wpdb;
+
+	    $table = $wpdb->prefix . 'wc_orders_meta';
+
+	    $order_id = $wpdb->get_var( $wpdb->prepare(
+	        "SELECT order_id FROM $table
+	         WHERE meta_key = 'bib_id'
+	           AND meta_value = %s
+	         LIMIT 1",
+	        $bib_id
+	    ) );
+
+	    return $order_id ? (int) $order_id : false;
+	}
+}
+
 
 
 
