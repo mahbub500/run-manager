@@ -5,9 +5,6 @@ namespace WpPluginHub\AdnSms;
 abstract class AbstractAdnSms implements AdnSmsInterface
 {
 
-
-
-
     protected $apiKey;
     protected $apiSecret;
     protected $config;

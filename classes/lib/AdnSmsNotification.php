@@ -82,7 +82,7 @@ class AdnSmsNotification extends AbstractAdnSms
         }
 
         $response = $this->callToApi($data);
-        print_r($response);
+        // print_r($response);
     }
 
     public function sendBulkSms($message, $recipient, $messageType, $campaignTitle)
@@ -117,7 +117,7 @@ class AdnSmsNotification extends AbstractAdnSms
         }
 
         $response = $this->callToApi($data);
-        print_r($response);
+        // print_r($response);
     }
 
     public function checkCampaignStatus($campaignUid)
@@ -131,7 +131,7 @@ class AdnSmsNotification extends AbstractAdnSms
         ];
 
         $response = $this->callToApi($data);
-        print_r($response);
+        // print_r($response);
     }
 
     public function checkSmsStatus($smsUid)
@@ -145,6 +145,6 @@ class AdnSmsNotification extends AbstractAdnSms
         ];
 
         $response = $this->callToApi($data);
-        print_r($response);
+        // print_r($response);
     }
 }
