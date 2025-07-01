@@ -553,72 +553,68 @@ public function import_excel_to_orders() {
 
     wp_send_json_success(['certificates' => $certificates]);
 }
-  public function verify_bib_action_callback() {
-    // 1. Verify nonce
-    if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'] ) ) {
-        wp_send_json_error( [ 'message' => 'Invalid nonce.' ] );
+   public function verify_bib_action_callback() {
+    if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'])) {
+        wp_send_json_error(['message' => 'Invalid nonce.']);
     }
 
-    // 2. Sanitize inputs
-    $bib_id            = sanitize_text_field( $_POST['bib_id'] );
-    $verification_code = sanitize_text_field( $_POST['verification_code'] );
+    $bib_id             = sanitize_text_field($_POST['bib_id']);
+    $verification_code  = sanitize_text_field($_POST['verification_code']);
 
-    // 3. Get order by Bib ID
-    $order_id = wc_get_order_by_bib_id( $bib_id );
-    $order    = wc_get_order( $order_id );
+    $order_id   = wc_get_order_by_bib_id($bib_id);
+    $order      = wc_get_order($order_id);
 
-    if ( ! $order ) {
-        wp_send_json_error( [ 'message' => 'Bib ID not found.' ] );
+    if ($order) {
+        $is_verified    = $order->get_meta('is_verified');
+        $tshirt_size   	= $order->get_meta('billing_tshirt'); 
+        $race_name 		= $order->get_meta('race_name');
+        $race_category 	= $order->get_meta('race_category');
+        $billing_name	= $order->get_billing_first_name();
+        $raw_phone     	= $order->get_billing_phone();
+		$cleaned_phone 	= clean_phone_number( $raw_phone );
+
+       if ($is_verified) {
+            wp_send_json_error([
+                'message' => 'This Bib ID has already been verified. and Tshirt size is : <strong>' . esc_html($tshirt_size) . '</strong>'
+            ]);
+        }
+
+
+        $stored_code = $order->get_meta('verification_code');
+
+        if ($stored_code === $verification_code) {
+        	
+            // Fetch billing t-shirt size from order meta
+           $sms_message = sprintf(
+		        'Hello %s, your race kit for %s has been successfully delivered. Your Bib Number is %s for the %s race category. Good luck with your race, Run Bangladesh.',
+		        esc_html( $billing_name ),
+		        esc_html( $race_name ),
+		        esc_html( $bib_id ),
+		        esc_html( $race_category )
+		    );
+
+           send_sms_to_phone( $cleaned_phone, $sms_message );
+
+            // Mark as verified
+            $order->update_meta_data('is_verified', true);
+            $order->save();
+
+            $message = 'Verification successful!';
+            if ($tshirt_size) {
+                $message .= ' Your T-Shirt size: ' . esc_html($tshirt_size);
+            }
+
+            wp_send_json_success(['message' => $message]);
+        } else {
+            wp_send_json_error(['message' => 'Verification code does not match.' ]);
+        }
+    } else {
+        wp_send_json_error(['message' => 'Bib ID not found.']);
     }
-
-    // 4. Retrieve order details
-    $is_verified    = $order->get_meta( 'is_verified' );
-    $tshirt_size    = $order->get_meta( 'billing_tshirt' );
-    $race_name      = $order->get_meta( 'race_name' );
-    $race_category  = $order->get_meta( 'race_category' );
-    $billing_name   = $order->get_billing_first_name();
-    $raw_phone      = $order->get_billing_phone();
-    $cleaned_phone  = clean_phone_number( $raw_phone );
-
-    // 5. Check if already verified
-    if ( $is_verified ) {
-        wp_send_json_error( [
-            'message' => 'This Bib ID has already been verified. T-Shirt size: <strong>' . esc_html( $tshirt_size ) . '</strong>'
-        ] );
-    }
-
-    // 6. Match verification code
-    $stored_code = $order->get_meta( 'verification_code' );
-
-    if ( $stored_code !== $verification_code ) {
-        wp_send_json_error( [ 'message' => 'Verification code does not match.' ] );
-    }
-
-    // 7. Send SMS on success
-    $sms_message = sprintf(
-        'Hello %s, your race kit for %s has been successfully delivered. Your Bib Number is %s for the %s race category. Good luck with your race, Run Bangladesh.',
-        esc_html( $billing_name ),
-        esc_html( $race_name ),
-        esc_html( $bib_id ),
-        esc_html( $race_category )
-    );
-
-    send_sms_to_phone( $cleaned_phone, $sms_message );
-
-    // 8. Update verification status
-    $order->update_meta_data( 'is_verified', true );
-    $order->save();
-
-    // 9. Return success response
-    $message = 'Verification successful!';
-    if ( $tshirt_size ) {
-        $message .= ' Your T-Shirt size: ' . esc_html( $tshirt_size );
-    }
-
-    wp_send_json_success( [ 'message' => $message ] );
 
     wp_die();
 }
+
 
 
 

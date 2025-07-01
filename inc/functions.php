@@ -68,29 +68,30 @@ if ( ! function_exists( 'send_sms_to_phone' ) ) {
 }
 
 if ( ! function_exists( 'wc_get_order_by_bib_id' ) ) {
-   function wc_get_order_by_bib_id( $bib_number ) {
-	    $args = array(
-	        'post_type'   => 'shop_order',
-	        'post_status' => 'any',
-	        'meta_query'  => array(
-	            array(
-	                'key'     => 'bib_id',
-	                'value'   => $bib_number,
-	                'compare' => '=',
-	            ),
-	        ),
-	    );
+    function wc_get_order_by_bib_id( $bib_number ) {
+        $args = array(
+            'post_type'   => 'shop_order',
+            'post_status' => 'any',
+            'meta_query'  => array(
+                array(
+                    'key'     => 'bib_id',
+                    'value'   => $bib_number,
+                    'compare' => '=',
+                ),
+            ),
+            'limit' => 1,
+        );
 
-	    $orders = wc_get_orders( $args );
+        $orders = wc_get_orders( $args );
 
-	    if ( ! empty( $orders ) ) {
-	        return $orders[0]->ID;
-	    }
+        if ( ! empty( $orders ) && is_a( $orders[0], 'WC_Order' ) ) {
+            return $orders[0]->get_id(); // ✅ FIX: use get_id() instead of ->ID
+        }
 
-	    return null;
-	}
-
+        return null;
+    }
 }
+
 
 if ( ! function_exists( 'get_woocommerce_product_sales' ) ) {
 	function get_woocommerce_product_sales() {
