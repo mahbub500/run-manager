@@ -47,25 +47,28 @@ if ( function_exists( 'send_certificate_email' ) ) {
 if ( ! function_exists( 'send_sms_to_phone' ) ) {
 	function send_sms_to_phone( $phone, $message ) {
 	    if ( empty( $phone ) || empty( $message ) ) {
-	        return false; // Phone or message is missing
+	        return false;
 	    }
 
 	    $requestType  = 'SINGLE_SMS';
 	    $messageType  = 'TEXT';
 
-	    // Initialize and send SMS
 	    $sms = new AdnSmsNotification();
 
 	    try {
+	       
+	        ob_start();
 	        $response = $sms->sendSms( $requestType, $message, $phone, $messageType );
-	        return $response; // Return the response for logging or further handling
+	        ob_end_clean(); // Clean and discard output
+	        
+	        return true;
 	    } catch ( Exception $e ) {
 	        error_log( 'SMS sending failed: ' . $e->getMessage() );
 	        return false;
 	    }
 	}
-
 }
+
 
 if ( ! function_exists( 'wc_get_order_by_bib_id' ) ) {
     function wc_get_order_by_bib_id( $bib_number ) {
