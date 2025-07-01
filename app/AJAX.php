@@ -171,6 +171,8 @@ public function import_excel_to_orders() {
                  $order = wc_get_order($order_id);
                  if ($order) {
                      $order->update_meta_data('bib_id', $bib_id);
+                     $order->update_meta_data('race_name', $bib_id);
+                     $order->update_meta_data('race_category', $bib_id);
                      $order->save();
 
                     $subject =  'Important: Collect Your '. $race_name. ' Race Kit!' ;
@@ -238,7 +240,7 @@ public function import_excel_to_orders() {
                          $cleaned_phone = clean_phone_number( $raw_phone );
                          // sms_send( $cleaned_phone, $sms_message );
 
-                         send_sms_to_phone( $cleaned_phone, $sms_message );
+                        send_sms_to_phone( $cleaned_phone, $sms_message );
 
                          // Save that SMS was sent for this order
                          $order->update_meta_data( 'is_sms_sent', true );
@@ -564,7 +566,11 @@ public function import_excel_to_orders() {
 
     if ($order) {
         $is_verified    = $order->get_meta('is_verified');
-        $tshirt_size   = $order->get_meta('billing_tshirt'); 
+        $tshirt_size   	= $order->get_meta('billing_tshirt'); 
+        $bib_id 		= $order->update_meta_data('bib_id', $bib_id);
+        $race_name 		= $order->update_meta_data('race_name', $bib_id);
+        $race_category 	= $order->update_meta_data('race_category', $bib_id);
+        $billing_name	= $order->get_billing_first_name();
 
        if ($is_verified) {
             wp_send_json_error([
@@ -576,8 +582,15 @@ public function import_excel_to_orders() {
         $stored_code = $order->get_meta('verification_code');
 
         if ($stored_code === $verification_code) {
+        	
             // Fetch billing t-shirt size from order meta
-           
+           $sms_message = sprintf(
+                'Hello %s, your race kit for %s has been successfully delivered. Your Bib Number is %s for the %s race category. Good luck with your race , Run Bangladesh.'
+                esc_html($billing_name),
+                esc_html($race_name),
+                esc_html($bib_id),
+                esc_html($race_category),
+            );
 
             // Mark as verified
             $order->update_meta_data('is_verified', true);
