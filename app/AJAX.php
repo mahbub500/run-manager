@@ -236,7 +236,7 @@ public function import_excel_to_orders() {
 
                          $raw_phone     = $order->get_billing_phone();
                          $cleaned_phone = clean_phone_number( $raw_phone );
-                         sms_send( $cleaned_phone, $sms_message );
+                         // sms_send( $cleaned_phone, $sms_message );
 
                          // Save that SMS was sent for this order
                          $order->update_meta_data( 'is_sms_sent', true );

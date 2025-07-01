@@ -1,7 +1,11 @@
 <?php
+use WpPluginHub\AdnSms\AdnSmsNotification;
+
 if( ! function_exists( 'get_plugin_data' ) ) {
 	require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 }
+
+
 
 /**
  * Gets the site's base URL
@@ -40,33 +44,27 @@ if ( function_exists( 'send_certificate_email' ) ) {
 	}
 }
 
-if ( ! function_exists( 'sms_send' ) ) {
-	function sms_send( $number, $message ) {
-	    $url = "http://bulksmsbd.net/api/smsapi";
-	    $api_key = "3WVzyjkNVqq82uuZSK6y";
-	    $senderid = "8809617614182";
+if ( ! function_exists( 'send_sms_to_phone' ) ) {
+	function send_sms_to_phone( $phone, $message ) {
+	    if ( empty( $phone ) || empty( $message ) ) {
+	        return false; // Phone or message is missing
+	    }
 
-	    // Ensure the number has the correct format with +880
-	    $formatted_number = "+88" . $number; // Keeps leading zero and adds "+"
+	    $requestType  = 'SINGLE_SMS';
+	    $messageType  = 'TEXT';
 
-	    $data = [
-	        "api_key"   => $api_key,
-	        "senderid"  => $senderid,
-	        "number"    => $formatted_number, // Proper format: +88017XXXXXXXX
-	        "message"   => $message
-	    ];
+	    // Initialize and send SMS
+	    $sms = new AdnSmsNotification();
 
-	    $ch = curl_init();
-	    curl_setopt($ch, CURLOPT_URL, $url);
-	    curl_setopt($ch, CURLOPT_POST, 1);
-	    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data)); // Proper encoding
-	    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-	    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-	    $response = curl_exec($ch);
-	    curl_close($ch);
-
-	    return $response;
+	    try {
+	        $response = $sms->sendSms( $requestType, $message, $phone, $messageType );
+	        return $response; // Return the response for logging or further handling
+	    } catch ( Exception $e ) {
+	        error_log( 'SMS sending failed: ' . $e->getMessage() );
+	        return false;
+	    }
 	}
+
 }
 
 if ( ! function_exists( 'wc_get_order_by_bib_id' ) ) {
