@@ -148,9 +148,15 @@ class Front extends Base {
 
 	function add_optional_simple_product() {
 	    $optional_product_id = 5037; // Simple product ID (e.g., Mug)
+	    $product = wc_get_product( $optional_product_id );
+
+	    if ($product) {
+    		$product_title = $product->get_name();
+			$product_price = wc_price($product->get_price());
+		}
 
 	  echo '<div class="optional-product" style="margin-bottom:15px;">';
-	    echo '<label><input type="checkbox" id="add_optional_product_checkbox" name="add_optional_product" value="' . esc_attr($optional_product_id) . '" /> Add a Mug for ৳100</label>';
+	    echo '<label><input type="checkbox" id="add_optional_product_checkbox" name="add_optional_product" value="' . esc_attr($optional_product_id) . '" /> Add a '. esc_html($product_title).' for '.$product_price.'</label>';
 	    echo '</div>';
 
 	    echo '<div id="tshirt-size-wrapper" style="display:none; margin-bottom:15px;">';
@@ -163,6 +169,16 @@ class Front extends Base {
 	            <option value="XL">Extra Large</option>
 	          </select>';
 	    echo '</div>';
+	}
+
+	function custom_save_fields_to_cart($cart_item_data, $product_id, $variation_id) {
+	    if (!empty($_POST['tshirt_size'])) {
+	        $cart_item_data['tshirt_size'] = sanitize_text_field($_POST['tshirt_size']);
+	    }
+	    if (!empty($_POST['add_optional_product'])) {
+	        $cart_item_data['add_optional_product'] = intval($_POST['add_optional_product']);
+	    }
+	    return $cart_item_data;
 	}
 
 	function maybe_add_optional_product($cart_item_key, $product_id, $quantity, $variation_id, $variation, $cart_item_data) {
@@ -181,6 +197,22 @@ class Front extends Base {
 	        if (! $found) {
 	            WC()->cart->add_to_cart($optional_product_id);
 	        }
+	    }
+	}
+
+	// function custom_display_tshirt_size($item_data, $cart_item) {
+	//     if (!empty($cart_item['tshirt_size'])) {
+	//         $item_data[] = array(
+	//             'name'  => 'T-Shirt',
+	//             'value' => esc_html( $cart_item['tshirt_size'] ),
+	//         );
+	//     }
+	//     return $item_data;
+	// }
+
+	function custom_save_to_order_items($item_id, $values, $cart_item_key) {
+	    if (!empty($values['tshirt_size'])) {
+	        wc_add_order_item_meta($item_id, 'T-Shirt Size', $values['tshirt_size']);
 	    }
 	}
 
