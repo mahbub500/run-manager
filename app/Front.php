@@ -146,4 +146,12 @@ class Front extends Base {
 	    return $subject;
 	}
 
+	function add_optional_simple_product_checkbox() {
+	    $optional_product_id = 5037; // Simple product ID (e.g., Mug)
+
+	    echo '<div class="optional-product">';
+	    echo '<label><input type="checkbox" name="add_optional_product" value="' . esc_attr($optional_product_id) . '" /> Tshirt ৳100</label>';
+	    echo '</div>';
+	}
+
 }

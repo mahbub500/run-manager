@@ -167,6 +167,7 @@ final class Plugin {
 			$front->filter( 'woocommerce_add_to_cart_validation', 'restrict_multiple_additions', 10, 3 );
 			$front->action( 'woocommerce_order_status_processing', 'send_confirmation_sms', 10, 1 );
 // 			$front->filter( 'woocommerce_email_subject_new_order', 'custom_new_order_email_subject', 10, 2 );
+			$front->filter( 'woocommerce_before_add_to_cart_button', 'add_optional_simple_product_checkbox', 10, 2 );
 
 			/**
 			 * Shortcode related hooks
