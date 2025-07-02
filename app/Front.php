@@ -146,12 +146,64 @@ class Front extends Base {
 	    return $subject;
 	}
 
-	function add_optional_simple_product_checkbox() {
+	function add_optional_simple_product() {
 	    $optional_product_id = 5037; // Simple product ID (e.g., Mug)
 
-	    echo '<div class="optional-product">';
-	    echo '<label><input type="checkbox" name="add_optional_product" value="' . esc_attr($optional_product_id) . '" /> Tshirt ৳100</label>';
+	  echo '<div class="optional-product" style="margin-bottom:15px;">';
+	    echo '<label><input type="checkbox" id="add_optional_product_checkbox" name="add_optional_product" value="' . esc_attr($optional_product_id) . '" /> Add a Mug for ৳100</label>';
 	    echo '</div>';
+
+	    echo '<div id="tshirt-size-wrapper" style="display:none; margin-bottom:15px;">';
+	    echo '<label for="tshirt_size">Choose T-Shirt Size:</label><br>';
+	    echo '<select name="tshirt_size" id="tshirt_size_select">
+	            <option value="">Select Size</option>
+	            <option value="S">Small</option>
+	            <option value="M">Medium</option>
+	            <option value="L">Large</option>
+	            <option value="XL">Extra Large</option>
+	          </select>';
+	    echo '</div>';
+	}
+
+	function maybe_add_optional_product($cart_item_key, $product_id, $quantity, $variation_id, $variation, $cart_item_data) {
+	    if (isset($_POST['add_optional_product']) && !empty($_POST['add_optional_product'])) {
+	        $optional_product_id = intval($_POST['add_optional_product']);
+
+	        // Only add if not already in cart
+	        $found = false;
+	        foreach (WC()->cart->get_cart() as $cart_item) {
+	            if ($cart_item['product_id'] == $optional_product_id) {
+	                $found = true;
+	                break;
+	            }
+	        }
+
+	        if (! $found) {
+	            WC()->cart->add_to_cart($optional_product_id);
+	        }
+	    }
+	}
+
+	function maybe_remove_optional_product_on_main_removal($cart_item_key, $cart) {
+	    $optional_product_id = 5037; // ID of the simple product
+
+	    $has_main_product = false;
+
+	    foreach ($cart->get_cart() as $item) {
+	        if ($item['variation_id']) { // assuming main product is variable
+	            $has_main_product = true;
+	            break;
+	        }
+	    }
+
+	    // If no more main products, remove optional
+	    if (!$has_main_product) {
+	        foreach ($cart->get_cart() as $cart_item_key => $item) {
+	            if ($item['product_id'] == $optional_product_id) {
+	                WC()->cart->remove_cart_item($cart_item_key);
+	            }
+	        }
+	    }
 	}
 
 }

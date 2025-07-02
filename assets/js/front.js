@@ -168,6 +168,24 @@ jQuery(function($){
     });
 });
 
+jQuery(document).ready(function($) {
+        function toggleTshirtSelect() {
+            if ($('#add_optional_product_checkbox').is(':checked')) {
+                $('#tshirt-size-wrapper').slideDown();
+                $('#tshirt_size_select').attr('required', true);
+            } else {
+                $('#tshirt-size-wrapper').slideUp();
+                $('#tshirt_size_select').removeAttr('required');
+            }
+        }
+
+        // Trigger on change
+        $('#add_optional_product_checkbox').on('change', toggleTshirtSelect);
+
+        // Run on load
+        toggleTshirtSelect();
+    });
+
 
 
 
