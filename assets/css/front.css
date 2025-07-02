@@ -27,4 +27,38 @@
     padding: 5px !important;
     margin-bottom: 10px;
 }
+/* Optional Product Box */
+.optional-product-box {
+    background: #f5faff;
+    border: 2px solid #007cba;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 16px;
+    transition: box-shadow 0.3s ease;
+}
+
+.optional-product-box:hover {
+    box-shadow: 0 0 10px rgba(0, 124, 186, 0.3);
+}
+
+/* T-shirt size select box */
+.tshirt-select-box {
+    background: #fff5f5;
+    border: 2px dashed #cc0000;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    display: none;
+    transition: box-shadow 0.3s ease;
+}
+
+.tshirt-select-box select {
+    width: 100%;
+    padding: 8px;
+    font-size: 15px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
 

@@ -147,19 +147,19 @@ class Front extends Base {
 	}
 
 	function add_optional_simple_product() {
-	    $optional_product_id = 5037; // Simple product ID (e.g., Mug)
-	    $product = wc_get_product( $optional_product_id );
+	    $optional_product_id = 5037; // Simple product ID
+	    $product = wc_get_product($optional_product_id);
 
 	    if ($product) {
-    		$product_title = $product->get_name();
-			$product_price = wc_price($product->get_price());
-		}
+	        $product_title = $product->get_name();
+	        $product_price = wc_price($product->get_price());
+	    }
 
-	  echo '<div class="optional-product" style="margin-bottom:15px;">';
-	    echo '<label><input type="checkbox" id="add_optional_product_checkbox" name="add_optional_product" value="' . esc_attr($optional_product_id) . '" /> Add a '. esc_html($product_title).' for '.$product_price.'</label>';
+	    echo '<div class="optional-product-box">';
+	    echo '<label><input type="checkbox" id="add_optional_product_checkbox" name="add_optional_product" value="' . esc_attr($optional_product_id) . '" /> <strong>Add a ' . esc_html($product_title) . ' for ' . $product_price . '</strong></label>';
 	    echo '</div>';
 
-	    echo '<div id="tshirt-size-wrapper" style="display:none; margin-bottom:15px;">';
+	    echo '<div id="tshirt-size-wrapper" class="tshirt-select-box">';
 	    echo '<label for="tshirt_size">Choose T-Shirt Size:</label><br>';
 	    echo '<select name="tshirt_size" id="tshirt_size_select">
 	            <option value="">Select Size</option>
@@ -170,6 +170,7 @@ class Front extends Base {
 	          </select>';
 	    echo '</div>';
 	}
+
 
 	function custom_save_fields_to_cart($cart_item_data, $product_id, $variation_id) {
 	    if (!empty($_POST['tshirt_size'])) {
