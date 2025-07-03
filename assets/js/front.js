@@ -184,6 +184,35 @@ jQuery(document).ready(function($) {
 
         // Run on load
         toggleTshirtSelect();
+
+         $('#add_optional_product_checkbox').on('change', function() {
+            if ($(this).is(':checked')) {
+                var product_id = RUN_MANAGER.optional_product_id;
+                var tshirt_size = $('#tshirt_size_select').val();
+
+                $.ajax({
+                    url: RUN_MANAGER.ajaxurl,
+                    type: 'POST',
+                    data: {
+                        action: 'add_optional_product_to_cart',
+                        _wpnonce : RUN_MANAGER._wpnonce,
+                        product_id: product_id,
+                        tshirt_size: tshirt_size
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            // alert('Product added to cart!');
+                            $(document.body).trigger('wc_fragment_refresh');
+                        } else {
+                            alert(response.data);
+                        }
+                    },
+                    error: function() {
+                        alert('AJAX request failed.');
+                    }
+                });
+            }
+        });
     });
 
 

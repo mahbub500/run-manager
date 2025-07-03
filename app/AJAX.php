@@ -695,6 +695,26 @@ public function import_excel_to_orders() {
             );
         }
 
+        public function add_optional_product_to_cart() {
+
+        if ( ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( $_POST['_wpnonce'] )) {
+            wp_send_json_error( ['message' => 'Security check failed!'] );
+        }
+            $product_id = intval($_POST['product_id']);
+            $tshirt_size = sanitize_text_field($_POST['tshirt_size']);
+
+            $cart_item_data = [];
+
+            if (!empty($tshirt_size)) {
+                $cart_item_data['tshirt_size'] = $tshirt_size;
+            }
+
+            WC()->cart->add_to_cart($product_id, 1, 0, [], $cart_item_data);
+
+            wp_send_json_success('Product added.');
+
+        }
+
         
 
 

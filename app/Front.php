@@ -67,6 +67,7 @@ class Front extends Base {
 		$localized = [
 			'ajaxurl'	=> admin_url( 'admin-ajax.php' ),
 			'_wpnonce'	=> wp_create_nonce(),
+			'optional_product_id'	=> get_optional_product_id(),
 		];
 		wp_localize_script( $this->slug, 'RUN_MANAGER', apply_filters( "{$this->slug}-localized", $localized ) );
 	}
@@ -93,14 +94,34 @@ class Front extends Base {
 	
 
 	public function restrict_multiple_additions( $passed, $product_id, $quantity ) {
-	    $cart_items = WC()->cart->get_cart();
+	   $cart_items = WC()->cart->get_cart();
+    $allowed_product_id = 5037;
 
-	    if ( count( $cart_items ) > 0 ) {
-	        wc_add_notice( 'You can only add one product to your cart at a time. Please remove the existing product first.', 'error' );
-	        return false; 
-	    }
+    $has_5037 = false;
+    $total_cart_count = count( $cart_items );
 
-		    return $passed;
+    foreach ( $cart_items as $item ) {
+        if ( intval( $item['product_id'] ) === $allowed_product_id ) {
+            $has_5037 = true;
+            break;
+        }
+    }
+
+    if ( $has_5037 ) {
+        // If product 5037 is already in cart, allow only one additional product (max 2 total)
+        if ( $total_cart_count >= 2 ) {
+            wc_add_notice( 'You can only add one additional product along with the special product.', 'error' );
+            return false;
+        }
+    } else {
+        // If 5037 is not in cart, allow only one product
+        if ( $total_cart_count >= 1 ) {
+            wc_add_notice( 'You can only add one product to your cart at a time.', 'error' );
+            return false;
+        }
+    }
+
+    return $passed;
 	}
 
 	public function send_confirmation_sms( $order_id ) {
