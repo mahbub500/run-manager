@@ -180,6 +180,10 @@ function display_product_sales_count() {
     echo '</table>';
 }
 
+function get_optional_product_id() {
+    return 5037;
+}
+
 
 
 

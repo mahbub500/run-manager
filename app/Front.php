@@ -152,7 +152,7 @@ class Front extends Base {
 		$product_id = $product->get_id();
 
 		if ( $product_id == 4852 ) {
-			$optional_product_id = 5037; // Simple product ID
+			$optional_product_id = get_optional_product_id(); // Simple product ID
 		    $product = wc_get_product($optional_product_id);
 
 		    if ($product) {
@@ -215,7 +215,7 @@ class Front extends Base {
 
 	}
 	function maybe_remove_optional_product_on_main_removal($cart_item_key, $cart) {
-	    $optional_product_id = 5037; // ID of the simple product
+	    $optional_product_id = get_optional_product_id(); // ID of the simple product
 
 	    $has_main_product = false;
 
