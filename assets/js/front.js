@@ -186,8 +186,8 @@ jQuery(document).ready(function($) {
         toggleTshirtSelect();
 
          $('#add_optional_product_checkbox').on('change', function() {
-            if ($(this).is(':checked')) {
                 var product_id = RUN_MANAGER.optional_product_id;
+            if ($(this).is(':checked')) {
                 var tshirt_size = $('#tshirt_size_select').val();
 
                 $.ajax({
@@ -209,6 +209,23 @@ jQuery(document).ready(function($) {
                     },
                     error: function() {
                         alert('AJAX request failed.');
+                    }
+                });
+            } else {
+                 $.ajax({
+                    url: RUN_MANAGER.ajaxurl,
+                    type: 'POST',
+                    data: {
+                        action: 'remove_product_from_cart',
+                        _wpnonce : RUN_MANAGER._wpnonce,
+                        product_id: product_id
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            $(document.body).trigger('wc_fragment_refresh');
+                        } else {
+                            alert(response.data);
+                        }
                     }
                 });
             }

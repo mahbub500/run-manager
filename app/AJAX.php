@@ -715,6 +715,33 @@ public function import_excel_to_orders() {
 
         }
 
+       public function remove_product_from_cart() {
+
+            // Security check
+            if ( ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( $_POST['_wpnonce'] ) ) {
+                wp_send_json_error( [ 'message' => 'Security check failed!' ] );
+            }
+
+            // Validate product ID
+            if ( empty( $_POST['product_id'] ) ) {
+                wp_send_json_error( [ 'message' => 'Product ID is missing.' ] );
+            }
+
+            $product_id = intval( $_POST['product_id'] );
+
+            // Loop through cart items to find and remove the product
+            foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
+                if ( intval( $cart_item['product_id'] ) === $product_id ) {
+                    WC()->cart->remove_cart_item( $cart_item_key );
+                    wp_send_json_success( [ 'message' => 'Product removed from cart.' ] );
+                }
+            }
+
+            // Product not found
+            wp_send_json_error( [ 'message' => 'Product not found in cart.' ] );
+        }
+
+
         
 
 

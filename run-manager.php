@@ -173,7 +173,6 @@ final class Plugin {
 			$front->action( 'woocommerce_add_to_cart', 'maybe_add_optional_product', 20, 6 );
 			$front->action( 'woocommerce_checkout_create_order_line_item', 'custom_save_to_order_items', 20, 4 );
 			$front->action( 'woocommerce_cart_item_removed', 'maybe_remove_optional_product_on_main_removal', 20, 2 );
-			$front->action( 'woocommerce_thankyou', 'show_order_meta_tshirt_size', 20 );
 			$front->action( 'woocommerce_order_details_after_order_table', 'show_tshirt_size_after_order_table', 20 );
 
 			/**
@@ -213,6 +212,7 @@ final class Plugin {
 		$ajax->priv( 'generate_tshirt_size', 'generate_tshirt_size' );
 		$ajax->all( 'clear_cart', 'custom_clear_cart' );
 		$ajax->all( 'add_optional_product_to_cart', 'add_optional_product_to_cart' );
+		$ajax->all( 'remove_product_from_cart', 'remove_product_from_cart' );
 
 	}
 
