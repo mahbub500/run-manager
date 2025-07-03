@@ -173,8 +173,15 @@ class Front extends Base {
 		$product_id = $product->get_id();
 
 		if ( $product_id == 4852 ) {
+			$is_tshirt_in_cart = false;
+			foreach ( WC()->cart->get_cart() as $cart_item ) {
+		        if ( intval( $cart_item['product_id'] ) === get_optional_product_id() ) {
+		            $is_tshirt_in_cart = true;
+		            break;
+		        }
+		    }
 		 	echo '<div class="optional-product-box">';
-		    echo '<label><input type="checkbox" id="add_optional_product_checkbox" /> <strong>Add a T-Shirt</strong></label>';
+		    echo '<label><input type="checkbox" id="add_optional_product_checkbox" ' . checked( $is_tshirt_in_cart, true, false ) .' /> <strong>Add a T-Shirt</strong></label>';
 		    echo '</div>';
 
 		    echo '<div id="tshirt-size-wrapper" class="tshirt-select-box">';
