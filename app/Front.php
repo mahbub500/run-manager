@@ -201,22 +201,11 @@ class Front extends Base {
 	    }
 	}
 
-	// function custom_display_tshirt_size($item_data, $cart_item) {
-	//     if (!empty($cart_item['tshirt_size'])) {
-	//         $item_data[] = array(
-	//             'name'  => 'T-Shirt',
-	//             'value' => esc_html( $cart_item['tshirt_size'] ),
-	//         );
-	//     }
-	//     return $item_data;
-	// }
-
-	function custom_save_to_order_items($item_id, $values, $cart_item_key) {
+	function custom_save_to_order_items( $item, $cart_item_key, $values, $order ) {
 	    if (!empty($values['tshirt_size'])) {
-	        wc_add_order_item_meta($item_id, 'T-Shirt Size', $values['tshirt_size']);
+	        $order->update_meta_data('T-Shirt Size', sanitize_text_field($values['tshirt_size']));
 	    }
 	}
-
 	function maybe_remove_optional_product_on_main_removal($cart_item_key, $cart) {
 	    $optional_product_id = 5037; // ID of the simple product
 

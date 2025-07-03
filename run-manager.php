@@ -170,9 +170,8 @@ final class Plugin {
 			
 			$front->action( 'woocommerce_before_add_to_cart_button', 'add_optional_simple_product', 10, 2 );
 			$front->filter( 'woocommerce_add_cart_item_data', 'custom_save_fields_to_cart', 10, 3 );
-			// $front->filter( 'woocommerce_get_item_data', 'custom_display_tshirt_size', 10, 2 );
 			$front->action( 'woocommerce_add_to_cart', 'maybe_add_optional_product', 20, 6 );
-			$front->action( 'woocommerce_add_order_item_meta', 'custom_save_to_order_items', 20, 3 );
+			$front->action( 'woocommerce_checkout_create_order_line_item', 'custom_save_to_order_items', 20, 4 );
 			$front->action( 'woocommerce_cart_item_removed', 'maybe_remove_optional_product_on_main_removal', 20, 2 );
 
 			/**
