@@ -147,28 +147,35 @@ class Front extends Base {
 	}
 
 	function add_optional_simple_product() {
-	    $optional_product_id = 5037; // Simple product ID
-	    $product = wc_get_product($optional_product_id);
+// 4852 
+		global $product;
+		$product_id = $product->get_id();
 
-	    if ($product) {
-	        $product_title = $product->get_name();
-	        $product_price = wc_price($product->get_price());
-	    }
+		if ( $product_id == 4852 ) {
+			$optional_product_id = 5037; // Simple product ID
+		    $product = wc_get_product($optional_product_id);
 
-	    echo '<div class="optional-product-box">';
-	    echo '<label><input type="checkbox" id="add_optional_product_checkbox" name="add_optional_product" value="' . esc_attr($optional_product_id) . '" /> <strong>Add a ' . esc_html($product_title) . ' for ' . $product_price . '</strong></label>';
-	    echo '</div>';
+		    if ($product) {
+		        $product_title = $product->get_name();
+		        $product_price = wc_price($product->get_price());
+		    }
 
-	    echo '<div id="tshirt-size-wrapper" class="tshirt-select-box">';
-	    echo '<label for="tshirt_size">Choose T-Shirt Size:</label><br>';
-	    echo '<select name="tshirt_size" id="tshirt_size_select">
-	            <option value="">Select Size</option>
-	            <option value="S">Small</option>
-	            <option value="M">Medium</option>
-	            <option value="L">Large</option>
-	            <option value="XL">Extra Large</option>
-	          </select>';
-	    echo '</div>';
+		    echo '<div class="optional-product-box">';
+		    echo '<label><input type="checkbox" id="add_optional_product_checkbox" name="add_optional_product" value="' . esc_attr($optional_product_id) . '" /> <strong>Add a ' . esc_html($product_title) . ' for ' . $product_price . '</strong></label>';
+		    echo '</div>';
+
+		    echo '<div id="tshirt-size-wrapper" class="tshirt-select-box">';
+		    echo '<label for="tshirt_size">Choose T-Shirt Size:</label><br>';
+		    echo '<select name="tshirt_size" id="tshirt_size_select">
+		            <option value="">Select Size</option>
+		            <option value="S">Small</option>
+		            <option value="M">Medium</option>
+		            <option value="L">Large</option>
+		            <option value="XL">Extra Large</option>
+		          </select>';
+		    echo '</div>';
+		}
+	    
 	}
 
 
