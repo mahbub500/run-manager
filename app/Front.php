@@ -245,4 +245,24 @@ class Front extends Base {
 	    }
 	}	
 
+	function show_tshirt_size_after_order_table($order) {
+    // Get meta value from the order
+    $tshirt_size = $order->get_meta('T-Shirt Size');
+
+    if ($tshirt_size) {
+        echo '<section class="woocommerce-order-tshirt-size" style="margin-top:30px;">';
+        echo '<h3 class="woocommerce-column__title">T-Shirt Information</h3>';
+
+        echo '<table class="shop_table woocommerce-table woocommerce-table--custom-fields">';
+        echo '<tbody>';
+        echo '<tr>';
+        echo '<th>T-Shirt Size</th>';
+        echo '<td>' . esc_html($tshirt_size) . '</td>';
+        echo '</tr>';
+        echo '</tbody>';
+        echo '</table>';
+        echo '</section>';
+    }
+}
+
 }
