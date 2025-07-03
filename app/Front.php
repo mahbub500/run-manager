@@ -187,12 +187,22 @@ class Front extends Base {
 		    echo '<div id="tshirt-size-wrapper" class="tshirt-select-box">';
 		    echo '<label for="tshirt_size">Choose T-Shirt Size:</label><br>';
 		    echo '<select name="tshirt_size" id="tshirt_size_select">
-		            <option value="">Select Size</option>
-		            <option value="S">Small</option>
-		            <option value="M">Medium</option>
-		            <option value="L">Large</option>
-		            <option value="XL">Extra Large</option>
-		          </select>';
+			    <option value="">Select Size</option>
+			    <option value="XS">XS (Chest=36", Length=25")</option>
+			    <option value="S">S (Chest=38", Length=26")</option>
+			    <option value="M">M (Chest=40", Length=27")</option>
+			    <option value="L">L (Chest=42", Length=28")</option>
+			    <option value="XL">XL (Chest=44", Length=29")</option>
+			    <option value="XXL">XXL (Chest=46", Length=30")</option>
+			    <option value="3XL">3XL (Chest=48", Length=31")</option>
+			    <option value="4XL">4XL (Chest=50", Length=32")</option>
+			    <option value="3-4">3-4 Year\'s (Chest=26", Length=18")</option>
+			    <option value="5-6">5-6 Year\'s (Chest=28", Length=19")</option>
+			    <option value="7-8">7-8 Year\'s (Chest=30", Length=20")</option>
+			    <option value="9-10">9-10 Year\'s (Chest=32", Length=21")</option>
+			    <option value="11-12">11-12 Year\'s (Chest=34", Length=22")</option>
+			    <option value="12-14">12-14 Year\'s (Chest=36", Length=23")</option>
+			</select>';
 		    echo '</div>';
 		}
 	    
@@ -275,6 +285,26 @@ class Front extends Base {
 	        echo '</table>';
 	        echo '</section>';
 	    }
+	}
+
+	function hide_checkout_field_if_product_in_cart( $fields ) {
+	    $desired_product_id = 4852; 
+
+	    // Check if product is in cart
+	    $product_in_cart = false;
+
+	    foreach ( WC()->cart->get_cart() as $cart_item ) {
+	        if ( $cart_item['product_id'] == $desired_product_id ) {
+	            $product_in_cart = true;
+	            break;
+	        }
+	    }
+
+	    if ( $product_in_cart ) {
+	        unset( $fields['billing']['billing_tshirt'] );
+	    }
+
+	    return $fields;
 	}
 
 }
