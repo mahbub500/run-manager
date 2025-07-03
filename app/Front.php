@@ -95,33 +95,33 @@ class Front extends Base {
 
 	public function restrict_multiple_additions( $passed, $product_id, $quantity ) {
 	   $cart_items = WC()->cart->get_cart();
-    $allowed_product_id = 5037;
+	    $allowed_product_id = get_optional_product_id();
 
-    $has_5037 = false;
-    $total_cart_count = count( $cart_items );
+	    $has_5037 = false;
+	    $total_cart_count = count( $cart_items );
 
-    foreach ( $cart_items as $item ) {
-        if ( intval( $item['product_id'] ) === $allowed_product_id ) {
-            $has_5037 = true;
-            break;
-        }
-    }
+	    foreach ( $cart_items as $item ) {
+	        if ( intval( $item['product_id'] ) === $allowed_product_id ) {
+	            $has_5037 = true;
+	            break;
+	        }
+	    }
 
-    if ( $has_5037 ) {
-        // If product 5037 is already in cart, allow only one additional product (max 2 total)
-        if ( $total_cart_count >= 2 ) {
-            wc_add_notice( 'You can only add one additional product along with the special product.', 'error' );
-            return false;
-        }
-    } else {
-        // If 5037 is not in cart, allow only one product
-        if ( $total_cart_count >= 1 ) {
-            wc_add_notice( 'You can only add one product to your cart at a time.', 'error' );
-            return false;
-        }
-    }
+	    if ( $has_5037 ) {
+	        // If product 5037 is already in cart, allow only one additional product (max 2 total)
+	        if ( $total_cart_count >= 2 ) {
+	            wc_add_notice( 'You can only add one additional product along with the special product.', 'error' );
+	            return false;
+	        }
+	    } else {
+	        // If 5037 is not in cart, allow only one product
+	        if ( $total_cart_count >= 1 ) {
+	            wc_add_notice( 'You can only add one product to your cart at a time.', 'error' );
+	            return false;
+	        }
+	    }
 
-    return $passed;
+	    return $passed;
 	}
 
 	public function send_confirmation_sms( $order_id ) {
@@ -248,41 +248,26 @@ class Front extends Base {
 	        }
 	    }
 	}
+		
 
-	function show_order_meta_tshirt_size($order_id) {
-	    if (!$order_id) return;
-
-	    $order = wc_get_order($order_id);
-
-	    // Get the meta you saved
+	function show_tshirt_size_after_order_table($order) {
+	    // Get meta value from the order
 	    $tshirt_size = $order->get_meta('T-Shirt Size');
 
 	    if ($tshirt_size) {
-	        echo '<div class="woocommerce-message" style="margin-top: 20px;">';
-	        echo '<h3>T-Shirt Size</h3>';
-	        echo '<p><strong>' . esc_html($tshirt_size) . '</strong></p>';
-	        echo '</div>';
+	        echo '<section class="woocommerce-order-tshirt-size" style="margin-top:30px;">';
+	        echo '<h3 class="woocommerce-column__title">T-Shirt Information</h3>';
+
+	        echo '<table class="shop_table woocommerce-table woocommerce-table--custom-fields">';
+	        echo '<tbody>';
+	        echo '<tr>';
+	        echo '<th>T-Shirt Size</th>';
+	        echo '<td>' . esc_html($tshirt_size) . '</td>';
+	        echo '</tr>';
+	        echo '</tbody>';
+	        echo '</table>';
+	        echo '</section>';
 	    }
-	}	
-
-	function show_tshirt_size_after_order_table($order) {
-    // Get meta value from the order
-    $tshirt_size = $order->get_meta('T-Shirt Size');
-
-    if ($tshirt_size) {
-        echo '<section class="woocommerce-order-tshirt-size" style="margin-top:30px;">';
-        echo '<h3 class="woocommerce-column__title">T-Shirt Information</h3>';
-
-        echo '<table class="shop_table woocommerce-table woocommerce-table--custom-fields">';
-        echo '<tbody>';
-        echo '<tr>';
-        echo '<th>T-Shirt Size</th>';
-        echo '<td>' . esc_html($tshirt_size) . '</td>';
-        echo '</tr>';
-        echo '</tbody>';
-        echo '</table>';
-        echo '</section>';
-    }
-}
+	}
 
 }
