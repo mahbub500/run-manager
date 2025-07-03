@@ -205,6 +205,7 @@ class Front extends Base {
 	    if (!empty($values['tshirt_size'])) {
 	        $order->update_meta_data('T-Shirt Size', sanitize_text_field($values['tshirt_size']));
 	    }
+
 	}
 	function maybe_remove_optional_product_on_main_removal($cart_item_key, $cart) {
 	    $optional_product_id = 5037; // ID of the simple product
@@ -227,5 +228,21 @@ class Front extends Base {
 	        }
 	    }
 	}
+
+	function show_order_meta_tshirt_size($order_id) {
+	    if (!$order_id) return;
+
+	    $order = wc_get_order($order_id);
+
+	    // Get the meta you saved
+	    $tshirt_size = $order->get_meta('T-Shirt Size');
+
+	    if ($tshirt_size) {
+	        echo '<div class="woocommerce-message" style="margin-top: 20px;">';
+	        echo '<h3>T-Shirt Size</h3>';
+	        echo '<p><strong>' . esc_html($tshirt_size) . '</strong></p>';
+	        echo '</div>';
+	    }
+	}	
 
 }
