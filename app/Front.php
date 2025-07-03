@@ -152,16 +152,8 @@ class Front extends Base {
 		$product_id = $product->get_id();
 
 		if ( $product_id == 4852 ) {
-			$optional_product_id = get_optional_product_id(); // Simple product ID
-		    $product = wc_get_product($optional_product_id);
-
-		    if ($product) {
-		        $product_title = $product->get_name();
-		        $product_price = wc_price($product->get_price());
-		    }
-
-		    echo '<div class="optional-product-box">';
-		    echo '<label><input type="checkbox" id="add_optional_product_checkbox" name="add_optional_product" value="' . esc_attr($optional_product_id) . '" /> <strong>Add a ' . esc_html($product_title) . ' for ' . $product_price . '</strong></label>';
+		 	echo '<div class="optional-product-box">';
+		    echo '<label><input type="checkbox" id="add_optional_product_checkbox" /> <strong>Add a T-Shirt</strong></label>';
 		    echo '</div>';
 
 		    echo '<div id="tshirt-size-wrapper" class="tshirt-select-box">';
