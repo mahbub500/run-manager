@@ -1,5 +1,6 @@
 <?php
 use WpPluginHub\AdnSms\AdnSmsNotification;
+use WpPluginHub\Run_Manager\Helper;
 
 if( ! function_exists( 'get_plugin_data' ) ) {
 	require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
@@ -181,8 +182,10 @@ function display_product_sales_count() {
 }
 
 function get_optional_product_id() {
-    return 5037;
+	$optional_product_id   = Helper::get_option( 'run-manager_basic', 'select_optional_product' );
+    return $optional_product_id;
 }
+
 
 
 
