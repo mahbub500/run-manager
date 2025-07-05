@@ -183,7 +183,7 @@ function display_product_sales_count() {
 
 function get_optional_product_id() {
 	$optional_product_id   = Helper::get_option( 'run-manager_basic', 'select_optional_product' );
-    return $optional_product_id;
+    return (int) $optional_product_id;
 }
 
 
