@@ -176,21 +176,22 @@ class Front extends Base {
 		    echo '<label for="tshirt_size">Choose T-Shirt Size:</label><br>';
 		    echo '<select name="tshirt_size" id="tshirt_size_select">
 			    <option value="">Select Size</option>
-			    <option value="XS">XS (Chest=36", Length=25")</option>
-			    <option value="S">S (Chest=38", Length=26")</option>
-			    <option value="M">M (Chest=40", Length=27")</option>
-			    <option value="L">L (Chest=42", Length=28")</option>
-			    <option value="XL">XL (Chest=44", Length=29")</option>
-			    <option value="XXL">XXL (Chest=46", Length=30")</option>
-			    <option value="3XL">3XL (Chest=48", Length=31")</option>
-			    <option value="4XL">4XL (Chest=50", Length=32")</option>
-			    <option value="3-4">3-4 Year\'s (Chest=26", Length=18")</option>
-			    <option value="5-6">5-6 Year\'s (Chest=28", Length=19")</option>
-			    <option value="7-8">7-8 Year\'s (Chest=30", Length=20")</option>
-			    <option value="9-10">9-10 Year\'s (Chest=32", Length=21")</option>
-			    <option value="11-12">11-12 Year\'s (Chest=34", Length=22")</option>
-			    <option value="12-14">12-14 Year\'s (Chest=36", Length=23")</option>
+			    <option value="3-4">3-4 Year\'s (Chest=26&quot;, Length=18&quot;)</option>
+			    <option value="5-6">5-6 Year\'s (Chest=28&quot;, Length=19&quot;)</option>
+			    <option value="7-8">7-8 Year\'s (Chest=30&quot;, Length=20&quot;)</option>
+			    <option value="9-10">9-10 Year\'s (Chest=32&quot;, Length=21&quot;)</option>
+			    <option value="11-12">11-12 Year\'s (Chest=34&quot;, Length=22&quot;)</option>
+			    <option value="12-14">12-14 Year\'s (Chest=36&quot;, Length=23&quot;)</option>
+			    <option value="XS">XS (Chest=36&quot;, Length=25&quot;)</option>
+			    <option value="S">S (Chest=38&quot;, Length=26&quot;)</option>
+			    <option value="M">M (Chest=40&quot;, Length=27&quot;)</option>
+			    <option value="L">L (Chest=42&quot;, Length=28&quot;)</option>
+			    <option value="XL">XL (Chest=44&quot;, Length=29&quot;)</option>
+			    <option value="XXL">XXL (Chest=46&quot;, Length=30&quot;)</option>
+			    <option value="3XL">3XL (Chest=48&quot;, Length=31&quot;)</option>
+			    <option value="4XL">4XL (Chest=50&quot;, Length=32&quot;)</option>
 			</select>';
+
 		    echo '</div>';
 		}
 	    
