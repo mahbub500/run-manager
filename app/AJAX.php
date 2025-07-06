@@ -258,7 +258,7 @@ public function import_excel_to_orders() {
                      //     $order->update_meta_data('verification_code', $verification_code);
                      // }
 
-                     Send email and SMS if not already sent
+                     // Send email and SMS if not already sent
                      if (!$order->get_meta('is_email_sent')) {
                          $this->send_certificate_email($order->get_billing_email(), $email_message, $subject, $order_id);
                          $order->update_meta_data('is_email_sent', true);
