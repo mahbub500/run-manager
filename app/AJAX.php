@@ -183,65 +183,60 @@ public function import_excel_to_orders() {
                      // $verification_code  = wp_rand(100000, 999999);
 
                     $email_message = sprintf(
-						    'Dear %s,
+					    'Dear <strong>%s</strong>,<br><br>
 
-						Congratulations! Your registration for Dhaka Metro Half Marathon 2025 is successfully confirmed. Please find your race details below:
+					    <strong>Congratulations!</strong> Your registration for <strong>Dhaka Metro Half Marathon 2025</strong> is successfully confirmed. Please find your race details below:<br><br>
 
-						Bib Number: %s
+					    <strong>Bib Number:</strong> %s<br>
+					    <strong>Full Name:</strong> %s<br>
+					    <strong>Gender:</strong> %s<br>
+					    <strong>T-shirt Size:</strong> %s<br>
+					    <strong>Category:</strong> %s<br><br>
 
-						Full Name: %s
+					    <strong>Race Kit Collection – Race Fest</strong><br>
+					    <strong>Date:</strong> 9th July 2025<br>
+					    <strong>Venue:</strong> Parjatan Bhaban, Agargaon (2nd Floor – Auditorium: শৈলপ্রপাত)<br>
+					    <strong>Time:</strong> 11:00 AM – 10:00 PM<br>
+					    <strong>Google Map Location:</strong> <a href="https://maps.app.goo.gl/hpZpcRvLjxajVvNo6">Click here</a><br><br>
 
-						Gender: %s
+					    <em><strong>Note:</strong> All participants must collect their race kits on this day. No kits will be distributed after the Race Fest.</em><br><br>
 
-						T-shirt Size: %s
+					    <strong>Bring with you:</strong><br>
+					    - This confirmation email<br>
+					    - A valid photo ID<br><br>
 
-						Category: %s
+					    <strong>If someone else is collecting on your behalf:</strong><br>
+					    They must bring:<br>
+					    - A signed authorization letter (attached as PDF)<br>
+					    - A copy of your photo ID (printed or digital)<br>
+					    - Their own photo ID<br><br>
 
-						Race Kit Collection – Race Fest
-						Date: 9th July 2025
-						Venue: Parjatan Bhaban, Agargaon (2nd Floor – Auditorium: শৈলপ্রপাত)
-						Time: 11:00 AM – 10:00 PM
-						Google Map Location: https://maps.app.goo.gl/hpZpcRvLjxajVvNo6
+					    <strong>Finisher Medal Policy:</strong><br>
+					    Only runners who complete the race within the official cutoff time will receive a medal.<br>
+					    - 21.1KM: 4 Hours<br>
+					    - 15KM: 2 Hours 30 Minutes<br>
+					    - 7.5KM: 1 Hour 30 Minutes<br>
+					    - 1KM: No cutoff time<br><br>
 
-						Note: All participants must collect their race kits on this day. No kits will be distributed after the Race Fest.
+					    Let’s maintain a respectful, energetic, and festive environment on race day. Kindly avoid unpleasant requests or disputes at the venue.<br><br>
 
-						Please bring this email along with a valid photo ID for kit collection.
+					    <strong>Stay Updated:</strong> Follow our official Facebook page for announcements: <a href="https://www.facebook.com/share/19cGtSR4vK/">Click here</a><br><br>
 
-						If Someone Else is Collecting on Your Behalf
-						If you’re unable to collect your kit in person, someone else may collect it for you. In that case, they must bring:
+					    We can’t wait to see you at the start line!<br><br>
 
-						*A signed authorization letter (format attached as PDF)
-						*A copy of your photo ID (either printed or digital)
-						*Their own photo ID for verification
+					    <strong>Need Help?</strong> Call us: 01914-227556 (10 AM – 6 PM)<br><br>
 
-						Please find the authorization letter format attached in PDF. You may print and fill it in accordingly.
+					    Best Regards,<br>
+					    <strong>Team Triathlon Dreamers<br>
+					    Dhaka Metro Half Marathon</strong>',
+					    esc_html($billing_name),    // %s for Dear [name]
+					    esc_html($bib_id),          // %s for Bib Number
+					    esc_html($billing_name),    // %s for Full Name
+					    esc_html($gender),          // %s for Gender
+					    esc_html($tshirt),          // %s for T-shirt Size
+					    esc_html($race_category)    // %s for Category
+					);
 
-						Finisher Medal Policy:
-						Only runners who successfully complete their race within the official cutoff time will receive a finisher medal.
-
-						21.1KM: 4 Hours
-						15KM: 2 Hours 30 Minutes
-						7.5KM: 1 Hour 30 Minutes
-						1KM: No cutoff time
-
-						Let’s work together to maintain a respectful, energetic, and festive environment on race day. We humbly request all runners and guests to refrain from making any unpleasant requests or disputes at the venue.
-
-						Stay updated! Follow our official Facebook page for race day updates and important announcements: https://www.facebook.com/share/19cGtSR4vK/
-
-						We can’t wait to see you at the start line!
-
-						If you have any questions, feel free to contact our hotline: 01914-227556
-
-						Best Regards,
-						Team Triathlon Dreamers
-						Dhaka Metro Half Marathon',
-						    esc_html($billing_name),    // %s for Dear [name]
-						    esc_html($bib_id),          // %s for Bib Number
-						    esc_html($billing_name),    // %s for Full Name
-						    esc_html($gender),          // %s for Gender
-						    esc_html($tshirt),          // %s for T-shirt Size
-						    esc_html($race_category)    // %s for Category
-						);
 
                 
                    $sms_message = sprintf(
