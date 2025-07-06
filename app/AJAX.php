@@ -179,6 +179,8 @@ public function import_excel_to_orders() {
 
                      // Generate message
                      $billing_name	= $order->get_billing_first_name();
+                     $billing_full_name = $order->get_billing_first_name() . ' ' . $order->get_billing_last_name();
+
                      $gender		= $order->get_meta('billing_gender');
                      // $verification_code  = wp_rand(100000, 999999);
 
@@ -251,7 +253,7 @@ public function import_excel_to_orders() {
 					    ',
 					    esc_html($billing_name),
 					    esc_html($bib_id),
-					    esc_html($billing_name),
+					    esc_html($billing_full_name),
 					    esc_html($gender),
 					    esc_html($tshirt),
 					    esc_html($race_category)
