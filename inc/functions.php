@@ -150,7 +150,6 @@ function display_product_sales_count() {
 	        AND oi.order_item_type = 'line_item'  -- ✅ This line ensures only products
 	    GROUP BY oi.order_item_name
 	    ORDER BY item_count DESC
-	    LIMIT 50
 	");
 
 
