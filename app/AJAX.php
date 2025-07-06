@@ -183,59 +183,80 @@ public function import_excel_to_orders() {
                      // $verification_code  = wp_rand(100000, 999999);
 
                     $email_message = sprintf(
-					    'Dear <strong>%s</strong>,<br><br>
+					    '
+					    <p>Dear <strong>%s</strong>,</p>
 
-					    <strong>Congratulations!</strong> Your registration for <strong>Dhaka Metro Half Marathon 2025</strong> is successfully confirmed. Please find your race details below:<br><br>
+					    <p>🎉 <strong>Congratulations!</strong> Your registration for <strong>Dhaka Metro Half Marathon 2025</strong> is successfully confirmed. Please find your race details below:</p>
 
-					    <strong>Bib Number:</strong> %s<br>
-					    <strong>Full Name:</strong> %s<br>
-					    <strong>Gender:</strong> %s<br>
-					    <strong>T-shirt Size:</strong> %s<br>
-					    <strong>Category:</strong> %s<br><br>
+					    <ul>
+					        <li><strong>Bib Number:</strong> %s</li>
+					        <li><strong>Full Name:</strong> %s</li>
+					        <li><strong>Gender:</strong> %s</li>
+					        <li><strong>T-shirt Size:</strong> %s</li>
+					        <li><strong>Category:</strong> %s</li>
+					    </ul>
 
-					    <strong>Race Kit Collection – Race Fest</strong><br>
-					    <strong>Date:</strong> 9th July 2025<br>
-					    <strong>Venue:</strong> Parjatan Bhaban, Agargaon (2nd Floor – Auditorium: শৈলপ্রপাত)<br>
-					    <strong>Time:</strong> 11:00 AM – 10:00 PM<br>
-					    <strong>Google Map Location:</strong> <a href="https://maps.app.goo.gl/hpZpcRvLjxajVvNo6">Click here</a><br><br>
+					    <hr>
 
-					    <em><strong>Note:</strong> All participants must collect their race kits on this day. No kits will be distributed after the Race Fest.</em><br><br>
+					    <h3>🏁 Race Kit Collection – Race Fest</h3>
+					    <p>
+					        <strong>Date:</strong> 9th July 2025<br>
+					        <strong>Venue:</strong> Parjatan Bhaban, Agargaon (2nd Floor – Auditorium: শৈলপ্রপাত)<br>
+					        <strong>Time:</strong> 11:00 AM – 10:00 PM<br>
+					        <strong>Google Map Location:</strong> <a href="https://maps.app.goo.gl/hpZpcRvLjxajVvNo6" target="_blank">Click here</a>
+					    </p>
 
-					    <strong>Bring with you:</strong><br>
-					    - This confirmation email<br>
-					    - A valid photo ID<br><br>
+					    <p><strong>⚠️ Note:</strong> All participants must collect their race kits on this day. <br>
+					    <strong>No kits will be distributed after the Race Fest.</strong></p>
 
-					    <strong>If someone else is collecting on your behalf:</strong><br>
-					    They must bring:<br>
-					    - A signed authorization letter (attached as PDF)<br>
-					    - A copy of your photo ID (printed or digital)<br>
-					    - Their own photo ID<br><br>
+					    <h3>📌 What to Bring:</h3>
+					    <ul>
+					        <li>This confirmation email</li>
+					        <li>A valid photo ID</li>
+					    </ul>
 
-					    <strong>Finisher Medal Policy:</strong><br>
-					    Only runners who complete the race within the official cutoff time will receive a medal.<br>
-					    - 21.1KM: 4 Hours<br>
-					    - 15KM: 2 Hours 30 Minutes<br>
-					    - 7.5KM: 1 Hour 30 Minutes<br>
-					    - 1KM: No cutoff time<br><br>
+					    <h3>👥 If Someone Else is Collecting on Your Behalf:</h3>
+					    <p>If you’re unable to collect your kit in person, someone else may collect it for you. They must bring:</p>
+					    <ul>
+					        <li>A signed authorization letter (format attached as PDF)</li>
+					        <li>A copy of your photo ID (either printed or digital)</li>
+					        <li>Their own photo ID for verification</li>
+					    </ul>
+					    <p><strong>Authorization Letter PDF:</strong> 
+					    <a href="https://drive.google.com/drive/folders/1aJYo5-o1DGIhyYCMKF8omXz_8iBtIzgY?usp=sharing" target="_blank">Download Here</a></p>
 
-					    Let’s maintain a respectful, energetic, and festive environment on race day. Kindly avoid unpleasant requests or disputes at the venue.<br><br>
+					    <h3>🎖️ Finisher Medal Policy:</h3>
+					    <p>Only runners who successfully complete their race within the official cutoff time will receive a finisher medal:</p>
+					    <ul>
+					        <li>21.1KM: 4 Hours</li>
+					        <li>15KM: 2 Hours 30 Minutes</li>
+					        <li>7.5KM: 1 Hour 30 Minutes</li>
+					        <li>1KM: No cutoff time</li>
+					    </ul>
 
-					    <strong>Stay Updated:</strong> Follow our official Facebook page for announcements: <a href="https://www.facebook.com/share/19cGtSR4vK/">Click here</a><br><br>
+					    <p>Let’s work together to maintain a respectful, energetic, and festive environment on race day. We humbly request all runners and guests to refrain from making any unpleasant requests or disputes at the venue.</p>
 
-					    We can’t wait to see you at the start line!<br><br>
+					    <h3>📢 Stay Updated!</h3>
+					    <p>Follow our official Facebook page for race day updates and announcements:<br>
+					    <a href="https://www.facebook.com/share/19cGtSR4vK/" target="_blank">https://www.facebook.com/share/19cGtSR4vK/</a></p>
 
-					    <strong>Need Help?</strong> Call us: 01914-227556 (10 AM – 6 PM)<br><br>
+					    <p>🏃 We can’t wait to see you at the start line!</p>
 
-					    Best Regards,<br>
+					    <p>📞 For any questions, feel free to contact our hotline: <strong>01914-227556</strong> (10 AM – 6 PM)</p>
+
+					    <br>
+					    <p>Best Regards, <br>
 					    <strong>Team Triathlon Dreamers<br>
-					    Dhaka Metro Half Marathon</strong>',
-					    esc_html($billing_name),    // %s for Dear [name]
-					    esc_html($bib_id),          // %s for Bib Number
-					    esc_html($billing_name),    // %s for Full Name
-					    esc_html($gender),          // %s for Gender
-					    esc_html($tshirt),          // %s for T-shirt Size
-					    esc_html($race_category)    // %s for Category
+					    Dhaka Metro Half Marathon</strong></p>
+					    ',
+					    esc_html($billing_name),
+					    esc_html($bib_id),
+					    esc_html($billing_name),
+					    esc_html($gender),
+					    esc_html($tshirt),
+					    esc_html($race_category)
 					);
+
 
 
                 
