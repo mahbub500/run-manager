@@ -178,53 +178,86 @@ public function import_excel_to_orders() {
                     $subject =  'Important: Collect Your '. $race_name. ' Race Kit!' ;
 
                      // Generate message
-                     $billing_name       = $order->get_billing_first_name();
+                     $billing_name	= $order->get_billing_first_name();
+                     $gender		= $order->get_meta('billing_gender');
                      $verification_code  = wp_rand(100000, 999999);
 
                     $email_message = sprintf(
-		                'Hello %s,<br><br>
-		                Exciting news! Your kit for the <strong>%s</strong> is ready for collection.<br><br>
+						    'Dear %s,
 
-		                <strong>Here are your personalized details:</strong><br>
-		                • Order ID: %s<br>
-		                • Race Category: %s<br>
-		                • Bib Number: %s<br>
-		                • Jersey Size: %s<br><br>
+						Congratulations! Your registration for Dhaka Metro Half Marathon 2025 is successfully confirmed. Please find your race details below:
 
-		                <strong>Don\'t forget to pick up your kit on:</strong><br>
-		                • Date: June 3rd, 2025<br>
-		                • Time: 3:00 PM to 10:00 PM<br>
-		                • Venue: Amphitheater, Hatirjheel, Dhaka<br><br>
+						Bib Number: %s
 
-		                Your unique kit collection verification code is <strong>%s</strong>. Please have this ready when you come to ensure a quick pickup.<br><br>
+						Full Name: %s
 
-		                See you at the collection point!<br><br>
-		                Cheers,<br>
-		                Team Run Bangladesh',
-		                esc_html($billing_name),
-		                esc_html($race_name),
-		                esc_html($order_id),
-		                esc_html($race_category),
-		                esc_html($bib_id),
-		                esc_html($tshirt),
-		                esc_html($verification_code)
-		            );
-                    $sms_message = sprintf(
-		                'Hello %s, Your order id is %s Collect your %s, race kit on June 3, (3-10) PM at Hatirjheel Amphitheater. Your Race Category: %s Bib: %s T-shirt Size: %s your kit collection verification code is %s. Please check your email also. Run Bangladesh',
-		                esc_html($billing_name),
-		                esc_html($order_id),
-		                esc_html($race_name),
-		                esc_html($race_category),
-		                esc_html($bib_id),
-		                esc_html($tshirt),
-		                esc_html($verification_code)
-		            );
+						Gender: %s
+
+						T-shirt Size: %s
+
+						Category: %s
+
+						Race Kit Collection – Race Fest
+						Date: 9th July 2025
+						Venue: Parjatan Bhaban, Agargaon (2nd Floor – Auditorium: শৈলপ্রপাত)
+						Time: 11:00 AM – 10:00 PM
+						Google Map Location: https://maps.app.goo.gl/hpZpcRvLjxajVvNo6
+
+						Note: All participants must collect their race kits on this day. No kits will be distributed after the Race Fest.
+
+						Please bring this email along with a valid photo ID for kit collection.
+
+						If Someone Else is Collecting on Your Behalf
+						If you’re unable to collect your kit in person, someone else may collect it for you. In that case, they must bring:
+
+						*A signed authorization letter (format attached as PDF)
+						*A copy of your photo ID (either printed or digital)
+						*Their own photo ID for verification
+
+						Please find the authorization letter format attached in PDF. You may print and fill it in accordingly.
+
+						Finisher Medal Policy:
+						Only runners who successfully complete their race within the official cutoff time will receive a finisher medal.
+
+						21.1KM: 4 Hours
+						15KM: 2 Hours 30 Minutes
+						7.5KM: 1 Hour 30 Minutes
+						1KM: No cutoff time
+
+						Let’s work together to maintain a respectful, energetic, and festive environment on race day. We humbly request all runners and guests to refrain from making any unpleasant requests or disputes at the venue.
+
+						Stay updated! Follow our official Facebook page for race day updates and important announcements: https://www.facebook.com/share/19cGtSR4vK/
+
+						We can’t wait to see you at the start line!
+
+						If you have any questions, feel free to contact our hotline: 01914-227556
+
+						Best Regards,
+						Team Triathlon Dreamers
+						Dhaka Metro Half Marathon',
+						    esc_html($billing_name),    // %s for Dear [name]
+						    esc_html($bib_id),          // %s for Bib Number
+						    esc_html($billing_name),    // %s for Full Name
+						    esc_html($gender),          // %s for Gender
+						    esc_html($tshirt),          // %s for T-shirt Size
+						    esc_html($race_category)    // %s for Category
+						);
+
+                
+                   $sms_message = sprintf(
+					    'Dear %s, your BIB No: %s, Gender: %s, Category: %s for the Dhaka Metro Half Marathon 2025. Please collect your BIB on 9th July from 11:00 AM - 10:00 PM at Parjatan Bhaban, Level-2, Auditorium Name: Shoilo Propat. Google Map Link: https://maps.app.goo.gl/hpZpcRvLjxajVvNo6. For questions, contact us at 01914227556 (10 AM - 6 PM). Best regards, Team Triathlon Dreamers.',
+					    esc_html($billing_name),
+					    esc_html($bib_id),
+					    esc_html($gender),
+					    esc_html($race_name)
+					);
+
 
 
                      // Update meta and send notifications
-                     if (!$order->get_meta('verification_code')) {
-                         $order->update_meta_data('verification_code', $verification_code);
-                     }
+                     // if (!$order->get_meta('verification_code')) {
+                     //     $order->update_meta_data('verification_code', $verification_code);
+                     // }
 
                      // Send email and SMS if not already sent
                      if (!$order->get_meta('is_email_sent')) {
@@ -245,11 +278,6 @@ public function import_excel_to_orders() {
                          // Save that SMS was sent for this order
                          $order->update_meta_data( 'is_sms_sent', true );
                          $order->save();
-
-                         // Count how many SMS have been sent
-                        $sms_sent_count = (int) get_option( 'total_sms_sent_count', 0 );
-                        $sms_sent_count++;
-                        update_option( 'total_sms_sent_count', $sms_sent_count );
 
                          // Logging
                         $logger->info( "SMS sent to: " . $order->get_billing_phone(), ['source' => 'import_excel'] );
