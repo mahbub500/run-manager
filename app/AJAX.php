@@ -145,18 +145,18 @@ public function import_excel_to_orders() {
         $final_data     = [];
         $campain_name   = Helper::get_option( 'run-manager_basic', 'campain_name' );
 
-        foreach ($sheetData as $row) {
-		    if (!empty($row['A'])) {
-
+       foreach ($sheetData as $row) {
+		    if (!empty($row['A']) && is_numeric($row['A'])) {
 		        $final_data[] = [
-		            'order_id'      => isset($row['A']) ? sanitize_text_field($row['A']) : null,
+		            'order_id'      => sanitize_text_field($row['A']),
 		            'bib_id'        => isset($row['C']) ? sanitize_text_field($row['C']) : null,
 		            'tshirt_size'   => isset($row['D']) ? sanitize_text_field($row['D']) : null,
-		            'race_name' 	=> isset($row['B']) ? sanitize_text_field($row['B']) : null,
+		            'race_name'     => isset($row['B']) ? sanitize_text_field($row['B']) : null,
 		            'race_category' => isset($row['E']) ? sanitize_text_field($row['E']) : null,
 		        ];
 		    }
-		}   
+		}
+   
          // Process each order
          foreach ($final_data as $row) {
             $order_id   	= $row['order_id'] ?? null;
@@ -180,7 +180,7 @@ public function import_excel_to_orders() {
                      // Generate message
                      $billing_name	= $order->get_billing_first_name();
                      $gender		= $order->get_meta('billing_gender');
-                     $verification_code  = wp_rand(100000, 999999);
+                     // $verification_code  = wp_rand(100000, 999999);
 
                     $email_message = sprintf(
 						    'Dear %s,
@@ -249,9 +249,8 @@ public function import_excel_to_orders() {
 					    esc_html($billing_name),
 					    esc_html($bib_id),
 					    esc_html($gender),
-					    esc_html($race_name)
+					    esc_html($race_category)
 					);
-
 
 
                      // Update meta and send notifications
@@ -259,7 +258,7 @@ public function import_excel_to_orders() {
                      //     $order->update_meta_data('verification_code', $verification_code);
                      // }
 
-                     // Send email and SMS if not already sent
+                     Send email and SMS if not already sent
                      if (!$order->get_meta('is_email_sent')) {
                          $this->send_certificate_email($order->get_billing_email(), $email_message, $subject, $order_id);
                          $order->update_meta_data('is_email_sent', true);
