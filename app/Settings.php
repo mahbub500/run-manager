@@ -118,8 +118,8 @@ class Settings extends Base {
 											'disabled'  => false, // true|false
 											'default'   => 'off'
 										],
-										'rm_email_message' => [
-											'id'      => 'rm_email_message',
+										'email_message' => [
+											'id'      => 'email_message',
 											'label'     => __( 'Email Message', 'run-manager' ),
 											'type'      => 'wysiwyg',
 											'desc'      => __( 'Email placeholder ##name##, ##bib_number##, ##event_date## ', 'run-manager' ),
@@ -131,8 +131,8 @@ class Settings extends Base {
 											'media_buttons' => false, // true|false
 											'default'       => 'Hello World'
 										],
-										'rm_sms_message' => [
-											'id'      => 'rm_sms_message',
+										'sms_message' => [
+											'id'      => 'sms_message',
 											'label'     => __( 'SMS Message', 'run-manager' ),
 											'type'      => 'wysiwyg',
 											'desc'      => __( 'SMS placeholder ##name##, ##bib_number##, ##event_date## ', 'run-manager' ),
