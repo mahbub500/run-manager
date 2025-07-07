@@ -118,6 +118,19 @@ class Settings extends Base {
 											'disabled'  => false, // true|false
 											'default'   => 'off'
 										],
+										'rm_email_message' => [
+											'id'      => 'rm_email_message',
+											'label'     => __( 'Email Message', 'run-manager' ),
+											'type'      => 'wysiwyg',
+											'desc'      => __( 'Email placeholder ##name##, ##bib_number##, ##event_date## ', 'run-manager' ),
+											// 'class'     => '',
+											'width'     => '100%',
+											'rows'      => 5,
+											'teeny'     => true,
+											'text_mode'     => false, // true|false
+											'media_buttons' => false, // true|false
+											'default'       => 'Hello World'
+										],
 									],
 								],
 								
