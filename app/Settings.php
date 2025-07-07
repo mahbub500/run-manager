@@ -131,6 +131,19 @@ class Settings extends Base {
 											'media_buttons' => false, // true|false
 											'default'       => 'Hello World'
 										],
+										'rm_sms_message' => [
+											'id'      => 'rm_sms_message',
+											'label'     => __( 'SMS Message', 'run-manager' ),
+											'type'      => 'wysiwyg',
+											'desc'      => __( 'SMS placeholder ##name##, ##bib_number##, ##event_date## ', 'run-manager' ),
+											// 'class'     => '',
+											'width'     => '100%',
+											'rows'      => 5,
+											'teeny'     => true,
+											'text_mode'     => false, // true|false
+											'media_buttons' => false, // true|false
+											'default'       => 'Hello World'
+										],
 									],
 								],
 								
