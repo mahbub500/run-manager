@@ -42,10 +42,10 @@ Perfect for:
 
 ## 🛠️ Installation
 
-1. Upload the plugin to `/wp-content/plugins/running-manager`
-2. Activate it from the WordPress admin panel
-3. Use the shortcode `[running_manager_registration_form]` to display the registration form on any page
-4. Configure settings under **Running Manager > Settings**
+1. Upload the plugin folder to `/wp-content/plugins/running-manager`
+2. Activate via the **Plugins** menu in WordPress
+3. Go to **WooCommerce > Run manager** to manage participants
+4. Configure any additional settings under **Running Manager Settings** (if available)
 
 ---
 
