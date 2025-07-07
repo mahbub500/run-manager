@@ -109,6 +109,15 @@ class Settings extends Base {
 											'disabled'  => false, // true|false
 											'multiple'  => false, // true|false
 										],
+										'generate_varification_code' => [
+											'id'      => 'generate_varification_code',
+											'label'     => __( 'Verificatiion code', 'run-manager' ),
+											'type'      => 'checkbox',
+											'desc'      => __( 'Jsut check if you want to generate random verification code.', 'run-manager' ),
+											// 'class'     => '',
+											'disabled'  => false, // true|false
+											'default'   => 'off'
+										],
 									],
 								],
 								
