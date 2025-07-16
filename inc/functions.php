@@ -185,6 +185,24 @@ function get_optional_product_id() {
     return (int) $optional_product_id;
 }
 
+if ( ! function_exists( 'replace_placeholders' ) ) {
+	function replace_placeholders( $content, $data = [] ) {
+   
+	    $placeholders = [
+	        '{name}'        => isset( $data['name'] ) ? $data['name'] : '',
+	        '{email}'       => isset( $data['email'] ) ? $data['email'] : '',
+	        '{bib_number}'  => isset( $data['bib_number'] ) ? $data['bib_number'] : '',
+	        '{event_date}'  => isset( $data['event_date'] ) ? $data['event_date'] : '',
+	        '{tshirt_size}' => isset( $data['tshirt_size'] ) ? $data['tshirt_size'] : '',
+	        '{gender}'      => isset( $data['gender'] ) ? $data['gender'] : '',
+	        '{category}'    => isset( $data['category'] ) ? $data['category'] : '',
+	    ];
+
+	    return strtr( $content, $placeholders );
+	}
+
+}
+
 
 
 
