@@ -240,13 +240,14 @@ public function import_excel_to_orders() {
 
 
                 
-                   $sms_message = sprintf(
-					    'Dear %s, your BIB No: %s, Gender: %s, Category: %s for the Dhaka Metro Half Marathon 2025. Please collect your BIB on 9th July from 11:00 AM - 10:00 PM at Parjatan Bhaban, Level-2, Auditorium Name: Shoilo Propat. Google Map Link: https://maps.app.goo.gl/hpZpcRvLjxajVvNo6. For questions, contact us at 01914227556 (10 AM - 6 PM). Best regards, Team Triathlon Dreamers.',
-					    esc_html($billing_name),
-					    esc_html($bib_id),
-					    esc_html($gender),
-					    esc_html($race_category)
+                  	$sms_message = sprintf(
+					    'Hi %s, Your registration for the Protiki Marathon 2025 Order ID: %s, Bib: %s, Jersey: %s, is confirmed! Kit collection: July 17th, 7:00 PM - 10:00 PM at Bangladesh China Friendship Conference Center Ground, Sher-e-Bangla Nagar, Agargaon, Dhaka. Thanks, Ministry of Youth & Sports.',
+					    esc_html($billing_name),     // Full name (first + last)
+					    esc_html($order_id),         // Order ID
+					    esc_html($bib_id),           // Bib Number
+					    esc_html($tshirt)            // Jersey/T-shirt size
 					);
+
 
 
                      // Update meta and send notifications
