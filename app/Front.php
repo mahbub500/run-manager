@@ -56,7 +56,7 @@ class Front extends Base {
 
 		
 
-		// Helper::pri( $message ) ;
+		Helper::pri( $message ) ;
 	}
 
 	
