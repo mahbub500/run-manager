@@ -130,6 +130,8 @@ public function import_excel_to_orders() {
     $logger = wc_get_logger();
     $logger->info("Processing file: " . $file, ['source' => 'import_excel']);
 
+    
+
     try {
         // Check if PhpSpreadsheet is available
         if (!class_exists('PhpOffice\PhpSpreadsheet\IOFactory')) {
@@ -143,7 +145,14 @@ public function import_excel_to_orders() {
         // Extract headers from the first row
         $headers        = array_shift($sheetData);
         $final_data     = [];
+
         $campain_name   = Helper::get_option( 'run-manager_basic', 'campain_name' );
+
+        $email_checkbox = Helper::get_option( 'run-manager_basic', 'send_email_check' );
+        $sms_checkbox   = Helper::get_option( 'run-manager_basic', 'send_sms_check' );
+        $email_message  = Helper::get_option( 'run-manager_basic', 'email_message' );
+        $email_subject  = Helper::get_option( 'run-manager_basic', 'email_subject' );
+        $sms_message    = Helper::get_option( 'run-manager_basic', 'sms_message' );
 
        foreach ($sheetData as $row) {
 		    if (!empty($row['A']) && is_numeric($row['A'])) {
@@ -175,100 +184,29 @@ public function import_excel_to_orders() {
                      $order->update_meta_data('race_category', $bib_id);
                      $order->save();
 
-                    $subject =  'Important: Collect Your '. $race_name. ' Race Kit!' ;
 
                      // Generate message
-                     $billing_name	= $order->get_billing_first_name();
-                     $billing_full_name = $order->get_billing_first_name() . ' ' . $order->get_billing_last_name();
+                     $billing_name		= $order->get_billing_first_name();
+                     $billing_full_name	= $order->get_billing_first_name() . ' ' . $order->get_billing_last_name();
 
                      $gender		= $order->get_meta('billing_gender');
                      // $verification_code  = wp_rand(100000, 999999);
 
-                    $email_message = sprintf(
-					    '
-					    <p>Dear <strong>%s</strong>,</p>
-
-					    <p>🎉 <strong>Congratulations!</strong> Your registration for <strong>Dhaka Metro Half Marathon 2025</strong> is successfully confirmed. Please find your race details below:</p>
-
-					    <ul>
-					        <li><strong>Bib Number:</strong> %s</li>
-					        <li><strong>Full Name:</strong> %s</li>
-					        <li><strong>Gender:</strong> %s</li>
-					        <li><strong>T-shirt Size:</strong> %s</li>
-					        <li><strong>Category:</strong> %s</li>
-					    </ul>
-
-					    <hr>
-
-					    <h3>🏁 Race Kit Collection – Race Fest</h3>
-					    <p>
-					        <strong>Date:</strong> 9th July 2025<br>
-					        <strong>Venue:</strong> Parjatan Bhaban, Agargaon (2nd Floor – Auditorium: শৈলপ্রপাত)<br>
-					        <strong>Time:</strong> 11:00 AM – 10:00 PM<br>
-					        <strong>Google Map Location:</strong> <a href="https://maps.app.goo.gl/hpZpcRvLjxajVvNo6" target="_blank">Click here</a>
-					    </p>
-
-					    <p><strong>⚠️ Note:</strong> All participants must collect their race kits on this day. <br>
-					    <strong>No kits will be distributed after the Race Fest.</strong></p>
-
-					    <h3>📌 What to Bring:</h3>
-					    <ul>
-					        <li>This confirmation email</li>
-					        <li>A valid photo ID</li>
-					    </ul>
-
-					    <h3>👥 If Someone Else is Collecting on Your Behalf:</h3>
-					    <p>If you’re unable to collect your kit in person, someone else may collect it for you. They must bring:</p>
-					    <ul>
-					        <li>A signed authorization letter (format attached as PDF)</li>
-					        <li>A copy of your photo ID (either printed or digital)</li>
-					        <li>Their own photo ID for verification</li>
-					    </ul>
-					    <p><strong>Authorization Letter PDF:</strong> 
-					    <a href="https://drive.google.com/drive/folders/1aJYo5-o1DGIhyYCMKF8omXz_8iBtIzgY?usp=sharing" target="_blank">Download Here</a></p>
-
-					    <h3>🎖️ Finisher Medal Policy:</h3>
-					    <p>Only runners who successfully complete their race within the official cutoff time will receive a finisher medal:</p>
-					    <ul>
-					        <li>21.1KM: 4 Hours</li>
-					        <li>15KM: 2 Hours 30 Minutes</li>
-					        <li>7.5KM: 1 Hour 30 Minutes</li>
-					        <li>1KM: No cutoff time</li>
-					    </ul>
-
-					    <p>Let’s work together to maintain a respectful, energetic, and festive environment on race day. We humbly request all runners and guests to refrain from making any unpleasant requests or disputes at the venue.</p>
-
-					    <h3>📢 Stay Updated!</h3>
-					    <p>Follow our official Facebook page for race day updates and announcements:<br>
-					    <a href="https://www.facebook.com/share/19cGtSR4vK/" target="_blank">https://www.facebook.com/share/19cGtSR4vK/</a></p>
-
-					    <p>🏃 We can’t wait to see you at the start line!</p>
-
-					    <p>📞 For any questions, feel free to contact our hotline: <strong>01914-227556</strong> (10 AM – 6 PM)</p>
-
-					    <br>
-					    <p>Best Regards, <br>
-					    <strong>Team Triathlon Dreamers<br>
-					    Dhaka Metro Half Marathon</strong></p>
-					    ',
-					    esc_html($billing_name),
-					    esc_html($bib_id),
-					    esc_html($billing_full_name),
-					    esc_html($gender),
-					    esc_html($tshirt),
-					    esc_html($race_category)
-					);
-
-
-
-                
-                   $sms_message = sprintf(
-					    'Dear %s, your BIB No: %s, Gender: %s, Category: %s for the Dhaka Metro Half Marathon 2025. Please collect your BIB on 9th July from 11:00 AM - 10:00 PM at Parjatan Bhaban, Level-2, Auditorium Name: Shoilo Propat. Google Map Link: https://maps.app.goo.gl/hpZpcRvLjxajVvNo6. For questions, contact us at 01914227556 (10 AM - 6 PM). Best regards, Team Triathlon Dreamers.',
-					    esc_html($billing_name),
-					    esc_html($bib_id),
-					    esc_html($gender),
-					    esc_html($race_category)
-					);
+                    
+					$user_data = [
+					    'name'        => esc_html( $billing_name ),
+					    'bib_number'  => esc_html( $bib_id ),
+					    'full_name'   => esc_html( $billing_full_name ),
+					    'gender'      => esc_html( $gender ),
+					    'tshirt_size' => esc_html( $tshirt ),
+					    'category'    => esc_html( $race_category ),
+					];
+					
+					
+                    $email_subject 	= replace_placeholders( $email_subject,  $user_data );
+                    $email_message 	= replace_placeholders( $email_message,  $user_data );
+                    $sms_message 	= replace_placeholders( $sms_message,  $user_data );               
+                  
 
 
                      // Update meta and send notifications
@@ -277,24 +215,23 @@ public function import_excel_to_orders() {
                      // }
 
                      // Send email and SMS if not already sent
-                     if (!$order->get_meta('is_email_sent')) {
-                         $this->send_certificate_email($order->get_billing_email(), $email_message, $subject, $order_id);
+                   
+                    if ( ! $order->get_meta( 'is_email_sent' ) && $email_checkbox === 'on' ) {
+                         $this->send_certificate_email($order->get_billing_email(), $email_message, $email_subject, $order_id);
                          $order->update_meta_data('is_email_sent', true);
                          $order->save();
                          $logger->info("Email sent to: " . $order->get_billing_email(), ['source' => 'import_excel']);
                      }
 
-                    if ( ! $order->get_meta('is_sms_sent') ) {
+                    if ( ! $order->get_meta('is_sms_sent') && $sms_checkbox == 'on' ) {
 
-                         $raw_phone     = $order->get_billing_phone();
-                         $cleaned_phone = clean_phone_number( $raw_phone );
-                         // sms_send( $cleaned_phone, $sms_message );
-
+                        $raw_phone     = $order->get_billing_phone();
+                        $cleaned_phone = clean_phone_number( $raw_phone );
                         send_sms_to_phone( $cleaned_phone, $sms_message );
 
                          // Save that SMS was sent for this order
-                         $order->update_meta_data( 'is_sms_sent', true );
-                         $order->save();
+                        $order->update_meta_data( 'is_sms_sent', true );
+                        $order->save();
 
                          // Logging
                         $logger->info( "SMS sent to: " . $order->get_billing_phone(), ['source' => 'import_excel'] );

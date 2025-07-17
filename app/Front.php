@@ -39,24 +39,28 @@ class Front extends Base {
 
 	public function head() {	
 
-		$email_message 	= Helper::get_option( 'run-manager_basic', 'email_message' );
-		$sms_message 	= Helper::get_option( 'run-manager_basic', 'sms_message' );
+		// $email_message 	= Helper::get_option( 'run-manager_basic', 'email_message' );
+		// $sms_message 	= Helper::get_option( 'run-manager_basic', 'sms_message' );
+		// $email_checkbox	= Helper::get_option( 'run-manager_basic', 'send_email_check' );
 
-		$user_data = [
-		    'name'        => 'Mahbub Rahman',
-		    'email'       => 'mahbub@example.com',
-		    'bib_number'  => 'BIB1024',
-		    'event_date'  => 'July 15, 2025',
-		    'tshirt_size' => 'M',
-		    'gender'      => 'Male',
-		    'category'    => '10K Run',
-		];
+		// $user_data = [
+		//     'name'        => 'Mahbub Rahman',
+		//     'email'       => 'mahbub@example.com',
+		//     'bib_number'  => 'BIB1024',
+		//     'event_date'  => 'July 15, 2025',
+		//     'tshirt_size' => 'M',
+		//     'gender'      => 'Male',
+		//     'category'    => '10K Run',
+		// ];
 
-		$message = replace_placeholders( $email_message,  $user_data );
+		// 	$message = replace_placeholders( $email_message,  $user_data );
+		// if ( $email_checkbox == 'on' ) {
+		// 	Helper::pri( $email_checkbox ) ;
+		// }
+
+
 
 		
-
-		Helper::pri( $message ) ;
 	}
 
 	

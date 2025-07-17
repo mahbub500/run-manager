@@ -109,14 +109,24 @@ class Settings extends Base {
 											'disabled'  => false, // true|false
 											'multiple'  => false, // true|false
 										],
-										'generate_varification_code' => [
-											'id'      => 'generate_varification_code',
-											'label'     => __( 'Verificatiion code', 'run-manager' ),
+										'send_email_check' => [
+											'id'      => 'send_email_check',
+											'label'     => __( 'Send Eamil', 'run-manager' ),
 											'type'      => 'checkbox',
-											'desc'      => __( 'Jsut check if you want to generate random verification code.', 'run-manager' ),
+											'desc'      => __( 'Jsut check if you want to send email.', 'run-manager' ),
 											// 'class'     => '',
 											'disabled'  => false, // true|false
 											'default'   => 'off'
+										],
+										'email_subject' => [
+											'id'        => 'email_subject',
+											'label'     => __( 'Email Subject', 'run-manager' ),
+											'type'      => 'text',
+											'desc'      => __( 'Enter your Email Subject.', 'run-manager' ),
+											// 'class'     => '',
+											'default'   => 'DMHM2025',
+											'readonly'  => false, // true|false
+											'disabled'  => false, // true|false
 										],
 										'email_message' => [
 											'id'      => 'email_message',
@@ -130,6 +140,15 @@ class Settings extends Base {
 											'text_mode'     => false, // true|false
 											'media_buttons' => false, // true|false
 											'default'       => 'Hello World'
+										],
+										'send_sms_check' => [
+											'id'      => 'send_sms_check',
+											'label'     => __( 'Send SMS', 'run-manager' ),
+											'type'      => 'checkbox',
+											'desc'      => __( 'Jsut check if you want to send SMS to mobile.', 'run-manager' ),
+											// 'class'     => '',
+											'disabled'  => false, // true|false
+											'default'   => 'off'
 										],
 										'sms_message' => [
 											'id'      => 'sms_message',
