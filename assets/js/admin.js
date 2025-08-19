@@ -226,16 +226,20 @@ jQuery(document).ready(function ($) {
             }
         });
     });
+    
+    $('.wrap notify-wrap').hide();
 
     $('.wph-tabs .wph-tab').on('click', function() {
         var target = $(this).data('target');
         
-        if(target === 'wph-tab-run-manager_basic-run-manager_sms_manager') {
+        if (target === 'wph-tab-run-manager_basic-run-manager_sms_manager') {
             // Hide when SMS & Email tab clicked
             $('.wph-controls-wrapper.wph-nonsticky-controls').hide();
+            $('.wrap.notify-wrap').show(); // ✅ FIXED
         } else {
             // Show when any other tab clicked
             $('.wph-controls-wrapper.wph-nonsticky-controls').show();
+            $('.wrap.notify-wrap').hide(); // ✅ FIXED
         }
     });
 
