@@ -79,7 +79,7 @@ class Settings extends Base {
 								],
 								'run-manager_sms_manager' => [
 									'id'        => 'run-manager_sms_manager',
-									'label'     => __( 'SMS & Email', 'run-manager' ),
+									'label'     => __( 'Email & SMS', 'run-manager' ),
 									'icon'      => 'dashicons-editor-table',
 									// 'color'		=> '#28c9ee',
 									'hide_form'	=> true,
@@ -109,10 +109,9 @@ class Settings extends Base {
 											'desc'      => __( 'This is a select field.', 'run-manager' ),
 											// 'class'     => '',
 											'options'   =>  Helper::get_posts(  array(
-																        'post_type'      => 'product',
-																        'posts_per_page' => -1,
-																        'post_status'    => 'publish',
-																    ) )  ,
+														'post_type'      => 'product',
+														'posts_per_page' => -1,
+														'post_status'    => 'publish',) )  ,
 											'default'   => 'option_2',
 											'disabled'  => false, // true|false
 											'multiple'  => false, // true|false
