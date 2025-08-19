@@ -275,6 +275,11 @@ jQuery(document).ready(function ($) {
                 if(response.success){
                     $('#notify_save_msg').html('<span style="color:green;">'+response.data.message+'</span>');
                     toggleEditors();
+                    setTimeout(function() {
+                        $('#notify_save_msg').fadeOut('slow', function() {
+                            $(this).html('').show(); // Clear content and reset display
+                        });
+                    }, 3000);
                 } else {
                     alert(response.data.message || "Something went wrong.");
                 }
