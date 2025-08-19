@@ -180,10 +180,49 @@ function display_product_sales_count() {
     echo '</table>';
 }
 
-function get_optional_product_id() {
-	$optional_product_id   = Helper::get_option( 'run-manager_basic', 'select_optional_product' );
-    return (int) $optional_product_id;
+if ( ! function_exists( 'notify_placeholders' ) ) {
+
+    /**
+     * Get placeholder list or replace placeholders in content
+     *
+     * @param string $content Optional. Content to replace placeholders.
+     * @param array  $data    Optional. Data to replace placeholders.
+     * @return array|string
+     */
+    function notify_placeholders( $content = '', $data = [] ) {
+        // Define all placeholders and their descriptions
+        $placeholders = [
+            '{{full_name}}'    => $data['full_name'] ?? '',
+            '{{bib_number}}'   => $data['bib_number'] ?? '',
+            '{{tshirt_size}}'  => $data['tshirt_size'] ?? '',
+            '{{order_id}}'     => $data['order_id'] ?? '',
+            '{{race_category}}'=> $data['race_category'] ?? '',
+        ];
+
+        // If content is provided, replace placeholders
+        if ( ! empty( $content ) ) {
+            return str_replace( array_keys( $placeholders ), array_values( $placeholders ), $content );
+        }
+
+        // Otherwise, return placeholder list with description
+        $list = [];
+        foreach ( $placeholders as $key => $value ) {
+            $list[$key] = $value; // Key = placeholder, Value = description
+        }
+
+        return $list;
+    }
 }
+
+
+if ( ! function_exists( 'get_optional_product_id' ) ) {
+	function get_optional_product_id() {
+		$optional_product_id   = Helper::get_option( 'run-manager_basic', 'select_optional_product' );
+	    return (int) $optional_product_id;
+	}
+}
+
+
 
 
 

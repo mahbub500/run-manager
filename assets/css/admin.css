@@ -126,14 +126,4 @@
 
 }
 
-.notify-placeholders .placeholder::before {
-    content: "{";
-    color: #333333;
-    font-weight: normal;
-}
 
-.notify-placeholders .placeholder::after {
-    content: "}";
-    color: #333333;
-    font-weight: normal;
-}

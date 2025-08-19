@@ -21,6 +21,8 @@ use WpPluginHub\Run_Manager\Helper;
     // Load data
     $saved_data = get_option('notify_wysiwyg_data');
     $data = $saved_data ? json_decode($saved_data, true) : [];
+    $placeholders = notify_placeholders(); // Get all placeholders with 
+
 
     ?>
 
@@ -94,13 +96,14 @@ use WpPluginHub\Run_Manager\Helper;
                 <!-- Placeholder list -->
         
             </div>
-            <div class="notify-placeholders">
-                <strong>Available Placeholders:</strong>
-                {{full_name}} - Participant’s full name<br>
-                {{bib_number}} - Participant’s bib number<br>
-                {{order_id}} - Order ID<br>
-                
-            </div>
+           
+
+        <div class="notify-placeholders">
+            <strong>Available Placeholders:</strong><br>
+            <?php foreach ($placeholders as $key => $desc) : ?>
+                <span class="placeholder"><?php echo esc_html($key); ?></span> <?php echo esc_html($desc); ?><br>
+            <?php endforeach; ?>
+        </div>
 
             <!-- With a custom HTML button -->
             <button type="button" id="save_notify_data" class="button button-primary">💾 Save Data</button>
