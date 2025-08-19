@@ -769,6 +769,32 @@ public function import_excel_to_orders() {
             wp_send_json_error( [ 'message' => 'Product not found in cart.' ] );
         }
 
+    public function save_notify_data() {
+
+        // Security check
+        if ( ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( $_POST['_wpnonce']  ) ) {
+            wp_send_json_error( [ 'message' => 'Security check failed!' ] );
+        }
+
+        // Prepare data
+        $data = [
+            'test_mode'    => isset($_POST['test_mode']) ? 1 : 0,
+            'test_email'   => sanitize_email($_POST['test_email'] ?? ''),
+            'test_mobile'  => sanitize_text_field($_POST['test_mobile'] ?? ''),
+            'notify_email' => isset($_POST['notify_email']) ? 1 : 0,
+            'notify_sms'   => isset($_POST['notify_sms']) ? 1 : 0,
+            'email_content'=> wp_kses_post($_POST['email_content'] ?? ''),
+            'sms_content'  => wp_kses_post($_POST['sms_content'] ?? ''),
+        ];
+
+        // Save data in a single option
+        update_option('notify_wysiwyg_data', wp_json_encode($data));
+
+        // Return success
+        wp_send_json_success( [ 'message' => 'Settings saved successfully!' ] );
+    }
+
+
 
         
 

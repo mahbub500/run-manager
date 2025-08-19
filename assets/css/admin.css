@@ -50,63 +50,49 @@
   color: #333;
 }
 
-.notify-wrap {
-  max-width: 800px;
-  background: #fff;
-  padding: 20px 30px;
-  border-radius: 10px;
-  box-shadow: 0 3px 12px rgba(0,0,0,0.1);
-  margin-top: 20px;
-}
+ .notify-wrap {
+        max-width: 900px;
+        background: #fff;
+        padding: 20px 30px;
+        border-radius: 10px;
+        box-shadow: 0 3px 12px rgba(0,0,0,0.05);
+        margin-top: 20px;
+    }
 
-/* Title */
-.notify-title {
-    font-size: 24px;
-    margin-bottom: 20px;
-    color: #2271b1;
-}
+    .notify-title {
+        font-size: 22px;
+        margin-bottom: 20px;
+        color: #2271b1;
+    }
 
-/* Form options */
-.notify-option {
-    margin-bottom: 25px;
-    padding: 15px;
-    border: 1px solid #e2e2e2;
-    border-radius: 8px;
-    background: #fafafa;
-    transition: 0.2s;
-}
-.notify-option:hover {
-    background: #f0f8ff;
-    border-color: #cce4f7;
-}
+    .notify-option {
+        margin-bottom: 25px;
+        padding: 15px;
+        border: 1px solid #e2e2e2;
+        border-radius: 8px;
+        background: #fafafa;
+    }
 
-.notify-label {
-    font-size: 16px;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    cursor: pointer;
-}
+    .notify-label {
+        font-size: 15px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
 
-/* Editor styling */
-.notify-editor {
-    margin-top: 10px;
-}
-.notify-editor textarea {
-    width: 100%;
-    min-height: 180px;
-    border-radius: 6px;
-    border: 1px solid #ddd;
-}
+    .notify-editor-wrapper {
+        margin-top: 10px;
+        padding: 10px;
+        background: #fff;
+        border: 1px solid #e2e2e2;
+        border-radius: 6px;
+    }
 
-/* Save button */
-.notify-save-btn {
-    font-size: 16px;
-    padding: 10px 25px;
-    border-radius: 6px;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-}
-
+    .notify-editor-wrapper input.regular-text {
+        width: 100%;
+        max-width: 400px;
+        padding: 6px 8px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+    }

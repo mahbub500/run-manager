@@ -214,6 +214,7 @@ final class Plugin {
 		$ajax->all( 'clear_cart', 'custom_clear_cart' );
 		$ajax->all( 'add_optional_product_to_cart', 'add_optional_product_to_cart' );
 		$ajax->all( 'remove_product_from_cart', 'remove_product_from_cart' );
+		$ajax->priv( 'save_notify_data', 'save_notify_data' );
 
 	}
 

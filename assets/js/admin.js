@@ -247,12 +247,49 @@ jQuery(document).ready(function ($) {
         $('#test_mode_container').toggle($('#test_mode').is(':checked'));
     }
 
-    // Run once on page load
+    // Initial toggle on page load
     toggleEditors();
 
-    // Bind to change
-    $('#notify_email, #notify_sms, #test_mode').on('change', function(){
-        toggleEditors();
+    // Toggle on change
+    $('#notify_email, #notify_sms, #test_mode').on('change', toggleEditors);
+
+    // AJAX Save
+    $('#save_notify_data').on('click', function(){
+
+        var email_content = tinyMCE.get('email_content') ? tinyMCE.get('email_content').getContent() : $('#email_content').val();
+        var sms_content = tinyMCE.get('sms_content') ? tinyMCE.get('sms_content').getContent() : $('#sms_content').val();
+
+        runm_modal();``
+        $.ajax({
+            url: RUN_MANAGER.ajaxurl,
+            type: 'POST',
+            data: {
+                action: 'save_notify_data',
+                _wpnonce: RUN_MANAGER._wpnonce,
+                test_mode: $('#test_mode').is(':checked') ? 1 : 0,
+                test_email: $('#test_email').val(),
+                test_mobile: $('#test_mobile').val(),
+                notify_email: $('#notify_email').is(':checked') ? 1 : 0,
+                notify_sms: $('#notify_sms').is(':checked') ? 1 : 0,
+                email_content: email_content,
+                sms_content: sms_content
+            },
+            success: function(response){
+                if(response.success){
+                    $('#notify_save_msg').html('<span style="color:green;">'+response.data.message+'</span>');
+
+                    // Re-run toggle after saving
+                    toggleEditors();
+                } else {
+                    alert(response.data.message || "Something went wrong.");
+                }
+                runm_modal( false );
+            },
+            error: function(){
+                runm_modal( false );
+                alert('Failed to save data.');
+            }
+        });
     });
 
 
