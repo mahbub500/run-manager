@@ -38,13 +38,13 @@ use WpPluginHub\Run_Manager\Helper;
                 <div id="test_mode_container" class="notify-editor-wrapper" style="<?php echo !empty($data['test_mode']) ? '' : 'display:none;'; ?>">
                     <p>
                         <label>Test Email:</label><br>
-                        <input type="email" name="test_email" value="<?php echo esc_attr($data['test_email'] ?? ''); ?>" class="regular-text">
+                        <input type="email" id="test_email" name="test_email" value="<?php echo esc_attr($data['test_email'] ?? ''); ?>" class="regular-text">
                         <span id="test_email_msg" style="color:red; margin-left:10px; font-size:12px;">Must be a valid email.</span>
                     </p>
                     <p>
                         <label>Test Mobile:</label><br>
-                        <input type="text" name="test_mobile" value="<?php echo esc_attr($data['test_mobile'] ?? ''); ?>" class="regular-text">
-                         <span id="test_mobile_msg" style="color:red; margin-left:10px; font-size:12px;">Must be 11 digits.</span>
+                        <input type="number" id="test_mobile" name="test_mobile" value="<?php echo esc_attr($data['test_mobile'] ?? ''); ?>" class="regular-text">
+                        <span id="test_mobile_msg" style="color:red; margin-left:10px; font-size:12px;">Must be 11 digits.</span>
                     </p>
                 </div>
             </div>
@@ -60,7 +60,11 @@ use WpPluginHub\Run_Manager\Helper;
                     wp_editor(
                         $data['email_content'] ?? '',
                         'email_content',
-                        ['textarea_name' => 'email_content', 'textarea_rows' => 10, 'media_buttons' => false, 'teeny' => true]
+                        [   'textarea_name' => 'email_content', 
+                            'textarea_rows' => 20, 
+                            'media_buttons' => false, 
+                            'teeny' => true, 
+                            'editor_height'  => 300  ]
                     );
                     ?>
                 </div>
@@ -79,13 +83,23 @@ use WpPluginHub\Run_Manager\Helper;
                         'sms_content',
                         [
                             'textarea_name' => 'sms_content',
-                            'textarea_rows' => 6,
+                            'textarea_rows' =>20,
                             'media_buttons' => false,
-                            'teeny' => true
+                            'teeny' => true,
+                            'editor_height'  => 300  
                         ]
                     );
                     ?>
                 </div>
+                <!-- Placeholder list -->
+        
+            </div>
+            <div class="notify-placeholders">
+                <strong>Available Placeholders:</strong>
+                {{full_name}} - Participant’s full name<br>
+                {{bib_number}} - Participant’s bib number<br>
+                {{order_id}} - Order ID<br>
+                
             </div>
 
             <!-- With a custom HTML button -->
@@ -94,4 +108,7 @@ use WpPluginHub\Run_Manager\Helper;
             <!-- Add a div for success message -->
             <div id="notify_save_msg" style="margin-top:10px;"></div>
         </form>
+
     </div>
+
+    

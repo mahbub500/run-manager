@@ -256,7 +256,7 @@ jQuery(document).ready(function ($) {
     $('#save_notify_data').on('click', function(){
         var email_content = tinyMCE.get('email_content') ? tinyMCE.get('email_content').getContent() : $('#email_content').val();
         var sms_content = tinyMCE.get('sms_content') ? tinyMCE.get('sms_content').getContent() : $('#sms_content').val();
-
+        runm_modal();
         $.ajax({
             url: RUN_MANAGER.ajaxurl,
             type: 'POST',
@@ -278,8 +278,10 @@ jQuery(document).ready(function ($) {
                 } else {
                     alert(response.data.message || "Something went wrong.");
                 }
+                runm_modal(false);
             },
             error: function(){
+                runm_modal(false);
                 alert('Failed to save data.');
             }
         });
