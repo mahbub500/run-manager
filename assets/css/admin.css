@@ -112,7 +112,7 @@
 }
 
 .notify-placeholders strong {
-    display: block;
+    display: inline-block;
     margin-bottom: 8px;
     font-weight: 600;
 }
@@ -126,6 +126,4 @@
 
 }
 
-.notify-placeholders-title{
-    display: inline-block;
-}
+

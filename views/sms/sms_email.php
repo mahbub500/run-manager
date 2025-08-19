@@ -29,7 +29,7 @@ use WpPluginHub\Run_Manager\Helper;
     <div class="wrap notify-wrap">
         <h1 class="notify-title">📩 Notify With Email Or SMS</h1>
         <div class="notify-placeholders">
-            <strong class="notify-placeholders-title">Available Placeholders:</strong>
+            <strong >Available Placeholders:</strong>
             <?php
             $total = count($placeholders);
             $i = 0;
