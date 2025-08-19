@@ -130,6 +130,9 @@ public function import_excel_to_orders() {
     $logger = wc_get_logger();
     $logger->info("Processing file: " . $file, ['source' => 'import_excel']);
 
+    $saved_data = get_option('notify_wysiwyg_data');
+    $notify_data = $saved_data ? json_decode($saved_data, true) : [];
+
     try {
         // Check if PhpSpreadsheet is available
         if (!class_exists('PhpOffice\PhpSpreadsheet\IOFactory')) {
@@ -184,104 +187,48 @@ public function import_excel_to_orders() {
                      $gender		= $order->get_meta('billing_gender');
                      // $verification_code  = wp_rand(100000, 999999);
 
-                    $email_message = sprintf(
-                        '
-                        <p>Dear <strong>%s</strong>,</p>
+                    $email_message = $notify_data['email_content'];
+					$sms_message   = $notify_data['sms_content'];
 
-                        <p>🎉 <strong>Congratulations!</strong> Your registration for <strong>Dhaka Max 2025 Powered By RBAN TIMING SOLUTIONS</strong> is successfully confirmed. Please find your race details below:</p>
+					// Determine recipients based on test mode
+					if (!empty($notify_data['test_mode']) && $notify_data['test_mode'] == 1) {
+					    $recipient_email = $notify_data['test_email'];
+					    $recipient_phone = $notify_data['test_mobile'];
+					} else {
+					    $recipient_email = $order->get_billing_email();
+					    $recipient_phone = clean_phone_number($order->get_billing_phone());
+					}
 
-                        <ul>
-                            <li><strong>Bib Number:</strong> %s</li>
-                            <li><strong>T-shirt Size:</strong> %s</li>
-                            <li><strong>Order ID:</strong> %s</li>
-                            <li><strong>Race Category:</strong> %s</li>
-                        </ul>
+					// Send Email
+					if (! $order->get_meta('is_email_sent') || !empty($notify_data['test_mode'])) {
+					    if ($notify_data['notify_email'] == '1' && !empty($recipient_email)) {
+					        $this->send_certificate_email($recipient_email, $email_message, $subject, $order_id);
 
-                        <hr>
+					        // Only update meta if not in test mode
+					        if (empty($notify_data['test_mode']) || $notify_data['test_mode'] != 1) {
+					            $order->update_meta_data('is_email_sent', true);
+					            $order->save();
+					        }
 
-                        <h3>🏁 Important Update for Dhaka Max 2025</h3>
-                        <p><strong>Race Distances & Cut-off Times (Updated):</strong></p>
-                        <ul>
-                            <li>Road Bike (ITT - 15 km): 45 minutes</li>
-                            <li>Junior MTB Mass (7.5 km): 25 minutes</li>
-                            <li>Female MTB Mass (7.5 km): 25 minutes</li>
-                            <li>MTB Mass (22 km): 60 minutes</li>
-                            <li>❌ Road Bike Mass Start (30 km): ❌ Canceled. All participants moved to Road Bike ITT (15 km)</li>
-                        </ul>
+					        $logger->info("Email sent to: " . $recipient_email, ['source' => 'import_excel']);
+					    }
+					}
 
-                        <h3>🎫 Race Bib Distribution</h3>
-                        <p>Bibs will be distributed on race day from 3:00 AM until your race starts.</p>
-                        <p><strong>Venue:</strong> Hatirjheel Amphitheater</p>
-                        <ul>
-                            <li>Collect your Disclaimer Form, read it carefully, and sign it.</li>
-                            <li>Receive your two race bibs and one helmet sticker.</li>
-                            <li>Our volunteers will assist you in attaching your bib to your bike and jersey.</li>
-                        </ul>
+					// Send SMS
+					if (! $order->get_meta('is_sms_sent') || !empty($notify_data['test_mode'])) {
+					    if ($notify_data['notify_sms'] == '1' && !empty($recipient_phone)) {
+					        send_sms_to_phone($recipient_phone, $sms_message);
 
-                        <h3>🕘 Reporting Time at the Start Gate</h3>
-                        <ul>
-                            <li>Road Bike (ITT - 15 km): 5:45 AM</li>
-                            <li>Junior MTB Mass (7.5 km): Be ready near the start gate once the previous race ends.</li>
-                            <li>Female MTB Mass (7.5 km): Be ready near the start gate once the previous race ends.</li>
-                            <li>MTB Mass (22 km): Be ready near the start gate once the previous race ends.</li>
-                        </ul>
-                        <p>Each race will start approximately 10-15 minutes after the previous one ends. Be ready to take your place at the start line!</p>
+					        // Only update meta if not in test mode
+					        if (empty($notify_data['test_mode']) || $notify_data['test_mode'] != 1) {
+					            $order->update_meta_data('is_sms_sent', true);
+					            $order->save();
+					        }
 
-                        <p>🏃 See you at the start line! Stay safe and have a great race. Volunteers will be available throughout the course for assistance.</p>
+					        $logger->info("SMS sent to: " . $recipient_phone, ['source' => 'import_excel']);
+					    }
+					}
 
-                        <p>Best Regards,<br>
-                        <strong>Run Bangladesh & Race Bangladesh</strong></p>
-                        ',
-                        esc_html($billing_full_name), // Full Name
-                        esc_html($bib_id),            // Bib Number
-                        esc_html($tshirt),            // T-shirt Size
-                        esc_html($order_id),          // Order ID
-                        esc_html($race_category)      // Race Category
-                    );
-
-
-
-
-
-                
-                  	$sms_message = sprintf(
-                        'Hi %s, Your registration for the Dhaka Max 2025 Powered By RBAN TIMING SOLUTIONS, Order ID: %s, Bib: %s, Jersey: %s, is confirmed! Kit collection before the race from 3:00 AM, 22 July at Hatirjheel amphitheater, Dhaka. Thanks, Run Bangladesh & Race Bangladesh.',
-                        esc_html($billing_full_name), // Full name (first + last)
-                        esc_html($order_id),     // Order ID
-                        esc_html($bib_id),       // Bib Number
-                        esc_html($tshirt)        // Jersey/T-shirt size
-                    );
-
-
-
-                     // Update meta and send notifications
-                     // if (!$order->get_meta('verification_code')) {
-                     //     $order->update_meta_data('verification_code', $verification_code);
-                     // }
-
-                     // Send email and SMS if not already sent
-                     if (!$order->get_meta('is_email_sent')) {
-                         $this->send_certificate_email($order->get_billing_email(), $email_message, $subject, $order_id);
-                         $order->update_meta_data('is_email_sent', true);
-                         $order->save();
-                         $logger->info("Email sent to: " . $order->get_billing_email(), ['source' => 'import_excel']);
-                     }
-
-                    if ( ! $order->get_meta('is_sms_sent') ) {
-
-                         $raw_phone     = $order->get_billing_phone();
-                         $cleaned_phone = clean_phone_number( $raw_phone );
-                         // sms_send( $cleaned_phone, $sms_message );
-
-                        send_sms_to_phone( $cleaned_phone, $sms_message );
-
-                         // Save that SMS was sent for this order
-                         $order->update_meta_data( 'is_sms_sent', true );
-                         $order->save();
-
-                         // Logging
-                        $logger->info( "SMS sent to: " . $order->get_billing_phone(), ['source' => 'import_excel'] );
-                    }
 
                 }
             }

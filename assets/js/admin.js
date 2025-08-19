@@ -227,26 +227,58 @@ jQuery(document).ready(function ($) {
         });
     });
 
-     // Hide notify wrap on load
+     const STORAGE_KEY = 'wph_last_active_tab';
+    const SMS_TAB = 'wph-tab-run-manager_basic-run-manager_sms_manager';
+    const SAVE_TAB = 'wph-tab-run-manager_basic-run-manager_save_message';
+
+    // Hide sections initially
     $('.wrap.notify-wrap, #wph-tab-run-manager_basic-run-manager_save_message').hide();
 
-    $('.wph-tabs .wph-tab').on('click', function() {
-        var target = $(this).data('target');
-
-        // Default: show controls, hide notify
+    function toggleSections(target) {
+        // Default: show controls, hide all sections
         $('.wph-controls-wrapper.wph-nonsticky-controls').show();
         $('.wrap.notify-wrap').hide();
         $('#wph-tab-run-manager_basic-run-manager_save_message').hide();
 
-        // Special cases
-        if (target === 'wph-tab-run-manager_basic-run-manager_sms_manager') {
+        if (target === SMS_TAB) {
             $('.wph-controls-wrapper.wph-nonsticky-controls').hide();
             $('.wrap.notify-wrap').show();
-        } 
-        else if (target === 'wph-tab-run-manager_basic-run-manager_save_message') {
+        } else if (target === SAVE_TAB) {
             $('#wph-tab-run-manager_basic-run-manager_save_message').show();
         }
+    }
+
+    // Tab click
+    $('.wph-tabs .wph-tab').on('click', function() {
+        var target = $(this).data('target');
+
+        // Save to localStorage
+        localStorage.setItem(STORAGE_KEY, target);
+
+        // Handle section visibility
+        toggleSections(target);
     });
+
+    // Restore last active tab after reload
+    function restoreTab() {
+        var savedTab = localStorage.getItem(STORAGE_KEY);
+        if (!savedTab) return;
+
+        var $tab = $('.wph-tabs .wph-tab[data-target="' + savedTab + '"]');
+        if (!$tab.length) return;
+
+        // Trigger the tab click to ensure library behavior
+        $tab.get(0).click();
+
+        // Make tab visually active (if your system uses an active class)
+        $tab.addClass('is-active').siblings().removeClass('is-active');
+
+        // Ensure sections are visible correctly
+        toggleSections(savedTab);
+    }
+
+    // Delay restore to allow tabs to render (if loaded via JS)
+    setTimeout(restoreTab, 1);
 
     
     

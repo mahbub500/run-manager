@@ -53,7 +53,7 @@ class Front extends Base {
 		$email_template =  $data['email_content'];
 
 		// $final_email = notify_placeholders( $email_template, $_data );
-		// Helper::pri( $final_email ); 
+		Helper::pri( $data ); 
 	}
 
 	
