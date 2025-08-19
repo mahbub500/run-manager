@@ -181,53 +181,54 @@ public function import_excel_to_orders() {
                     $subject =  'Important: Collect Your '. $race_name. ' Race Kit!' ;
 
                      // Generate message
-                     $billing_name	= $order->get_billing_first_name();
-                     $billing_full_name = $order->get_billing_first_name() . ' ' . $order->get_billing_last_name();
+                    $billing_name	= $order->get_billing_first_name();
+                    $billing_full_name = $order->get_billing_first_name() . ' ' . $order->get_billing_last_name();
 
-                     $gender		= $order->get_meta('billing_gender');
+                    $gender		= $order->get_meta('billing_gender');
                      // $verification_code  = wp_rand(100000, 999999);
 
-                    $email_message = $notify_data['email_content'];
-					$sms_message   = $notify_data['sms_content'];
+                    $email_message = $notify_data['email_content'] ?? '';
+					$sms_message   = $notify_data['sms_content'] ?? '';
+					$test_mode     = ! empty( $notify_data['test_mode'] ) && $notify_data['test_mode'] == 1;
 
 					// Determine recipients based on test mode
-					if (!empty($notify_data['test_mode']) && $notify_data['test_mode'] == 1) {
-					    $recipient_email = $notify_data['test_email'];
-					    $recipient_phone = $notify_data['test_mobile'];
-					} else {
-					    $recipient_email = $order->get_billing_email();
-					    $recipient_phone = clean_phone_number($order->get_billing_phone());
-					}
+					$recipient_email = $test_mode ? sanitize_email( $notify_data['test_email'] ?? '' ) : $order->get_billing_email();
+					$recipient_phone = $test_mode ? sanitize_text_field( $notify_data['test_mobile'] ?? '' ) : clean_phone_number( $order->get_billing_phone() );
 
+					// ------------------
 					// Send Email
-					if (! $order->get_meta('is_email_sent') || !empty($notify_data['test_mode'])) {
-					    if ($notify_data['notify_email'] == '1' && !empty($recipient_email)) {
-					        $this->send_certificate_email($recipient_email, $email_message, $subject, $order_id);
+					// ------------------
+					if ( ! $order->get_meta( 'is_email_sent' ) || $test_mode ) {
+					    if ( ! empty( $recipient_email ) && ! empty( $notify_data['notify_email'] ) && $notify_data['notify_email'] === '1' ) {
+					        $this->send_certificate_email( $recipient_email, $email_message, $subject, $order_id );
 
 					        // Only update meta if not in test mode
-					        if (empty($notify_data['test_mode']) || $notify_data['test_mode'] != 1) {
-					            $order->update_meta_data('is_email_sent', true);
+					        if ( ! $test_mode ) {
+					            $order->update_meta_data( 'is_email_sent', true );
 					            $order->save();
 					        }
 
-					        $logger->info("Email sent to: " . $recipient_email, ['source' => 'import_excel']);
+					        $logger->info( sprintf( 'Email sent to: %s', $recipient_email ), [ 'source' => 'import_excel' ] );
 					    }
 					}
 
+					// ------------------
 					// Send SMS
-					if (! $order->get_meta('is_sms_sent') || !empty($notify_data['test_mode'])) {
-					    if ($notify_data['notify_sms'] == '1' && !empty($recipient_phone)) {
-					        send_sms_to_phone($recipient_phone, $sms_message);
+					// ------------------
+					if ( ! $order->get_meta( 'is_sms_sent' ) || $test_mode ) {
+					    if ( ! empty( $recipient_phone ) && ! empty( $notify_data['notify_sms'] ) && $notify_data['notify_sms'] === '1' ) {
+					        send_sms_to_phone( $recipient_phone, $sms_message );
 
 					        // Only update meta if not in test mode
-					        if (empty($notify_data['test_mode']) || $notify_data['test_mode'] != 1) {
-					            $order->update_meta_data('is_sms_sent', true);
+					        if ( ! $test_mode ) {
+					            $order->update_meta_data( 'is_sms_sent', true );
 					            $order->save();
 					        }
 
-					        $logger->info("SMS sent to: " . $recipient_phone, ['source' => 'import_excel']);
+					        $logger->info( sprintf( 'SMS sent to: %s', $recipient_phone ), [ 'source' => 'import_excel' ] );
 					    }
 					}
+
 
 
                 }
