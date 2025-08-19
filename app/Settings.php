@@ -77,6 +77,14 @@ class Settings extends Base {
 									'hide_form'	=> true,
 									'template'  => RUN_MANAGER_DIR . '/views/export/import.php',
 								],
+								'run-manager_sms_manager' => [
+									'id'        => 'run-manager_sms_manager',
+									'label'     => __( 'SMS & Email', 'run-manager' ),
+									'icon'      => 'dashicons-editor-table',
+									// 'color'		=> '#28c9ee',
+									'hide_form'	=> true,
+									'template'  => RUN_MANAGER_DIR . '/views/sms/sms_email.php',
+								],
 								'run-manager_save_message' => [
 									'id'        => 'run-manager_save_message',
 									'label'     => __( 'Campain ', 'run-manager' ),

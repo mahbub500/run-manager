@@ -179,53 +179,65 @@ jQuery(document).ready(function ($) {
 
 
   
-function toggleButtonState() {
-    let inputVal = $(".certificate-number").val().trim();
-    $("#generate-munual-certificate").prop("disabled", inputVal === "" || isNaN(inputVal));
-}
+    function toggleButtonState() {
+        let inputVal = $(".certificate-number").val().trim();
+        $("#generate-munual-certificate").prop("disabled", inputVal === "" || isNaN(inputVal));
+    }
 
-toggleButtonState();
-
-$(".certificate-number").on("input change", function(){
     toggleButtonState();
-    console.log( 'Hello' );
-} );
 
-$('#run-manager-tshirt-chart').click(function (e) {
-    e.preventDefault();
-    runm_modal(true); // Show loader/modal
+    $(".certificate-number").on("input change", function(){
+        toggleButtonState();
+        console.log( 'Hello' );
+    } );
 
-    $.ajax({
-        url: RUN_MANAGER.ajaxurl, // This is the WordPress AJAX URL
-        type: 'POST',
-        data: {
-            action: 'generate_tshirt_size', // Custom action for the server
-            _wpnonce: RUN_MANAGER._wpnonce // Nonce for security
-        },
-        success: function (response) {
-            runm_modal(false); // Hide loader/modal
+    $('#run-manager-tshirt-chart').click(function (e) {
+        e.preventDefault();
+        runm_modal(true); // Show loader/modal
 
-            if (response.success) {
-               
+        $.ajax({
+            url: RUN_MANAGER.ajaxurl, // This is the WordPress AJAX URL
+            type: 'POST',
+            data: {
+                action: 'generate_tshirt_size', // Custom action for the server
+                _wpnonce: RUN_MANAGER._wpnonce // Nonce for security
+            },
+            success: function (response) {
+                runm_modal(false); // Hide loader/modal
 
-                if (response.data.url) {
-                    const a = document.createElement("a");
-                    a.href = response.data.url; // URL of the generated PDF
-                    a.download = "tshirt_report.pdf"; // Set default file name
-                    document.body.appendChild(a);
-                    a.click(); // Trigger the download
-                    document.body.removeChild(a); // Clean up
+                if (response.success) {
+                   
+
+                    if (response.data.url) {
+                        const a = document.createElement("a");
+                        a.href = response.data.url; // URL of the generated PDF
+                        a.download = "tshirt_report.pdf"; // Set default file name
+                        document.body.appendChild(a);
+                        a.click(); // Trigger the download
+                        document.body.removeChild(a); // Clean up
+                    }
+                } else {
+                    alert(response.data.message || "Something went wrong.");
                 }
-            } else {
-                alert(response.data.message || "Something went wrong.");
+            },
+            error: function () {
+                runm_modal(false); // Hide loader/modal in case of error
+                alert('File generation failed.'); // Error message
             }
-        },
-        error: function () {
-            runm_modal(false); // Hide loader/modal in case of error
-            alert('File generation failed.'); // Error message
+        });
+    });
+
+     $('.wph-tabs .wph-tab').on('click', function() {
+        var target = $(this).data('target');
+        
+        if(target === 'wph-tab-run-manager_basic-run-manager_sms_manager') {
+            // Hide when SMS & Email tab clicked
+            $('.wph-controls-wrapper.wph-nonsticky-controls').hide();
+        } else {
+            // Show when any other tab clicked
+            $('.wph-controls-wrapper.wph-nonsticky-controls').show();
         }
     });
-});
 
 
 
