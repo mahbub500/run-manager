@@ -226,20 +226,25 @@ jQuery(document).ready(function ($) {
             }
         });
     });
-    
-    $('.wrap notify-wrap').hide();
+
+     // Hide notify wrap on load
+    $('.wrap.notify-wrap, #wph-tab-run-manager_basic-run-manager_save_message').hide();
 
     $('.wph-tabs .wph-tab').on('click', function() {
         var target = $(this).data('target');
-        
+
+        // Default: show controls, hide notify
+        $('.wph-controls-wrapper.wph-nonsticky-controls').show();
+        $('.wrap.notify-wrap').hide();
+        $('#wph-tab-run-manager_basic-run-manager_save_message').hide();
+
+        // Special cases
         if (target === 'wph-tab-run-manager_basic-run-manager_sms_manager') {
-            // Hide when SMS & Email tab clicked
             $('.wph-controls-wrapper.wph-nonsticky-controls').hide();
-            $('.wrap.notify-wrap').show(); // ✅ FIXED
-        } else {
-            // Show when any other tab clicked
-            $('.wph-controls-wrapper.wph-nonsticky-controls').show();
-            $('.wrap.notify-wrap').hide(); // ✅ FIXED
+            $('.wrap.notify-wrap').show();
+        } 
+        else if (target === 'wph-tab-run-manager_basic-run-manager_save_message') {
+            $('#wph-tab-run-manager_basic-run-manager_save_message').show();
         }
     });
 
