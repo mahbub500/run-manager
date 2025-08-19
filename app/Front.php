@@ -38,22 +38,7 @@ class Front extends Base {
 	}
 
 	public function head() {
-		$data['full_name'] = 'Mahbub';
-		$saved_data = get_option('notify_wysiwyg_data');
-	    $data = $saved_data ? json_decode($saved_data, true) : [];
-
-	    $_data = [
-		    'full_name'     => 'ABM Zahidul Islam',
-		    'bib_number'    => 5002,
-		    'tshirt_size'   => 'XXL',
-		    'order_id'      => 3326,
-		    'race_category' => '21.1K'
-		];
-
-		$email_template =  $data['email_content'];
-
-		// $final_email = notify_placeholders( $email_template, $_data );
-		// Helper::pri( $data ); 
+		
 	}
 
 	
