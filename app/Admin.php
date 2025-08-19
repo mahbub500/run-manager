@@ -66,6 +66,7 @@ class Admin extends Base {
 		wp_enqueue_style( $this->slug . 'toastr', 'https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css', '', 0.1, 'all' );
 
 		wp_enqueue_script( $this->slug, plugins_url( "/assets/js/admin{$min}.js", RUN_MANAGER ), [ 'jquery' ], time(), true );
+		
 		wp_enqueue_script( $this->slug . 'toastr', 'https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js', [ 'jquery' ], time(), true );
 
 		$localized = [

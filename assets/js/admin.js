@@ -239,6 +239,23 @@ jQuery(document).ready(function ($) {
         }
     });
 
+    
+    function toggleEditors() {
+        $('#email_editor_container').toggle($('#notify_email').is(':checked'));
+        $('#sms_editor_container').toggle($('#notify_sms').is(':checked'));
+    }
+
+    // Run on change
+    $('#notify_email, #notify_sms').on('change', function () {
+        toggleEditors();
+    });
+
+    // Run on page load
+    $(document).ready(function () {
+        toggleEditors();
+    });
+
+
 
 
 
