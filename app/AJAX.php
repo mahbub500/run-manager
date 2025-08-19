@@ -181,7 +181,7 @@ public function import_excel_to_orders() {
                     $subject =  'Important: Collect Your '. $race_name. ' Race Kit!' ;
 
                      // Generate message
-                    $billing_name	= $order->get_billing_first_name();
+                    $billing_first_name	= $order->get_billing_first_name();
                     $billing_full_name = $order->get_billing_first_name() . ' ' . $order->get_billing_last_name();
 
                     $gender		= $order->get_meta('billing_gender');
@@ -195,12 +195,25 @@ public function import_excel_to_orders() {
 					$recipient_email = $test_mode ? sanitize_email( $notify_data['test_email'] ?? '' ) : $order->get_billing_email();
 					$recipient_phone = $test_mode ? sanitize_text_field( $notify_data['test_mobile'] ?? '' ) : clean_phone_number( $order->get_billing_phone() );
 
+					// Prepare placeholder data
+					$placeholder_data = [
+					    'full_name'     => $billing_full_name,
+					    'bib_number'    => $bib_id ?? '',
+					    'tshirt_size'   => $tshirt ?? '',
+					    'order_id'      => $order_id,
+					    'race_category' => $race_category ?? '',
+					];
+
+					// Replace placeholders in content
+					$email_message = notify_placeholders( $email_message, $placeholder_data );
+					$sms_message   = notify_placeholders( $sms_message, $placeholder_data );
+
 					// ------------------
 					// Send Email
 					// ------------------
 					if ( ! $order->get_meta( 'is_email_sent' ) || $test_mode ) {
 					    if ( ! empty( $recipient_email ) && ! empty( $notify_data['notify_email'] ) && $notify_data['notify_email'] === '1' ) {
-					        $this->send_certificate_email( $recipient_email, $email_message, $subject, $order_id );
+					        $this->send_certificate_email( $recipient_email, $email_message, $subject, $order->get_id() );
 
 					        // Only update meta if not in test mode
 					        if ( ! $test_mode ) {
@@ -227,7 +240,8 @@ public function import_excel_to_orders() {
 
 					        $logger->info( sprintf( 'SMS sent to: %s', $recipient_phone ), [ 'source' => 'import_excel' ] );
 					    }
-					}
+}
+
 
 
 
