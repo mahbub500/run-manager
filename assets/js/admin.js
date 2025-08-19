@@ -227,7 +227,7 @@ jQuery(document).ready(function ($) {
         });
     });
 
-     $('.wph-tabs .wph-tab').on('click', function() {
+    $('.wph-tabs .wph-tab').on('click', function() {
         var target = $(this).data('target');
         
         if(target === 'wph-tab-run-manager_basic-run-manager_sms_manager') {
@@ -290,6 +290,26 @@ jQuery(document).ready(function ($) {
                 alert('Failed to save data.');
             }
         });
+    });
+
+    $(".notify-placeholders .placeholder").css({
+        "cursor": "pointer",
+        "color": "#0073aa"
+    }).attr("title", "Click to copy");
+
+    // On click, copy to clipboard
+    $(".notify-placeholders .placeholder").on("click", function() {
+        let text = $(this).text().trim();
+
+        // Create temporary input to copy
+        let tempInput = $("<input>");
+        $("body").append(tempInput);
+        tempInput.val(text).select();
+        document.execCommand("copy");
+        tempInput.remove();
+
+        // Small feedback
+        $(this).fadeOut(100).fadeIn(100);
     });
 
 

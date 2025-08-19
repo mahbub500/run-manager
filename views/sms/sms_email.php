@@ -28,6 +28,22 @@ use WpPluginHub\Run_Manager\Helper;
 
     <div class="wrap notify-wrap">
         <h1 class="notify-title">📩 Notify With Email Or SMS</h1>
+        <div class="notify-placeholders">
+            <strong class="notify-placeholders-title">Available Placeholders:</strong>
+            <?php
+            $total = count($placeholders);
+            $i = 0;
+            foreach ($placeholders as $key => $desc) :
+                $i++;
+                ?>
+                <span class="placeholder" data-copy="<?php echo esc_attr($key); ?>">
+                    <?php echo esc_html($key); ?>
+                </span>
+                
+                <?php if ($i < $total) echo ', '; ?>
+            <?php endforeach; ?>
+        </div>
+
         <form method="post">
             <?php wp_nonce_field('save_notification_editor', 'notification_editor_nonce'); ?>
 
@@ -98,12 +114,7 @@ use WpPluginHub\Run_Manager\Helper;
             </div>
            
 
-        <div class="notify-placeholders">
-            <strong>Available Placeholders:</strong><br>
-            <?php foreach ($placeholders as $key => $desc) : ?>
-                <span class="placeholder"><?php echo esc_html($key); ?></span> <?php echo esc_html($desc); ?><br>
-            <?php endforeach; ?>
-        </div>
+       
 
             <!-- With a custom HTML button -->
             <button type="button" id="save_notify_data" class="button button-primary">💾 Save Data</button>
