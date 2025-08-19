@@ -39,10 +39,12 @@ use WpPluginHub\Run_Manager\Helper;
                     <p>
                         <label>Test Email:</label><br>
                         <input type="email" name="test_email" value="<?php echo esc_attr($data['test_email'] ?? ''); ?>" class="regular-text">
+                        <span id="test_email_msg" style="color:red; margin-left:10px; font-size:12px;">Must be a valid email.</span>
                     </p>
                     <p>
                         <label>Test Mobile:</label><br>
                         <input type="text" name="test_mobile" value="<?php echo esc_attr($data['test_mobile'] ?? ''); ?>" class="regular-text">
+                         <span id="test_mobile_msg" style="color:red; margin-left:10px; font-size:12px;">Must be 11 digits.</span>
                     </p>
                 </div>
             </div>

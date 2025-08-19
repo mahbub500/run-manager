@@ -40,7 +40,7 @@ class Front extends Base {
 	public function head() {
 		$saved_data = get_option('notify_wysiwyg_data');
 	    $data = $saved_data ? json_decode($saved_data, true) : [];
-		Helper::pri( $data ); 
+		// Helper::pri( $data ); 
 	}
 
 	
