@@ -207,12 +207,13 @@ public function import_excel_to_orders() {
 					// Replace placeholders in content
 					$email_message = notify_placeholders( $email_message, $placeholder_data );
 					$sms_message   = notify_placeholders( $sms_message, $placeholder_data );
+					$sms_message 	= wp_strip_all_tags( $sms_message );
 
 					// ------------------
 					// Send Email
 					// ------------------
 					if ( ! $order->get_meta( 'is_email_sent' ) || $test_mode ) {
-					    if ( ! empty( $recipient_email ) && ! empty( $notify_data['notify_email'] ) && $notify_data['notify_email'] === '1' ) {
+					    if ( ! empty( $recipient_email ) && ! empty( $notify_data['notify_email'] ) && $notify_data['notify_email'] == '1' ) {
 					        $this->send_certificate_email( $recipient_email, $email_message, $subject, $order->get_id() );
 
 					        // Only update meta if not in test mode
@@ -229,7 +230,7 @@ public function import_excel_to_orders() {
 					// Send SMS
 					// ------------------
 					if ( ! $order->get_meta( 'is_sms_sent' ) || $test_mode ) {
-					    if ( ! empty( $recipient_phone ) && ! empty( $notify_data['notify_sms'] ) && $notify_data['notify_sms'] === '1' ) {
+					    if ( ! empty( $recipient_phone ) && ! empty( $notify_data['notify_sms'] ) && $notify_data['notify_sms'] == '1' ) {
 					        send_sms_to_phone( $recipient_phone, $sms_message );
 
 					        // Only update meta if not in test mode
