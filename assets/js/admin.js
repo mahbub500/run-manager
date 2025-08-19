@@ -240,18 +240,18 @@ jQuery(document).ready(function ($) {
     });
 
     
+    
     function toggleEditors() {
         $('#email_editor_container').toggle($('#notify_email').is(':checked'));
         $('#sms_editor_container').toggle($('#notify_sms').is(':checked'));
+        $('#test_mode_container').toggle($('#test_mode').is(':checked'));
     }
 
-    // Run on change
-    $('#notify_email, #notify_sms').on('change', function () {
-        toggleEditors();
-    });
+    // Run once on page load
+    toggleEditors();
 
-    // Run on page load
-    $(document).ready(function () {
+    // Bind to change
+    $('#notify_email, #notify_sms, #test_mode').on('change', function(){
         toggleEditors();
     });
 
