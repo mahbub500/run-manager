@@ -188,65 +188,69 @@ public function import_excel_to_orders() {
                         '
                         <p>Dear <strong>%s</strong>,</p>
 
-                        <p>🎉 <strong>Congratulations!</strong> Your registration for <strong>Protiki Marathon 2025</strong> is successfully confirmed. Please find your race details below:</p>
+                        <p>🎉 <strong>Congratulations!</strong> Your registration for <strong>Dhaka Max 2025 Powered By RBAN TIMING SOLUTIONS</strong> is successfully confirmed. Please find your race details below:</p>
 
                         <ul>
                             <li><strong>Bib Number:</strong> %s</li>
                             <li><strong>T-shirt Size:</strong> %s</li>
                             <li><strong>Order ID:</strong> %s</li>
+                            <li><strong>Race Category:</strong> %s</li>
                         </ul>
 
                         <hr>
 
-                        <h3>🏁 Race Kit Collection</h3>
-                        <p>
-                            <strong>Date:</strong> 17th July 2025<br>
-                            <strong>Venue:</strong> Bangladesh China Friendship Conference Center Ground, Sher-e-Bangla Nagar, Agargaon, Dhaka.<br>
-                            <strong>Time:</strong> 7:00 PM – 10:00 PM
-                        </p>
-
-                        <p><strong>⚠️ Note:</strong> All participants must collect their race kits on this day. <br>
-                        <strong>No kits will be distributed after the kit distribution.</strong></p>
-
-                        <h3>📌 Bring with you:</h3>
+                        <h3>🏁 Important Update for Dhaka Max 2025</h3>
+                        <p><strong>Race Distances & Cut-off Times (Updated):</strong></p>
                         <ul>
-                            <li>This confirmation email/SMS</li>
-                            <li>A valid photo ID</li>
+                            <li>Road Bike (ITT - 15 km): 45 minutes</li>
+                            <li>Junior MTB Mass (7.5 km): 25 minutes</li>
+                            <li>Female MTB Mass (7.5 km): 25 minutes</li>
+                            <li>MTB Mass (22 km): 60 minutes</li>
+                            <li>❌ Road Bike Mass Start (30 km): ❌ Canceled. All participants moved to Road Bike ITT (15 km)</li>
                         </ul>
 
-                        <h3>🕘 Race Day Schedule:</h3>
+                        <h3>🎫 Race Bib Distribution</h3>
+                        <p>Bibs will be distributed on race day from 3:00 AM until your race starts.</p>
+                        <p><strong>Venue:</strong> Hatirjheel Amphitheater</p>
                         <ul>
-                            <li><strong>Reporting:</strong> 6:30 AM</li>
-                            <li><strong>Race Starts:</strong> 7:00 AM</li>
-                            <li><strong>Start & Finish Location:</strong> Bangladesh China Friendship Conference Center Ground, Sher-e-Bangla Nagar, Agargaon, Dhaka.</li>
+                            <li>Collect your Disclaimer Form, read it carefully, and sign it.</li>
+                            <li>Receive your two race bibs and one helmet sticker.</li>
+                            <li>Our volunteers will assist you in attaching your bib to your bike and jersey.</li>
                         </ul>
 
-                        <h3>📢 Stay Updated!</h3>
-                        <p>Follow our official Facebook page for announcements.</p>
+                        <h3>🕘 Reporting Time at the Start Gate</h3>
+                        <ul>
+                            <li>Road Bike (ITT - 15 km): 5:45 AM</li>
+                            <li>Junior MTB Mass (7.5 km): Be ready near the start gate once the previous race ends.</li>
+                            <li>Female MTB Mass (7.5 km): Be ready near the start gate once the previous race ends.</li>
+                            <li>MTB Mass (22 km): Be ready near the start gate once the previous race ends.</li>
+                        </ul>
+                        <p>Each race will start approximately 10-15 minutes after the previous one ends. Be ready to take your place at the start line!</p>
 
-                        <p>🏃 We can’t wait to see you at the start line!</p>
+                        <p>🏃 See you at the start line! Stay safe and have a great race. Volunteers will be available throughout the course for assistance.</p>
 
-                        <br>
                         <p>Best Regards,<br>
-                        <strong>Ministry of Youth & Sports</strong></p>
+                        <strong>Run Bangladesh & Race Bangladesh</strong></p>
                         ',
-                        esc_html($billing_full_name),   // Full Name
-                        esc_html($bib_id),              // Bib Number
-                        esc_html($tshirt),              // T-shirt Size
-                        esc_html($order_id)             // Order ID
+                        esc_html($billing_full_name), // Full Name
+                        esc_html($bib_id),            // Bib Number
+                        esc_html($tshirt),            // T-shirt Size
+                        esc_html($order_id),          // Order ID
+                        esc_html($race_category)      // Race Category
                     );
+
 
 
 
 
                 
                   	$sms_message = sprintf(
-					    'Hi %s, Your registration for the Protiki Marathon 2025 Order ID: %s, Bib: %s, Jersey: %s, is confirmed! Kit collection: July 17th, 7:00 PM - 10:00 PM at Bangladesh China Friendship Conference Center Ground, Sher-e-Bangla Nagar, Agargaon, Dhaka. Thanks, Ministry of Youth & Sports.',
-					    esc_html($billing_name),     // Full name (first + last)
-					    esc_html($order_id),         // Order ID
-					    esc_html($bib_id),           // Bib Number
-					    esc_html($tshirt)            // Jersey/T-shirt size
-					);
+                        'Hi %s, Your registration for the Dhaka Max 2025 Powered By RBAN TIMING SOLUTIONS, Order ID: %s, Bib: %s, Jersey: %s, is confirmed! Kit collection before the race from 3:00 AM, 22 July at Hatirjheel amphitheater, Dhaka. Thanks, Run Bangladesh & Race Bangladesh.',
+                        esc_html($billing_full_name), // Full name (first + last)
+                        esc_html($order_id),     // Order ID
+                        esc_html($bib_id),       // Bib Number
+                        esc_html($tshirt)        // Jersey/T-shirt size
+                    );
 
 
 
