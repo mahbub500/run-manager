@@ -2,21 +2,21 @@
 
 use WpPluginHub\Run_Manager\Helper;
  // Save on submit
-    if (isset($_POST['notification_editor_nonce']) && wp_verify_nonce($_POST['notification_editor_nonce'], 'save_notification_editor')) {
+    // if (isset($_POST['notification_editor_nonce']) && wp_verify_nonce($_POST['notification_editor_nonce'], 'save_notification_editor')) {
 
-        $data = [
-            'test_mode'    => isset($_POST['test_mode']) ? 1 : 0,
-            'test_email'   => sanitize_email($_POST['test_email'] ?? ''),
-            'test_mobile'  => sanitize_text_field($_POST['test_mobile'] ?? ''),
-            'notify_email' => isset($_POST['notify_email']) ? 1 : 0,
-            'notify_sms'   => isset($_POST['notify_sms']) ? 1 : 0,
-            'email_content'=> wp_kses_post($_POST['email_content'] ?? ''),
-            'sms_content'  => sanitize_textarea_field($_POST['sms_content'] ?? ''),
-        ];
+    //     $data = [
+    //         'test_mode'    => isset($_POST['test_mode']) ? 1 : 0,
+    //         'test_email'   => sanitize_email($_POST['test_email'] ?? ''),
+    //         'test_mobile'  => sanitize_text_field($_POST['test_mobile'] ?? ''),
+    //         'notify_email' => isset($_POST['notify_email']) ? 1 : 0,
+    //         'notify_sms'   => isset($_POST['notify_sms']) ? 1 : 0,
+    //         'email_content'=> wp_kses_post($_POST['email_content'] ?? ''),
+    //         'sms_content'  => sanitize_textarea_field($_POST['sms_content'] ?? ''),
+    //     ];
 
-        update_option('notify_wysiwyg_data', wp_json_encode($data));
-        echo '<div class="updated"><p>Settings saved.</p></div>';
-    }
+    //     update_option('notify_wysiwyg_data', wp_json_encode($data));
+    //     echo '<div class="updated"><p>Settings saved.</p></div>';
+    // }
 
     // Load data
     $saved_data = get_option('notify_wysiwyg_data');
