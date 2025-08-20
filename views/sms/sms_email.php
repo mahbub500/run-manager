@@ -20,7 +20,7 @@ use WpPluginHub\Run_Manager\Helper;
 
     // Load data
     $saved_data = get_option('notify_wysiwyg_data');
-    $data = $saved_data ? json_decode($saved_data, true) : [];
+    $data = get_option('notify_wysiwyg_data', []);
     $placeholders = notify_placeholders(); // Get all placeholders with 
 
 

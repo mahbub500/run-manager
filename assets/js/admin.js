@@ -321,6 +321,7 @@ jQuery(document).ready(function ($) {
                             $(this).html('').show(); // Clear content and reset display
                         });
                     }, 3000);
+                    window.location.reload();
                 } else {
                     alert(response.data.message || "Something went wrong.");
                 }

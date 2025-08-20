@@ -130,8 +130,8 @@ public function import_excel_to_orders() {
     $logger = wc_get_logger();
     $logger->info("Processing file: " . $file, ['source' => 'import_excel']);
 
-    $saved_data = get_option('notify_wysiwyg_data');
-    $notify_data = $saved_data ? json_decode($saved_data, true) : [];
+    $notify_data    = get_option('notify_wysiwyg_data', []);
+
 
     try {
         // Check if PhpSpreadsheet is available
@@ -734,34 +734,24 @@ public function import_excel_to_orders() {
 
     public function save_notify_data() {
 
-        // Security check
-        if ( ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( $_POST['_wpnonce']  ) ) {
+    // Security check
+        if ( ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( $_POST['_wpnonce'] ) ) {
             wp_send_json_error( [ 'message' => 'Security check failed!' ] );
         }
 
         // Prepare data
         $data = [
-            'test_mode'    => isset($_POST['test_mode']) ? 1 : 0,
-            'test_email'   => sanitize_email($_POST['test_email'] ?? ''),
-            'test_mobile'  => sanitize_text_field($_POST['test_mobile'] ?? ''),
-            'notify_email' => isset($_POST['notify_email']) ? 1 : 0,
-            'notify_sms'   => isset($_POST['notify_sms']) ? 1 : 0,
-            'email_content'=> wp_kses_post($_POST['email_content'] ?? ''),
-            'sms_content'  => wp_kses_post($_POST['sms_content'] ?? ''),
+            'test_mode'     => !empty($_POST['test_mode']) ? 1 : 0,
+            'test_email'    => sanitize_email($_POST['test_email'] ?? ''),
+            'test_mobile'   => sanitize_text_field($_POST['test_mobile'] ?? ''),
+            'notify_email'  => !empty($_POST['notify_email']) ? 1 : 0,
+            'notify_sms'    => !empty($_POST['notify_sms']) ? 1 : 0,
+            'email_content' => wp_kses_post($_POST['email_content'] ?? ''),
+            'sms_content'   => wp_kses_post($_POST['sms_content'] ?? ''),
         ];
 
-        // Save data in a single option
-        update_option('notify_wysiwyg_data', wp_json_encode($data));
+        update_option('notify_wysiwyg_data', $data);
 
-        // Return success
         wp_send_json_success( [ 'message' => 'Settings saved successfully!' ] );
     }
-
-
-
-        
-
-
-
-
 }
