@@ -178,7 +178,7 @@ public function import_excel_to_orders() {
                      $order->update_meta_data('race_category', $bib_id);
                      $order->save();
 
-                    $subject =  'Important: Collect Your '. $race_name. ' Race Kit!' ;
+                    // $subject =  'Important: Collect Your '. $race_name. ' Race Kit!' ;
 
                      // Generate message
                     $billing_first_name	= $order->get_billing_first_name();
@@ -188,6 +188,7 @@ public function import_excel_to_orders() {
                     $gender		= $order->get_meta('billing_gender');
                      // $verification_code  = wp_rand(100000, 999999);
 
+                    $email_subject = $notify_data['email_subject'] ?? '';
                     $email_message = $notify_data['email_content'] ?? '';
 					$sms_message   = $notify_data['sms_content'] ?? '';
 					$test_mode     = ! empty( $notify_data['test_mode'] ) && $notify_data['test_mode'] == 1;
@@ -208,6 +209,8 @@ public function import_excel_to_orders() {
 					];
 
 					// Replace placeholders in content
+                    $email_subject = notify_placeholders( $email_subject, $placeholder_data );
+                    $subject = wp_strip_all_tags( $email_subject );
 					$email_message = notify_placeholders( $email_message, $placeholder_data );
 					$sms_message   = notify_placeholders( $sms_message, $placeholder_data );
 					$sms_message 	= wp_strip_all_tags( $sms_message );
