@@ -78,38 +78,6 @@ class Front extends Base {
 		return $actions;
 	}
 	
-
-	public function restrict_multiple_additions( $passed, $product_id, $quantity ) {
-	   $cart_items = WC()->cart->get_cart();
-	    $allowed_product_id = get_optional_product_id();
-
-	    $has_5037 = false;
-	    $total_cart_count = count( $cart_items );
-
-	    foreach ( $cart_items as $item ) {
-	        if ( intval( $item['product_id'] ) === $allowed_product_id ) {
-	            $has_5037 = true;
-	            break;
-	        }
-	    }
-
-	    if ( $has_5037 ) {
-	        // If product 5037 is already in cart, allow only one additional product (max 2 total)
-	        if ( $total_cart_count >= 2 ) {
-	            wc_add_notice( 'You can only add one additional product along with the special product.', 'error' );
-	            return false;
-	        }
-	    } else {
-	        // If 5037 is not in cart, allow only one product
-	        if ( $total_cart_count >= 1 ) {
-	            wc_add_notice( 'You can only add one product to your cart at a time.', 'error' );
-	            return false;
-	        }
-	    }
-
-	    return $passed;
-	}
-
 	public function send_confirmation_sms( $order_id ) {
 	    $campain_name = Helper::get_option( 'run-manager_basic', 'campain_name' );
 	    $order        = wc_get_order( $order_id );
@@ -152,49 +120,6 @@ class Front extends Base {
 	    $subject = "Confirmation – {$first_product_name}";
 	    return $subject;
 	}
-
-	function add_optional_simple_product() {
-// 4852 
-		global $product;
-		$product_id = $product->get_id();
-
-		if ( $product_id == 4852 ) {
-			$is_tshirt_in_cart = false;
-			foreach ( WC()->cart->get_cart() as $cart_item ) {
-		        if ( intval( $cart_item['product_id'] ) === get_optional_product_id() ) {
-		            $is_tshirt_in_cart = true;
-		            break;
-		        }
-		    }
-		 	echo '<div class="optional-product-box">';
-		    echo '<label><input type="checkbox" id="add_optional_product_checkbox" ' . checked( $is_tshirt_in_cart, true, false ) .' /> <strong>Add a T-Shirt</strong></label>';
-		    echo '</div>';
-
-		    echo '<div id="tshirt-size-wrapper" class="tshirt-select-box">';
-		    echo '<label for="tshirt_size">Choose T-Shirt Size:</label><br>';
-		    echo '<select name="tshirt_size" id="tshirt_size_select">
-			    <option value="">Select Size</option>
-			    <option value="3-4">3-4 Year\'s (Chest=26&quot;, Length=18&quot;)</option>
-			    <option value="5-6">5-6 Year\'s (Chest=28&quot;, Length=19&quot;)</option>
-			    <option value="7-8">7-8 Year\'s (Chest=30&quot;, Length=20&quot;)</option>
-			    <option value="9-10">9-10 Year\'s (Chest=32&quot;, Length=21&quot;)</option>
-			    <option value="11-12">11-12 Year\'s (Chest=34&quot;, Length=22&quot;)</option>
-			    <option value="12-14">12-14 Year\'s (Chest=36&quot;, Length=23&quot;)</option>
-			    <option value="XS">XS (Chest=36&quot;, Length=25&quot;)</option>
-			    <option value="S">S (Chest=38&quot;, Length=26&quot;)</option>
-			    <option value="M">M (Chest=40&quot;, Length=27&quot;)</option>
-			    <option value="L">L (Chest=42&quot;, Length=28&quot;)</option>
-			    <option value="XL">XL (Chest=44&quot;, Length=29&quot;)</option>
-			    <option value="XXL">XXL (Chest=46&quot;, Length=30&quot;)</option>
-			    <option value="3XL">3XL (Chest=48&quot;, Length=31&quot;)</option>
-			    <option value="4XL">4XL (Chest=50&quot;, Length=32&quot;)</option>
-			</select>';
-
-		    echo '</div>';
-		}
-	    
-	}
-
 
 	function custom_save_fields_to_cart($cart_item_data, $product_id, $variation_id) {
 	    if (!empty($_POST['tshirt_size'])) {

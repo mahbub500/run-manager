@@ -164,7 +164,7 @@ final class Plugin {
 			$front->action( 'wp_footer', 'modal' );
 			$front->action( 'wp_enqueue_scripts', 'enqueue_scripts' );
 			$front->action( 'woocommerce_my_account_my_orders_actions', 'download_certificate', 10, 2 );
-			$front->filter( 'woocommerce_add_to_cart_validation', 'restrict_multiple_additions', 10, 3 );
+			
 			$front->action( 'woocommerce_order_status_processing', 'send_confirmation_sms', 10, 1 );
 // 			$front->filter( 'woocommerce_email_subject_new_order', 'custom_new_order_email_subject', 10, 2 );
 			$front->filter( 'woocommerce_add_cart_item_data', 'custom_save_fields_to_cart', 10, 3 );
