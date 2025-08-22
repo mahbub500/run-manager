@@ -686,52 +686,6 @@ public function import_excel_to_orders() {
             );
         }
 
-        public function add_optional_product_to_cart() {
-
-        if ( ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( $_POST['_wpnonce'] )) {
-            wp_send_json_error( ['message' => 'Security check failed!'] );
-        }
-            $product_id = intval($_POST['product_id']);
-            $tshirt_size = sanitize_text_field($_POST['tshirt_size']);
-
-            $cart_item_data = [];
-
-            if (!empty($tshirt_size)) {
-                $cart_item_data['tshirt_size'] = $tshirt_size;
-            }
-
-            WC()->cart->add_to_cart($product_id, 1, 0, [], $cart_item_data);
-
-            wp_send_json_success('Product added.');
-
-        }
-
-       public function remove_product_from_cart() {
-
-            // Security check
-            if ( ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( $_POST['_wpnonce'] ) ) {
-                wp_send_json_error( [ 'message' => 'Security check failed!' ] );
-            }
-
-            // Validate product ID
-            if ( empty( $_POST['product_id'] ) ) {
-                wp_send_json_error( [ 'message' => 'Product ID is missing.' ] );
-            }
-
-            $product_id = intval( $_POST['product_id'] );
-
-            // Loop through cart items to find and remove the product
-            foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
-                if ( intval( $cart_item['product_id'] ) === $product_id ) {
-                    WC()->cart->remove_cart_item( $cart_item_key );
-                    wp_send_json_success( [ 'message' => 'Product removed from cart.' ] );
-                }
-            }
-
-            // Product not found
-            wp_send_json_error( [ 'message' => 'Product not found in cart.' ] );
-        }
-
     public function save_notify_data() {
 
     // Security check

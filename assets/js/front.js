@@ -168,69 +168,7 @@ jQuery(function($){
     });
 });
 
-jQuery(document).ready(function($) {
-        function toggleTshirtSelect() {
-            if ($('#add_optional_product_checkbox').is(':checked')) {
-                $('#tshirt-size-wrapper').slideDown();
-                $('#tshirt_size_select').attr('required', true);
-            } else {
-                $('#tshirt-size-wrapper').slideUp();
-                $('#tshirt_size_select').removeAttr('required');
-            }
-        }
 
-        // Trigger on change
-        $('#add_optional_product_checkbox').on('change', toggleTshirtSelect);
-
-        // Run on load
-        toggleTshirtSelect();
-
-         $('#add_optional_product_checkbox').on('change', function() {
-                var product_id = RUN_MANAGER.optional_product_id;
-            if ($(this).is(':checked')) {
-                var tshirt_size = $('#tshirt_size_select').val();
-
-                $.ajax({
-                    url: RUN_MANAGER.ajaxurl,
-                    type: 'POST',
-                    data: {
-                        action: 'add_optional_product_to_cart',
-                        _wpnonce : RUN_MANAGER._wpnonce,
-                        product_id: product_id,
-                        tshirt_size: tshirt_size
-                    },
-                    success: function(response) {
-                        if (response.success) {
-                            // alert('Product added to cart!');
-                            $(document.body).trigger('wc_fragment_refresh');
-                        } else {
-                            alert(response.data);
-                        }
-                    },
-                    error: function() {
-                        alert('AJAX request failed.');
-                    }
-                });
-            } else {
-                 $.ajax({
-                    url: RUN_MANAGER.ajaxurl,
-                    type: 'POST',
-                    data: {
-                        action: 'remove_product_from_cart',
-                        _wpnonce : RUN_MANAGER._wpnonce,
-                        product_id: product_id
-                    },
-                    success: function(response) {
-                        if (response.success) {
-                            $(document.body).trigger('wc_fragment_refresh');
-                        } else {
-                            alert(response.data);
-                        }
-                    }
-                });
-            }
-        });
-    });
 
 
 

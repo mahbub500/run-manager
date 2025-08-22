@@ -215,12 +215,6 @@ if ( ! function_exists( 'notify_placeholders' ) ) {
 }
 
 
-if ( ! function_exists( 'get_optional_product_id' ) ) {
-	function get_optional_product_id() {
-		$optional_product_id   = Helper::get_option( 'run-manager_basic', 'select_optional_product' );
-	    return (int) $optional_product_id;
-	}
-}
 
 
 

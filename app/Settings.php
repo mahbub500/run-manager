@@ -102,20 +102,7 @@ class Settings extends Base {
 											'readonly'  => false, // true|false
 											'disabled'  => false, // true|false
 										],
-										'select_optional_product' => [
-											'id'      => 'select_optional_product',
-											'label'     => __( 'Select Optional product', 'run-manager' ),
-											'type'      => 'select',
-											'desc'      => __( 'This is a select field.', 'run-manager' ),
-											// 'class'     => '',
-											'options'   =>  Helper::get_posts(  array(
-														'post_type'      => 'product',
-														'posts_per_page' => -1,
-														'post_status'    => 'publish',) )  ,
-											'default'   => 'option_2',
-											'disabled'  => false, // true|false
-											'multiple'  => false, // true|false
-										],
+										
 									],
 								],
 								

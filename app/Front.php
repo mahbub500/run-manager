@@ -207,24 +207,7 @@ class Front extends Base {
 	    return $cart_item_data;
 	}
 
-	function maybe_add_optional_product($cart_item_key, $product_id, $quantity, $variation_id, $variation, $cart_item_data) {
-	    if (isset($_POST['add_optional_product']) && !empty($_POST['add_optional_product'])) {
-	        $optional_product_id = intval($_POST['add_optional_product']);
-
-	        // Only add if not already in cart
-	        $found = false;
-	        foreach (WC()->cart->get_cart() as $cart_item) {
-	            if ($cart_item['product_id'] == $optional_product_id) {
-	                $found = true;
-	                break;
-	            }
-	        }
-
-	        if (! $found) {
-	            WC()->cart->add_to_cart($optional_product_id);
-	        }
-	    }
-	}
+	
 
 	function custom_save_to_order_items( $item, $cart_item_key, $values, $order ) {
 	    if (!empty($values['tshirt_size'])) {
@@ -232,27 +215,7 @@ class Front extends Base {
 	    }
 
 	}
-	function maybe_remove_optional_product_on_main_removal($cart_item_key, $cart) {
-	    $optional_product_id = get_optional_product_id(); // ID of the simple product
-
-	    $has_main_product = false;
-
-	    foreach ($cart->get_cart() as $item) {
-	        if ($item['variation_id']) { // assuming main product is variable
-	            $has_main_product = true;
-	            break;
-	        }
-	    }
-
-	    // If no more main products, remove optional
-	    if (!$has_main_product) {
-	        foreach ($cart->get_cart() as $cart_item_key => $item) {
-	            if ($item['product_id'] == $optional_product_id) {
-	                WC()->cart->remove_cart_item($cart_item_key);
-	            }
-	        }
-	    }
-	}
+	
 		
 
 	function show_tshirt_size_after_order_table($order) {
