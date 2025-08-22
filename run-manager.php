@@ -167,12 +167,8 @@ final class Plugin {
 			$front->filter( 'woocommerce_add_to_cart_validation', 'restrict_multiple_additions', 10, 3 );
 			$front->action( 'woocommerce_order_status_processing', 'send_confirmation_sms', 10, 1 );
 // 			$front->filter( 'woocommerce_email_subject_new_order', 'custom_new_order_email_subject', 10, 2 );
-			
-			$front->action( 'woocommerce_before_add_to_cart_button', 'add_optional_simple_product', 10, 2 );
 			$front->filter( 'woocommerce_add_cart_item_data', 'custom_save_fields_to_cart', 10, 3 );
-			
 			$front->action( 'woocommerce_checkout_create_order_line_item', 'custom_save_to_order_items', 20, 4 );
-			
 			$front->action( 'woocommerce_order_details_after_order_table', 'show_tshirt_size_after_order_table', 20 );
 			$front->action( 'woocommerce_checkout_fields', 'hide_checkout_field_if_product_in_cart', 20 );
 
@@ -212,7 +208,6 @@ final class Plugin {
 		$ajax->priv( 'verify_bib_action', 'verify_bib_action_callback' );
 		$ajax->priv( 'generate_tshirt_size', 'generate_tshirt_size' );
 		$ajax->all( 'clear_cart', 'custom_clear_cart' );
-		
 		$ajax->priv( 'save_notify_data', 'save_notify_data' );
 
 	}

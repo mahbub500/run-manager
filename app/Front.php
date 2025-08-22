@@ -54,7 +54,6 @@ class Front extends Base {
 		$localized = [
 			'ajaxurl'	=> admin_url( 'admin-ajax.php' ),
 			'_wpnonce'	=> wp_create_nonce(),
-			'optional_product_id'	=> get_optional_product_id(),
 		];
 		wp_localize_script( $this->slug, 'RUN_MANAGER', apply_filters( "{$this->slug}-localized", $localized ) );
 	}
