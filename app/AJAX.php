@@ -161,100 +161,82 @@ public function import_excel_to_orders() {
 		}
    
          // Process each order
-         foreach ($final_data as $row) {
-            $order_id   	= $row['order_id'] ?? null;
-            $bib_id     	= $row['bib_id'] ?? null;
-            $tshirt     	= $row['tshirt_size'] ?? null;
-            $race_name		= $row['race_name'] ?? null;
-            $race_category	= $row['race_category'] ?? null;
+        foreach ( $final_data as $row ) {
+            $order_id = $row['order_id'] ?? null;
+            if ( ! $order_id ) {
+                continue;
+            }
 
-            // update_option( 'xl_data', $race_catrgory );
+            $order = wc_get_order( $order_id );
+            if ( ! $order ) {
+                continue;
+            }
 
-             if ($order_id) {
-                 $order = wc_get_order($order_id);
-                 if ($order) {
-                     $order->update_meta_data('bib_id', $bib_id);
-                     $order->update_meta_data('race_name', $bib_id);
-                     $order->update_meta_data('race_category', $bib_id);
-                     $order->save();
+            // Extract row values
+            $bib_id        = $row['bib_id']        ?? '';
+            $tshirt        = $row['tshirt_size']   ?? '';
+            $race_name     = $row['race_name']     ?? '';
+            $race_category = $row['race_category'] ?? '';
 
-                    // $subject =  'Important: Collect Your '. $race_name. ' Race Kit!' ;
+            // Save meta
+            $order->update_meta_data( 'bib_id', $bib_id );
+            $order->update_meta_data( 'race_name', $race_name );
+            $order->update_meta_data( 'race_category', $race_category );
+            $order->save();
 
-                     // Generate message
-                    $billing_first_name	= $order->get_billing_first_name();
-                    $billing_last_name = $order->get_billing_last_name();
-                    $billing_full_name = $order->get_billing_first_name() . ' ' . $order->get_billing_last_name();
+            // Build placeholders
+            $placeholder_data = [
+                'full_name'     => trim( $order->get_billing_first_name() . ' ' . $order->get_billing_last_name() ),
+                'first_name'    => $order->get_billing_first_name() ?? '',
+                'last_name'     => $order->get_billing_last_name() ?? '',
+                'bib_number'    => $bib_id,
+                'tshirt_size'   => $tshirt,
+                'order_id'      => $order_id,
+                'race_category' => $race_category,
+            ];
 
-                    $gender		= $order->get_meta('billing_gender');
-                     // $verification_code  = wp_rand(100000, 999999);
+            // Messages
+            $test_mode       = ! empty( $notify_data['test_mode'] );
+            $email_subject   = notify_placeholders( $notify_data['email_subject'] ?? '', $placeholder_data );
+            $email_subject   = wp_strip_all_tags( $email_subject );
+            $email_message   = notify_placeholders( $notify_data['email_content'] ?? '', $placeholder_data );
+            $sms_message     = wp_strip_all_tags( notify_placeholders( $notify_data['sms_content'] ?? '', $placeholder_data ) );
 
-                    $email_subject = $notify_data['email_subject'] ?? '';
-                    $email_message = $notify_data['email_content'] ?? '';
-					$sms_message   = $notify_data['sms_content'] ?? '';
-					$test_mode     = ! empty( $notify_data['test_mode'] ) && $notify_data['test_mode'] == 1;
+            // Recipients
+            $recipient_email = $test_mode ? sanitize_email( $notify_data['test_email'] ?? '' ) : $order->get_billing_email();
+            $recipient_phone = $test_mode ? sanitize_text_field( $notify_data['test_mobile'] ?? '' ) : clean_phone_number( $order->get_billing_phone() );
 
-					// Determine recipients based on test mode
-					$recipient_email = $test_mode ? sanitize_email( $notify_data['test_email'] ?? '' ) : $order->get_billing_email();
-					$recipient_phone = $test_mode ? sanitize_text_field( $notify_data['test_mobile'] ?? '' ) : clean_phone_number( $order->get_billing_phone() );
+            // ------------------
+            // Send Email
+            // ------------------
+            if ( ! $order->get_meta( 'is_email_sent' ) || $test_mode ) {
+                if ( ! empty( $recipient_email ) && ! empty( $notify_data['notify_email'] ) ) {
+                    $this->send_certificate_email( $recipient_email, $email_message, $email_subject, $order_id );
 
-					// Prepare placeholder data
-					$placeholder_data = [
-					    'full_name'     => $billing_full_name,
-					    'first_name'    => $billing_first_name ?? '',
-                        'last_name'     => $billing_last_name ?? '',
-                        'bib_number'    => $bib_id ?? '',
-					    'tshirt_size'   => $tshirt ?? '',
-					    'order_id'      => $order_id,
-					    'race_category' => $race_category ?? '',
-					];
+                    if ( ! $test_mode ) {
+                        $order->update_meta_data( 'is_email_sent', true );
+                        $order->save();
+                    }
+                    $logger->info( "Email sent to: {$recipient_email}", [ 'source' => 'import_excel' ] );
+                }
+            }
 
-					// Replace placeholders in content
-                    $email_subject = notify_placeholders( $email_subject, $placeholder_data );
-                    $subject = wp_strip_all_tags( $email_subject );
-					$email_message = notify_placeholders( $email_message, $placeholder_data );
-					$sms_message   = notify_placeholders( $sms_message, $placeholder_data );
-					$sms_message 	= wp_strip_all_tags( $sms_message );
+            // ------------------
+            // Send SMS
+            // ------------------
+            if ( ! $order->get_meta( 'is_sms_sent' ) || $test_mode ) {
+                if ( ! empty( $recipient_phone ) && ! empty( $notify_data['notify_sms'] ) ) {
+                    send_sms_to_phone( $recipient_phone, $sms_message );
 
-					// ------------------
-					// Send Email
-					// ------------------
-					if ( ! $order->get_meta( 'is_email_sent' ) || $test_mode ) {
-					    if ( ! empty( $recipient_email ) && ! empty( $notify_data['notify_email'] ) && $notify_data['notify_email'] == '1' ) {
-					        $this->send_certificate_email( $recipient_email, $email_message, $subject, $order->get_id() );
-
-					        // Only update meta if not in test mode
-					        if ( ! $test_mode ) {
-					            $order->update_meta_data( 'is_email_sent', true );
-					            $order->save();
-					        }
-
-					        $logger->info( sprintf( 'Email sent to: %s', $recipient_email ), [ 'source' => 'import_excel' ] );
-					    }
-					}
-
-					// ------------------
-					// Send SMS
-					// ------------------
-					if ( ! $order->get_meta( 'is_sms_sent' ) || $test_mode ) {
-					    if ( ! empty( $recipient_phone ) && ! empty( $notify_data['notify_sms'] ) && $notify_data['notify_sms'] == '1' ) {
-					        send_sms_to_phone( $recipient_phone, $sms_message );
-
-					        // Only update meta if not in test mode
-					        if ( ! $test_mode ) {
-					            $order->update_meta_data( 'is_sms_sent', true );
-					            $order->save();
-					        }
-
-					        $logger->info( sprintf( 'SMS sent to: %s', $recipient_phone ), [ 'source' => 'import_excel' ] );
-					    }
-}
-
-
-
-
+                    if ( ! $test_mode ) {
+                        $order->update_meta_data( 'is_sms_sent', true );
+                        $order->save();
+                    }
+                    $logger->info( "SMS sent to: {$recipient_phone}", [ 'source' => 'import_excel' ] );
                 }
             }
         }
+
 
         wp_send_json_success(['message' => __('File imported successfully. Emails and SMS sent!', 'run-manager')]);
 
