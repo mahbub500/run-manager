@@ -112,9 +112,6 @@ use WpPluginHub\Run_Manager\Helper;
                 <!-- Placeholder list -->
         
             </div>
-           
-
-       
 
             <!-- With a custom HTML button -->
             <button type="button" id="save_notify_data" class="button button-primary">💾 Save Data</button>

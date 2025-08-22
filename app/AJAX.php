@@ -182,6 +182,7 @@ public function import_excel_to_orders() {
 
                      // Generate message
                     $billing_first_name	= $order->get_billing_first_name();
+                    $billing_last_name = $order->get_billing_last_name();
                     $billing_full_name = $order->get_billing_first_name() . ' ' . $order->get_billing_last_name();
 
                     $gender		= $order->get_meta('billing_gender');
@@ -198,7 +199,9 @@ public function import_excel_to_orders() {
 					// Prepare placeholder data
 					$placeholder_data = [
 					    'full_name'     => $billing_full_name,
-					    'bib_number'    => $bib_id ?? '',
+					    'first_name'    => $billing_first_name ?? '',
+                        'last_name'     => $billing_last_name ?? '',
+                        'bib_number'    => $bib_id ?? '',
 					    'tshirt_size'   => $tshirt ?? '',
 					    'order_id'      => $order_id,
 					    'race_category' => $race_category ?? '',

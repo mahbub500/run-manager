@@ -193,6 +193,8 @@ if ( ! function_exists( 'notify_placeholders' ) ) {
         // Define all placeholders and their descriptions
         $placeholders = [
             '{{full_name}}'    => $data['full_name'] ?? '',
+            '{{first_name}}'   => $data['first_name'] ?? '',
+            '{{last_name}}'    => $data['last_name'] ?? '',
             '{{bib_number}}'   => $data['bib_number'] ?? '',
             '{{tshirt_size}}'  => $data['tshirt_size'] ?? '',
             '{{order_id}}'     => $data['order_id'] ?? '',
