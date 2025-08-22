@@ -307,6 +307,7 @@ jQuery(document).ready(function ($) {
                 test_mode: $('#test_mode').is(':checked') ? 1 : 0,
                 test_email: $('#test_email').val(),
                 test_mobile: $('#test_mobile').val(),
+                email_subject: $('#email_subject').val(),
                 notify_email: $('#notify_email').is(':checked') ? 1 : 0,
                 notify_sms: $('#notify_sms').is(':checked') ? 1 : 0,
                 email_content: email_content,
@@ -321,11 +322,13 @@ jQuery(document).ready(function ($) {
                             $(this).html('').show(); // Clear content and reset display
                         });
                     }, 3000);
-                    window.location.reload();
+                    // window.location.reload();
                 } else {
                     alert(response.data.message || "Something went wrong.");
                 }
                 runm_modal(false);
+
+                console.log( $('#email_subject').val() );
             },
             error: function(){
                 runm_modal(false);
@@ -353,12 +356,5 @@ jQuery(document).ready(function ($) {
         // Small feedback
         $(this).fadeOut(100).fadeIn(100);
     });
-
-
-
-
-
-   
-
 });
 

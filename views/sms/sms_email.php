@@ -1,25 +1,7 @@
 <?php 
 
 use WpPluginHub\Run_Manager\Helper;
- // Save on submit
-    // if (isset($_POST['notification_editor_nonce']) && wp_verify_nonce($_POST['notification_editor_nonce'], 'save_notification_editor')) {
 
-    //     $data = [
-    //         'test_mode'    => isset($_POST['test_mode']) ? 1 : 0,
-    //         'test_email'   => sanitize_email($_POST['test_email'] ?? ''),
-    //         'test_mobile'  => sanitize_text_field($_POST['test_mobile'] ?? ''),
-    //         'notify_email' => isset($_POST['notify_email']) ? 1 : 0,
-    //         'notify_sms'   => isset($_POST['notify_sms']) ? 1 : 0,
-    //         'email_content'=> wp_kses_post($_POST['email_content'] ?? ''),
-    //         'sms_content'  => sanitize_textarea_field($_POST['sms_content'] ?? ''),
-    //     ];
-
-    //     update_option('notify_wysiwyg_data', wp_json_encode($data));
-    //     echo '<div class="updated"><p>Settings saved.</p></div>';
-    // }
-
-    // Load data
-    $saved_data = get_option('notify_wysiwyg_data');
     $data = get_option('notify_wysiwyg_data', []);
     $placeholders = notify_placeholders(); // Get all placeholders with 
 
@@ -45,9 +27,7 @@ use WpPluginHub\Run_Manager\Helper;
         </div>
 
         <form method="post">
-            <?php wp_nonce_field('save_notification_editor', 'notification_editor_nonce'); ?>
-
-            <!-- Test Mode -->
+        	<!-- Test Mode -->
             <div class="notify-option">
                 <label class="notify-label">
                     <input type="checkbox" name="test_mode" id="test_mode" value="1" <?php checked(!empty($data['test_mode'])); ?>>
@@ -68,25 +48,38 @@ use WpPluginHub\Run_Manager\Helper;
             </div>
 
             <!-- Email Section -->
-            <div class="notify-option">
-                <label class="notify-label">
-                    <input type="checkbox" name="notify_email" id="notify_email" value="1" <?php checked(!empty($data['notify_email'])); ?>>
-                    Email Notification
-                </label>
-                <div id="email_editor_container" class="notify-editor-wrapper" style="<?php echo !empty($data['notify_email']) ? '' : 'display:none;'; ?>">
-                    <?php
-                    wp_editor(
-                        $data['email_content'] ?? '',
-                        'email_content',
-                        [   'textarea_name' => 'email_content', 
-                            'textarea_rows' => 20, 
-                            'media_buttons' => false, 
-                            'teeny' => true, 
-                            'editor_height'  => 300  ]
-                    );
-                    ?>
-                </div>
-            </div>
+			<div class="notify-option">
+			    <label class="notify-label">
+			        <input type="checkbox" name="notify_email" id="notify_email" value="1" <?php checked(!empty($data['notify_email'])); ?>>
+			        Email Notification
+			    </label>
+
+			    <div id="email_editor_container" class="notify-editor-wrapper" style="<?php echo !empty($data['notify_email']) ? '' : 'display:none;'; ?>">
+
+			        <!-- Email Subject -->
+			        <div class="notify-subject">
+			            <label for="email_subject"><strong>Email Subject:</strong></label>
+			            <input type="text" name="email_subject" id="email_subject" 
+			                   value="<?php echo esc_attr($data['email_subject'] ?? ''); ?>" 
+			                   class="regular-text" style="width:100%; margin-bottom:10px;">
+			        </div>
+
+			        <!-- Email Body -->
+			        <?php
+			        wp_editor(
+			            $data['email_content'] ?? '',
+			            'email_content',
+			            [
+			                'textarea_name' => 'email_content',
+			                'textarea_rows' => 20,
+			                'media_buttons' => false,
+			                'teeny' => true,
+			                'editor_height' => 300
+			            ]
+			        );
+			        ?>
+			    </div>
+			</div>
 
             <!-- SMS Section -->
             <div class="notify-option">

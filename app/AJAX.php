@@ -701,6 +701,7 @@ public function import_excel_to_orders() {
             'test_mode'     => !empty($_POST['test_mode']) ? 1 : 0,
             'test_email'    => sanitize_email($_POST['test_email'] ?? ''),
             'test_mobile'   => sanitize_text_field($_POST['test_mobile'] ?? ''),
+            'email_subject' => wp_kses_post($_POST['email_subject'] ?? ''),
             'notify_email'  => !empty($_POST['notify_email']) ? 1 : 0,
             'notify_sms'    => !empty($_POST['notify_sms']) ? 1 : 0,
             'email_content' => wp_kses_post($_POST['email_content'] ?? ''),
