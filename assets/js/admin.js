@@ -322,13 +322,11 @@ jQuery(document).ready(function ($) {
                             $(this).html('').show(); // Clear content and reset display
                         });
                     }, 3000);
-                    // window.location.reload();
+                    window.location.reload();
                 } else {
                     alert(response.data.message || "Something went wrong.");
                 }
                 runm_modal(false);
-
-                console.log( $('#email_subject').val() );
             },
             error: function(){
                 runm_modal(false);
