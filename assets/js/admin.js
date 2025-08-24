@@ -25,13 +25,12 @@ jQuery(document).ready(function ($) {
                 responseType: 'blob', // Handle file as binary
             },
             success: function (response) {
-                
                 var blob = new Blob([response], {
-                    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                    type: 'text/csv;charset=utf-8;'
                 });
                 var link = document.createElement('a');
                 link.href = window.URL.createObjectURL(blob);
-                link.download = 'orders_export.xlsx';
+                link.download = 'orders_export.csv'; // <-- CSV instead of XLSX
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);

@@ -38,17 +38,7 @@ class Front extends Base {
 	}
 
 	public function head() {
-
-		$args = [
-                'status'      => ['wc-completed', 'wc-processing'],
-      
-                'orderby'     => 'date',
-                'order'       => 'ASC',
-                'meta_key'    => 'rm_event_key',
-                'meta_value'  => '$selected_event',
-            ];
-
-            $orders = wc_get_orders($args);
+		
 	}
 
 	
