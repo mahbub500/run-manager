@@ -85,27 +85,6 @@ class Settings extends Base {
 									'hide_form'	=> true,
 									'template'  => RUN_MANAGER_DIR . '/views/sms/sms_email.php',
 								],
-								'run-manager_save_message' => [
-									'id'        => 'run-manager_save_message',
-									'label'     => __( 'Event ', 'run-manager' ),
-									'icon'      => 'dashicons-editor-table',
-									// 'color'		=> '#28c9ee',
-									'hide_form'	=> true,
-									'fields'    => [
-										'campain_name' => [
-											'id'        => 'campain_name',
-											'label'     => __( 'Event Name', 'run-manager' ),
-											'type'      => 'text',
-											'desc'      => __( 'Enter your Event Name.', 'run-manager' ),
-											// 'class'     => '',
-											'default'   => 'DMHM2025',
-											'readonly'  => false, // true|false
-											'disabled'  => false, // true|false
-										],
-										
-									],
-								],
-								
 							],
 						],
 					]

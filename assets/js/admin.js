@@ -354,5 +354,54 @@ jQuery(document).ready(function ($) {
         // Small feedback
         $(this).fadeOut(100).fadeIn(100);
     });
+
+     $('#rm-event-button').on('click', function(e) {
+        e.preventDefault(); // Prevent default button action
+
+        // Get the event name from input and trim whitespace
+        let eventName = $('#rm-event-name').val().trim();
+
+        // Validate input
+        if (!eventName) {
+            alert('⚠️ Please enter an event name');
+            return;
+        }
+        runm_modal();
+        // AJAX request to save the event
+        $.ajax({
+            url: RUN_MANAGER.ajaxurl, // Admin AJAX URL
+            type: 'POST',
+            data: {
+                action: 'rm_save_event',     // WP AJAX action
+                _wpnonce: RUN_MANAGER._wpnonce, // Security nonce
+                event_name: eventName         // The event name from input
+            },
+            success: function(response) {
+
+                if (response.success) {
+                    // Show toast notification
+                    var $toast = $('#rm-toast');
+                    $toast.addClass('show');
+                    setTimeout(function(){
+                        $toast.removeClass('show');
+                    }, 3000);
+                    runm_modal(false);
+                    window.location.reload();
+
+                } else {
+                    // Show error message
+                    alert('❌ Error: ' + response.data.message || response.data);
+                    runm_modal(false);
+                }
+            },
+            error: function(xhr, status, error) {
+                // Handle AJAX request errors
+                alert('❌ AJAX Error: ' + error);
+                runm_modal(false);
+            }
+        });
+    });
+
 });
+
 

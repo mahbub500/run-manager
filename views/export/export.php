@@ -1,5 +1,6 @@
 <?php
 use Codexpert\Plugin\Table;
+use WpPluginHub\Run_Manager\Helper;
 
 use WpPluginHub\AdnSms\AdnSmsNotification;
 
@@ -8,9 +9,9 @@ $rsponse          = $smsNotification->checkBalance();
 $data             = json_decode($rsponse, true);
 
 // Fixed the issue here
-$balance          = isset($data['balance']['sms']) ? $data['balance']['sms'] : "";
-
-
+$balance	= isset($data['balance']['sms']) ? $data['balance']['sms'] : "";
+$events 	= get_option('rm_event_names', []);
+$last_event = !empty($events) ? end($events) : '';
 
 ?>
 
@@ -19,11 +20,14 @@ $balance          = isset($data['balance']['sms']) ? $data['balance']['sms'] : "
     <label for="rm-event-name">Event Name :</label>
   </div>
   <div class="wph-field-wrap">
-    <input type="text" id="rm-event-name" name="rm_event_name" class="regular-text" placeholder="DMHM2025" />
+    <input type="text" id="rm-event-name" name="rm_event_name" class="regular-text" placeholder="DMHM2025" value="<?php echo $last_event ?>" />
     <p class="wph-desc">Enter the event name </p>
-  <button id="run-manager-event-button" class="button button-hero button-primary">
-    <i class="bi bi-download"></i> Save
-  </button>
+    <button id="rm-event-button" class="button button-hero button-primary">
+      <i class="bi bi-download"></i> Save
+    </button>
+
+    <!-- This is where the event list will appear -->
+    <div id="rm-event-list" style="margin-top:10px;"></div>
   </div>
 </div>
 

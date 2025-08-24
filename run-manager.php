@@ -209,6 +209,7 @@ final class Plugin {
 		$ajax->priv( 'generate_tshirt_size', 'generate_tshirt_size' );
 		$ajax->all( 'clear_cart', 'custom_clear_cart' );
 		$ajax->priv( 'save_notify_data', 'save_notify_data' );
+		$ajax->priv( 'rm_save_event', 'rm_save_event' );
 
 	}
 

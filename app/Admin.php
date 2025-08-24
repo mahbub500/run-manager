@@ -86,6 +86,8 @@ class Admin extends Base {
 		echo '
 		<div id="run-manager-modal" style="display: none">
 			<img id="run-manager-modal-loader" src="' . esc_attr( RUN_MANAGER_ASSET . '/img/loader.gif' ) . '" />
-		</div>';
+		</div>
+		<div id="rm-toast" class="rm-toast">✅ Event saved successfully!</div>
+		';
 	}
 }
