@@ -85,8 +85,24 @@ $last_event = !empty($events) ? end($events) : '';
     <label>Product Sales count</label>
   </div>
   <div class="wph-field-wrap ">
+
+    <select id="rm-event-select-product" name="rm_event_select_product" class="regular-text">
+      <option value="">-- Select Event --</option>
+      <?php if ( ! empty( $events ) ) : ?>
+        <?php foreach ( $events as $event ) : ?>
+          <option value="<?php echo esc_attr( $event ); ?>" <?php selected( $event, $last_event ); ?>>
+            <?php echo esc_html( $event ); ?>
+          </option>
+        <?php endforeach; ?>
+      <?php endif; ?>
+    </select>
+
+    <div class="rm-product-sales-count"></div>
     
-<?php display_product_sales_count(); ?>
+
   </div>
 </div>
 
+<?php
+ // display_product_sales_count(); 
+?>

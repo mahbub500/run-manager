@@ -632,7 +632,7 @@ public function import_excel_to_orders() {
                 'meta_value'  => $selected_event,
             ];
 
-            $orders = wc_get_orders($args);
+            $orders = wc_get_orders( $args );
 
             foreach ($orders as $order) {
                 $size = $order->get_meta('billing_tshirt');
@@ -768,6 +768,23 @@ public function import_excel_to_orders() {
 
         // Return success response
         wp_send_json_success( $event_names );
+    }
+
+    public function product_sales_count() {
+
+        // Security check: verify nonce
+        if ( ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( $_POST['_wpnonce'] ) ) {
+            wp_send_json_error( [ 'message' => 'Security check failed!' ] );
+        }
+
+        $event = sanitize_text_field($_POST['event'] ?? '');
+
+        $product_counts = get_product_sales_count_by_event( $event );
+
+        // Return success response
+         wp_send_json_success( [ 
+	        'products' => $product_counts
+	    ] );
     }
 
 }

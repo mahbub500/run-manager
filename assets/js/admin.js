@@ -410,6 +410,57 @@ jQuery(document).ready(function ($) {
     });
 
     $('#rm-event-select').select2();
+
+    $('#rm-event-select-product').select2({
+		placeholder: "-- Select Event --",
+		allowClear: true,
+		width: '300px'
+    });
+
+    $('#rm-event-select-product').on('change', function() {
+        const selectedEvent = $(this).val();
+
+        if (!selectedEvent) {
+            $('#rm-product-sales-table').html(''); // Clear table if no event
+            return;
+        }
+
+        runm_modal(true);
+
+        $.ajax({
+            url: RUN_MANAGER.ajaxurl,
+            type: "POST",
+            dataType: "json",
+            data: {
+                action: "get_product_sales_count",
+                event: selectedEvent,
+                _wpnonce: RUN_MANAGER._wpnonce
+            },
+            success: function(response) {
+                runm_modal(false);
+
+                if (response.success && response.data.products) {
+                    let html = '<table class="widefat striped" style="width:100%; margin-top:10px;">';
+                    html += '<thead><tr><th>Product Name</th><th>Quantity Sold</th></tr></thead><tbody>';
+
+                    $.each(response.data.products, function(product, count) {
+                        html += '<tr><td>' + product + '</td><td>' + count + '</td></tr>';
+                    });
+
+                    html += '</tbody></table>';
+
+                    $('.rm-product-sales-count').html(html); // Updated selector
+                } else {
+                    $('.rm-product-sales-count').html('<p>No products found for this event.</p>'); // Updated selector
+                }
+            },
+            error: function() {
+                runm_modal(false);
+                alert("Error fetching product sales count.");
+            }
+        });
+    });
+
 });
 
 

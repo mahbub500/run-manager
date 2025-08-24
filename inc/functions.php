@@ -214,6 +214,57 @@ if ( ! function_exists( 'notify_placeholders' ) ) {
 
         return $list;
     }
+
+    /**
+	 * Get product sales count for a specific event.
+	 *
+	 * @param string $event_key The value of 'rm_event_key' meta to filter orders.
+	 * @return array Product name => count
+	 */
+	function get_product_sales_count_by_event( $event_key ) {
+	    if ( empty( $event_key ) ) {
+	        return [];
+	    }
+
+	    // Get order IDs for the event
+	    $args = [
+	        'status'      => ['wc-completed', 'wc-processing'],
+	        'orderby'     => 'date',
+	        'order'       => 'ASC',
+	        'meta_key'    => 'rm_event_key',
+	        'meta_value'  => $event_key,
+	        'return'      => 'ids',
+	    ];
+
+	    $order_ids = wc_get_orders( $args );
+
+	    if ( empty( $order_ids ) ) {
+	        return [];
+	    }
+
+	    global $wpdb;
+
+	    $order_ids_placeholders = implode(',', array_map('absint', $order_ids));
+
+	    // Get product counts for these orders
+	    $results = $wpdb->get_results("
+	        SELECT oi.order_item_name, COUNT(*) AS item_count
+	        FROM {$wpdb->prefix}woocommerce_order_items oi
+	        WHERE oi.order_item_type = 'line_item'
+	          AND oi.order_id IN ($order_ids_placeholders)
+	        GROUP BY oi.order_item_name
+	        ORDER BY item_count DESC
+	    ");
+
+	    // Convert to simple array: product => count
+	    $product_counts = [];
+	    foreach ( $results as $row ) {
+	        $product_counts[ $row->order_item_name ] = (int) $row->item_count;
+	    }
+
+	    return $product_counts;
+	}
+
 }
 
 
