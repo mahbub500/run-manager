@@ -361,6 +361,7 @@ jQuery(document).ready(function ($) {
         $(this).fadeOut(100).fadeIn(100);
     });
 
+    /*Event Magement*/
      $('#rm-event-button').on('click', function(e) {
         e.preventDefault(); // Prevent default button action
 
@@ -408,6 +409,7 @@ jQuery(document).ready(function ($) {
         });
     });
 
+    $('#rm-event-select').select2();
 });
 
 
