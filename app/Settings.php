@@ -87,16 +87,16 @@ class Settings extends Base {
 								],
 								'run-manager_save_message' => [
 									'id'        => 'run-manager_save_message',
-									'label'     => __( 'Campain ', 'run-manager' ),
+									'label'     => __( 'Event ', 'run-manager' ),
 									'icon'      => 'dashicons-editor-table',
 									// 'color'		=> '#28c9ee',
 									'hide_form'	=> true,
 									'fields'    => [
 										'campain_name' => [
 											'id'        => 'campain_name',
-											'label'     => __( 'Campain Name', 'run-manager' ),
+											'label'     => __( 'Event Name', 'run-manager' ),
 											'type'      => 'text',
-											'desc'      => __( 'Enter your Campain Name.', 'run-manager' ),
+											'desc'      => __( 'Enter your Event Name.', 'run-manager' ),
 											// 'class'     => '',
 											'default'   => 'DMHM2025',
 											'readonly'  => false, // true|false
