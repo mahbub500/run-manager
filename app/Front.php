@@ -182,4 +182,24 @@ class Front extends Base {
 	    return $fields;
 	}
 
+	public function add_tracking_meta( $order_id ) {
+	    if ( ! $order_id ) {
+	        return;
+	    }
+
+	    $events     = get_option( 'rm_event_names', [] );
+	    $last_event = ! empty( $events ) ? end( $events ) : '';
+
+	    // 🚫 If no last event, do nothing
+	    if ( empty( $last_event ) ) {
+	        return;
+	    }
+
+	    // ✅ Add meta only if not already set
+	    if ( ! get_post_meta( $order_id, 'rm_event_key', true ) ) {
+	        update_post_meta( $order_id, 'rm_event_key', $last_event ); // default "not processed"
+	    }
+	}
+
+
 }
