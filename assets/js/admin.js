@@ -195,37 +195,44 @@ jQuery(document).ready(function ($) {
         e.preventDefault();
         runm_modal(true); // Show loader/modal
 
+        // Get selected event value
+        let selectedEvent = $('#rm-event-select').val();
+
+        if (!selectedEvent) {
+            runm_modal(false);
+            alert('⚠️ Please select an event before generating the report.');
+            return;
+        }
+
         $.ajax({
-            url: RUN_MANAGER.ajaxurl, // This is the WordPress AJAX URL
+            url: RUN_MANAGER.ajaxurl, // WordPress AJAX URL
             type: 'POST',
             data: {
-                action: 'generate_tshirt_size', // Custom action for the server
-                _wpnonce: RUN_MANAGER._wpnonce // Nonce for security
+                action: 'generate_tshirt_size', // Custom action for server
+                _wpnonce: RUN_MANAGER._wpnonce, // Nonce for security
+                event_name: selectedEvent        // Send selected event
             },
             success: function (response) {
                 runm_modal(false); // Hide loader/modal
 
-                if (response.success) {
-                   
-
-                    if (response.data.url) {
-                        const a = document.createElement("a");
-                        a.href = response.data.url; // URL of the generated PDF
-                        a.download = "tshirt_report.pdf"; // Set default file name
-                        document.body.appendChild(a);
-                        a.click(); // Trigger the download
-                        document.body.removeChild(a); // Clean up
-                    }
+                if (response.success && response.data.url) {
+                    const a = document.createElement("a");
+                    a.href = response.data.url; // URL of generated PDF
+                    a.download = "tshirt_report_" + selectedEvent + ".pdf"; // Set filename
+                    document.body.appendChild(a);
+                    a.click(); // Trigger download
+                    document.body.removeChild(a); // Clean up
                 } else {
                     alert(response.data.message || "Something went wrong.");
                 }
             },
             error: function () {
-                runm_modal(false); // Hide loader/modal in case of error
-                alert('File generation failed.'); // Error message
+                runm_modal(false); // Hide loader/modal on error
+                alert('File generation failed.');
             }
         });
     });
+
 
      const STORAGE_KEY = 'wph_last_active_tab';
     const SMS_TAB = 'wph-tab-run-manager_basic-run-manager_sms_manager';

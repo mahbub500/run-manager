@@ -593,75 +593,90 @@ public function import_excel_to_orders() {
 
     wp_die();
 }
-
-
-
-
-    function generate_tshirt_size() {
-        // Verify Nonce for Security
-        if (!isset($_POST['_wpnonce']) || !wp_verify_nonce($_POST['_wpnonce'] )) {
+    public function generate_tshirt_size() {
+        // Security check
+        if (!isset($_POST['_wpnonce']) || !wp_verify_nonce($_POST['_wpnonce'])) {
             wp_send_json_error(['message' => 'Security check failed!']);
         }
 
-       
-
-        // Get Orders
-        $args = [
-            'status'  => ['wc-completed', 'wc-processing'],
-            'limit'   => -1,
-            'orderby' => 'date',
-            'order'   => 'ASC'
-        ];
-        $orders = wc_get_orders($args);
-
-        // Process T-Shirt Size Data
-        $tshirt_counts = []; 
-
-        foreach ($orders as $order) {
-            $billing_tshirt = $order->get_meta('billing_tshirt'); 
-            
-            if (!empty($billing_tshirt)) {
-                if (!isset($tshirt_counts[$billing_tshirt])) {
-                    $tshirt_counts[$billing_tshirt] = 0;
-                }
-                $tshirt_counts[$billing_tshirt]++;
-            }
+        // Get selected event from POST
+        $selected_event = sanitize_text_field($_POST['event_name'] ?? '');
+        if (empty($selected_event)) {
+            wp_send_json_error(['message' => 'Please select an event']);
         }
 
-        // Create HTML for PDF
-        $html = '<h2 style="text-align: center;">T-Shirt Size Report</h2>';
-        $html .= '<table border="1" cellpadding="8" cellspacing="0" style="width: 100%; border-collapse: collapse; text-align: center;">
-                    <tr style="background-color: #f2f2f2;">
+        // Initialize T-Shirt counts
+        $tshirt_counts = [];
+
+        // Fetch orders in batches to reduce memory usage
+        $batch_size = 100;
+        $offset = 0;
+
+        do {
+            $args = [
+                'status'      => ['wc-completed', 'wc-processing'],
+                'limit'       => $batch_size,
+                'offset'      => $offset,
+                'orderby'     => 'date',
+                'order'       => 'ASC',
+                'meta_key'    => 'rm_event_key',
+                'meta_value'  => $selected_event,
+            ];
+
+            $orders = wc_get_orders($args);
+
+            foreach ($orders as $order) {
+                $size = $order->get_meta('billing_tshirt');
+                if (!empty($size)) {
+                    if (!isset($tshirt_counts[$size])) {
+                        $tshirt_counts[$size] = 0;
+                    }
+                    $tshirt_counts[$size]++;
+                }
+            }
+
+            $offset += $batch_size;
+
+        } while (count($orders) === $batch_size);
+
+        // Generate HTML table only for unique sizes
+        $html = '<h2 style="text-align:center;">T-Shirt Size Report for ' . esc_html($selected_event) . '</h2>';
+        $html .= '<table border="1" cellpadding="8" cellspacing="0" style="width:100%; border-collapse: collapse; text-align:center;">
+                    <tr style="background-color:#f2f2f2;">
                         <th>T-Shirt Size</th>
                         <th>Total Count</th>
                     </tr>';
 
-    foreach ($tshirt_counts as $size => $count) {
-        $html .= '<tr>
-                    <td>' . htmlspecialchars($size) . '</td>
-                    <td>' . htmlspecialchars($count) . '</td>
-                  </tr>';
-    }
+        foreach ($tshirt_counts as $size => $count) {
+            $html .= '<tr><td>' . esc_html($size) . '</td><td>' . esc_html($count) . '</td></tr>';
+        }
+        $html .= '</table>';
 
-    $html .= '</table>';
-    // Initialize DomPDF
+        // Initialize DomPDF
         $options = new Options();
         $options->set('defaultFont', 'Helvetica');
+        $options->set('isHtml5ParserEnabled', true);
+        $options->set('isRemoteEnabled', true);
+
         $dompdf = new Dompdf($options);
-        $dompdf->loadHtml($html);
-        $dompdf->setPaper('A4', 'portrait');
-        $dompdf->render();
 
-        // Save PDF in Uploads Folder
-        $upload_dir = wp_upload_dir();
-        $pdf_path = $upload_dir['basedir'] . '/tshirt_report.pdf';
-        file_put_contents($pdf_path, $dompdf->output());
+        try {
+            $dompdf->loadHtml($html);
+            $dompdf->setPaper('A4', 'portrait');
+            $dompdf->render();
 
-        // Return File URL
-        $pdf_url = $upload_dir['baseurl'] . '/tshirt_report.pdf';
-        wp_send_json_success(['message' => 'PDF generated successfully.', 'url' => $pdf_url]);
+            // Save PDF
+            $upload_dir = wp_upload_dir();
+            $pdf_path = $upload_dir['basedir'] . '/tshirt_report_' . sanitize_file_name($selected_event) . '.pdf';
+            file_put_contents($pdf_path, $dompdf->output());
+
+            $pdf_url = $upload_dir['baseurl'] . '/tshirt_report_' . sanitize_file_name($selected_event) . '.pdf';
+            wp_send_json_success(['message' => 'PDF generated successfully.', 'url' => $pdf_url]);
+
+        } catch (\Exception $e) {
+            wp_send_json_error(['message' => 'PDF generation failed: ' . $e->getMessage()]);
+        }
     }
-
 
     public function custom_clear_cart() {
 

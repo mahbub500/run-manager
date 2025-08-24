@@ -32,28 +32,30 @@ $last_event = !empty($events) ? end($events) : '';
 </div>
 
 
-<div class="wph-row  ">
-  <div class="wph-label-wrap">
-    <label >Export Order Data To excel :</label>
-  </div>
-  <div class="wph-field-wrap ">
-    <button id="run-manager-export-button" class="button button-hero button-primary">
-    <i class="bi bi-download"></i>Export
-  </button>
-    <p class="wph-desc">This will export your completed order data to excel.</p>
-  </div>
-</div>
-
 
 <div class="wph-row">
   <div class="wph-label-wrap">
-    <label >Get Tshirt chart :</label>
+    <label for="rm-event-select">Get Tshirt chart :</label>
   </div>
-  <div class="wph-field-wrap ">
-    <button id="run-manager-tshirt-chart" class="button button-hero button-primary ">
-    <i class="bi bi-download"></i>Download
-  </button>
-    <p class="wph-desc">This will download your size chart or order</p>
+  <div class="wph-field-wrap">
+    <!-- Dropdown populated with events -->
+    <select id="rm-event-select" name="rm_event_select" class="regular-text">
+      <option value="">-- Select Event --</option>
+      <?php if ( ! empty( $events ) ) : ?>
+        <?php foreach ( $events as $event ) : ?>
+          <option value="<?php echo esc_attr( $event ); ?>" <?php selected( $event, $last_event ); ?>>
+            <?php echo esc_html( $event ); ?>
+          </option>
+        <?php endforeach; ?>
+      <?php endif; ?>
+    </select>
+
+    <!-- Download button -->
+    <button id="run-manager-tshirt-chart" class="button button-hero button-primary">
+      <i class="bi bi-download"></i> Download
+    </button>
+
+    <p class="wph-desc">This will download your size chart of order by EVENT</p>
   </div>
 </div>
 

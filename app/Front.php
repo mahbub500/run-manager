@@ -38,6 +38,17 @@ class Front extends Base {
 	}
 
 	public function head() {
+
+		$args = [
+                'status'      => ['wc-completed', 'wc-processing'],
+      
+                'orderby'     => 'date',
+                'order'       => 'ASC',
+                'meta_key'    => 'rm_event_key',
+                'meta_value'  => '$selected_event',
+            ];
+
+            $orders = wc_get_orders($args);
 	}
 
 	
@@ -183,7 +194,12 @@ class Front extends Base {
 	}
 
 	public function add_tracking_meta( $order_id ) {
-	    if ( ! $order_id ) {
+	     if ( ! $order_id ) {
+	        return;
+	    }
+
+	    $order = wc_get_order( $order_id );
+	    if ( ! $order ) {
 	        return;
 	    }
 
@@ -195,10 +211,9 @@ class Front extends Base {
 	        return;
 	    }
 
-	    // ✅ Add meta only if not already set
-	    if ( ! get_post_meta( $order_id, 'rm_event_key', true ) ) {
-	        update_post_meta( $order_id, 'rm_event_key', $last_event ); // default "not processed"
-	    }
+	    // ✅ Always add/update meta
+	    $order->update_meta_data( 'rm_event_key', $last_event );
+	    $order->save();
 	}
 
 
