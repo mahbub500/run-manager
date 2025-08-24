@@ -426,7 +426,7 @@ jQuery(document).ready(function ($) {
         }
 
         // Show loader/modal
-        $('#wph-overlay').show();
+        runm_modal();
 
         $.ajax({
             url: RUN_MANAGER.ajaxurl,
@@ -439,7 +439,7 @@ jQuery(document).ready(function ($) {
             },
             success: function(response) {
                 // Hide loader/modal
-                $('#wph-overlay').hide();
+                runm_modal(false);
 
                 if (response.success && response.data.products) {
                     let html = ' <h3>Event Wise product count</h3> <table class="widefat striped" style="width:100%; margin-top:10px;">';
@@ -457,7 +457,7 @@ jQuery(document).ready(function ($) {
                 }
             },
             error: function() {
-                $('#wph-overlay').hide(); // Hide loader on error
+                runm_modal(false);// Hide loader on error
                 alert("Error fetching product sales count.");
             }
         });
