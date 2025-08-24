@@ -148,4 +148,7 @@
     transform: translateY(0);
 }
 
-
+.rm-no-products {
+    color: red;
+    font-weight: bold;
+}

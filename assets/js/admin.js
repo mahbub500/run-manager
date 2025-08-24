@@ -446,8 +446,9 @@ jQuery(document).ready(function ($) {
                 // Hide loader/modal
                 runm_modal(false);
 
-                if (response.success && response.data.products) {
-                    let html = ' <h3>Event Wise product count</h3> <table class="widefat striped" style="width:100%; margin-top:10px;">';
+                if (response.success && response.data.products && Object.keys(response.data.products).length > 0) {
+                    let html = '<h3>Event Wise Product Count</h3>';
+                    html += '<table class="widefat striped" style="width:100%; margin-top:10px;">';
                     html += '<thead><tr><th>Product Name</th><th>Quantity Sold</th></tr></thead><tbody>';
 
                     $.each(response.data.products, function(product, count) {
@@ -455,11 +456,12 @@ jQuery(document).ready(function ($) {
                     });
 
                     html += '</tbody></table>';
-
                     $('.rm-product-sales-count').html(html);
                 } else {
-                    $('.rm-product-sales-count').html('<p>No products found for this event.</p>');
+                    $('.rm-product-sales-count').html('<h3>Event Wise Product Count</h3><p class="rm-no-products">No products found for this event.</p>');
+
                 }
+
             },
             error: function() {
                 runm_modal(false);// Hide loader on error
