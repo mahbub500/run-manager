@@ -421,11 +421,12 @@ jQuery(document).ready(function ($) {
         const selectedEvent = $(this).val();
 
         if (!selectedEvent) {
-            $('#rm-product-sales-table').html(''); // Clear table if no event
+            $('.rm-product-sales-count').html(''); // Clear table if no event
             return;
         }
 
-        runm_modal(true);
+        // Show loader/modal
+        $('#wph-overlay').show();
 
         $.ajax({
             url: RUN_MANAGER.ajaxurl,
@@ -437,7 +438,8 @@ jQuery(document).ready(function ($) {
                 _wpnonce: RUN_MANAGER._wpnonce
             },
             success: function(response) {
-                runm_modal(false);
+                // Hide loader/modal
+                $('#wph-overlay').hide();
 
                 if (response.success && response.data.products) {
                     let html = '<table class="widefat striped" style="width:100%; margin-top:10px;">';
@@ -449,18 +451,19 @@ jQuery(document).ready(function ($) {
 
                     html += '</tbody></table>';
 
-                    $('.rm-product-sales-count').html(html); // Updated selector
+                    $('.rm-product-sales-count').html(html);
                 } else {
-                    $('.rm-product-sales-count').html('<p>No products found for this event.</p>'); // Updated selector
+                    $('.rm-product-sales-count').html('<p>No products found for this event.</p>');
                 }
             },
             error: function() {
-                runm_modal(false);
+                $('#wph-overlay').hide(); // Hide loader on error
                 alert("Error fetching product sales count.");
             }
         });
     });
 
-});
+       
 
+});
 

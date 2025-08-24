@@ -89,11 +89,12 @@ class Admin extends Base {
 	}
 
 	public function modal() {
-		echo '
-		<div id="run-manager-modal" style="display: none">
-			<img id="run-manager-modal-loader" src="' . esc_attr( RUN_MANAGER_ASSET . '/img/loader.gif' ) . '" />
-		</div>
-		<div id="rm-toast" class="rm-toast">✅ Event saved successfully!</div>
-		';
+	    echo '
+	    <div id="run-manager-modal" style="display: none;">
+	        <img id="run-manager-modal-loader" src="' . esc_attr(RUN_MANAGER_ASSET . '/img/loader.gif') . '" alt="Loading..." />
+	    </div>
+	    <div id="rm-toast" class="rm-toast" role="alert">✅ Event saved successfully!</div>
+	    ';
 	}
+
 }
