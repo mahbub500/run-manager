@@ -411,11 +411,16 @@ jQuery(document).ready(function ($) {
 
     $('#rm-event-select').select2();
 
-    $('#rm-event-select-product').select2({
-		placeholder: "-- Select Event --",
-		allowClear: true,
-		width: '300px'
+    const $select = $('#rm-event-select-product');
+
+    $select.select2({
+        placeholder: "-- Select Event --",
+        allowClear: true,
+        width: '300px'
     });
+
+    // Clear selection on page load
+    $select.val(null).trigger('change');
 
     $('#rm-event-select-product').on('change', function() {
         const selectedEvent = $(this).val();
