@@ -442,7 +442,7 @@ jQuery(document).ready(function ($) {
                 $('#wph-overlay').hide();
 
                 if (response.success && response.data.products) {
-                    let html = '<table class="widefat striped" style="width:100%; margin-top:10px;">';
+                    let html = ' <h3>Event Wise product count</h3> <table class="widefat striped" style="width:100%; margin-top:10px;">';
                     html += '<thead><tr><th>Product Name</th><th>Quantity Sold</th></tr></thead><tbody>';
 
                     $.each(response.data.products, function(product, count) {
