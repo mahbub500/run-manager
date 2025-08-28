@@ -331,8 +331,18 @@ public function import_excel_to_orders() {
 
 		draw_text_on_image($image, "$user_name", 392, 480, 50, $font_path);
 
-		draw_text_on_image($image, "$category", 430, 725, 20, $font_path);
-		draw_text_on_image($image, "$finish_time". 'MINUTES', 654, 733, 20, $font_path);
+		draw_text_on_image($image, "$category", 430, 730, 20, $font_path);
+		draw_text_on_image($image, "$finish_time". 'MINUTES', 654, 730, 20, $font_path);
+		draw_text_on_image($image, "$bib_id", 990,730, 20, $font_path);
+		draw_text_on_image($image, "$overall_rank", 1265,730, 20, $font_path);
+
+		draw_text_on_image($image, "$chip_time", 450,850, 20, $font_path);
+
+		draw_text_on_image($image, "$gun_time", 740,850, 20, $font_path);
+
+		draw_text_on_image($image, "$place_in_age", 1002,850, 20, $font_path);
+
+		draw_text_on_image($image, "$place_in_gender", 1277,850 , 20, $font_path);
 
 	    // Save image
 	    $image_path = $certificate_folder . "certificate-order-{$order_number}.jpg";
