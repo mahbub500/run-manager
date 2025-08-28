@@ -294,7 +294,7 @@ public function import_excel_to_orders() {
         $user_email = $order->get_billing_email();
 
         // Certificate image path
-        $certificate_image = RUN_MANAGER_DIR . '/assets/img/certificate.jpeg';
+        $certificate_image = RUN_MANAGER_DIR . '/assets/img/CERTIFICATE.jpg';
         
         if ( ! file_exists( $certificate_image ) ) {
             wp_send_json_error( [ 'message' => 'Certificate template not found.' ] );
@@ -365,9 +365,16 @@ public function import_excel_to_orders() {
         ] );
     }
 
+   
+
     public function upload_race_data_callback() {
         if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'])) {
             wp_send_json_error(['message' => 'Invalid nonce']);
+            return;
+        }
+
+        if (empty($_FILES['race_excel_file']['tmp_name'])) {
+            wp_send_json_error(['message' => 'No file uploaded.']);
             return;
         }
 
@@ -379,23 +386,86 @@ public function import_excel_to_orders() {
         $upload_folder = $upload_dir['basedir'] . '/race_data/';
         $upload_path = $upload_folder . 'race_data.' . $file_ext;
 
-        // Ensure the directory exists
         if (!file_exists($upload_folder)) {
             wp_mkdir_p($upload_folder);
         }
 
-        // Remove existing file
         if (file_exists($upload_path)) {
             unlink($upload_path);
         }
 
-        // Move the uploaded file
-        if (move_uploaded_file($file['tmp_name'], $upload_path)) {
-            wp_send_json_success(['message' => 'File uploaded successfully!', 'file_path' => $upload_path]);
-        } else {
+        if (!move_uploaded_file($file['tmp_name'], $upload_path)) {
             wp_send_json_error(['message' => 'File upload failed.']);
+            return;
+        }
+
+        try {
+            $spreadsheet = IOFactory::load($upload_path);
+            $sheet = $spreadsheet->getSheet(0);
+            $rows = $sheet->toArray();
+
+            if (empty($rows)) {
+                wp_send_json_error(['message' => 'No data found in Excel.']);
+                return;
+            }
+
+            // Normalize headers: lowercase, trim, single spaces
+            $headers = array_map(function($h){
+                return strtolower(trim(preg_replace('/\s+/', ' ', $h)));
+            }, $rows[0]);
+            unset($rows[0]); // Remove header row
+
+            $updated_total = 0;
+            $batch_size = 200;
+
+            // Split rows into batches
+            $batches = array_chunk($rows, $batch_size);
+
+            foreach ($batches as $batch_rows) {
+                foreach ($batch_rows as $row) {
+                    if (empty(array_filter($row))) continue; // skip empty rows
+
+                    $data = array_combine($headers, $row);
+                    if (!$data) continue;
+
+                    $order_id = intval($data['order id'] ?? 0);
+                    if ($order_id <= 0) continue;
+
+                    $order = wc_get_order($order_id);
+                    if (!$order) continue;
+
+                    // Update all order meta
+                    $order->update_meta_data('_bib_id', $data['bib no'] ?? '');
+                    $order->update_meta_data('_race_category', $data['category'] ?? '');
+                    $order->update_meta_data('_race_finish_time', $data['finish time'] ?? '');
+                    $order->update_meta_data('_race_overall_rank', $data['overall rank'] ?? '');
+                    $order->update_meta_data('_race_chip_time', $data['chip time'] ?? '');
+                    $order->update_meta_data('_race_gun_time', $data['gun time'] ?? '');
+                    
+                    // Correct keys for Plane in Age / Plane in Gender
+                    $order->update_meta_data('_race_place_in_age', $data['plane in age'] ?? '');
+                    $order->update_meta_data('_race_place_in_gender', $data['plane in gender'] ?? '');
+                    
+                    $order->update_meta_data('_is_certified', $data['is certified'] ?? '');
+                    $order->save();
+
+                    $updated_total++;
+                }
+
+                // Optional: free memory after each batch
+                unset($batch_rows);
+                gc_collect_cycles();
+            }
+
+            wp_send_json_success([
+                'message' => "File uploaded successfully! {$updated_total} orders updated in batches of {$batch_size}.",
+            ]);
+
+        } catch (\Exception $e) {
+            wp_send_json_error(['message' => 'Excel parsing failed: ' . $e->getMessage()]);
         }
     }
+
 
 
    public function generate_certificate() {

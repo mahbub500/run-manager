@@ -37,7 +37,28 @@ class Front extends Base {
 		$this->version	= $this->plugin['Version'];
 	}
 
-	public function head() {}
+	public function head() {
+		$order_id = 7948;
+		$order = wc_get_order( $order_id );
+
+	    if ( ! $order ) {
+	        return ['error' => 'Order not found'];
+	    }
+
+	    $race_data = [
+	        '_bib_id'        => $order->get_meta('_bib_id'),
+	        'category'        => $order->get_meta('_race_category'),
+	        'finish_time'     => $order->get_meta('_race_finish_time'),
+	        'overall_rank'    => $order->get_meta('_race_overall_rank'),
+	        'chip_time'       => $order->get_meta('_race_chip_time'),
+	        'gun_time'        => $order->get_meta('_race_gun_time'),
+	        'place_in_age'    => $order->get_meta('_race_place_in_age'),
+	        'place_in_gender' => $order->get_meta('_race_place_in_gender'),
+	        '_is_certified' => $order->get_meta('_is_certified'),
+	    ];
+
+	    // Helper::pri( $race_data );
+	}
 
 	
 	/**
@@ -203,6 +224,4 @@ class Front extends Base {
 	    $order->update_meta_data( 'rm_event_key', $last_event );
 	    $order->save();
 	}
-
-
 }

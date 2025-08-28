@@ -23,7 +23,7 @@ use Codexpert\Plugin\Table;
     <button id="run-manager-upload-race-data" class="button button-hero button-primary ">
     <i class="bi bi-download"></i>Upload
   </button>
-    <p class="wph-desc">Upload Your Race Data</p>
+    <p class="wph-desc">Upload Only xl file, first sheet for certificate data</p>
   </div>
 </div>
 

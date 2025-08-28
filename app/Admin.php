@@ -102,5 +102,4 @@ class Admin extends Base {
 	    <div id="rm-toast" class="rm-toast" role="alert">✅ Event saved successfully!</div>
 	    ';
 	}
-
 }
