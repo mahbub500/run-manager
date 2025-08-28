@@ -192,7 +192,7 @@ final class Plugin {
 		$cron = new App\Cron( $this->plugin );
 		$cron->activate( 'install' );
 		$cron->deactivate( 'uninstall' );
-		$cron->action( 'run_manager_cleanup_old_certificates', 'delete_old_certificates' );
+		
 
 		
 
@@ -202,6 +202,7 @@ final class Plugin {
 		 * Executes on both the admin area and front area
 		 */
 		$common = new App\Common( $this->plugin );
+		$common->action( 'run_manager_delete_old_certificates', 'delete_old_certificates' );
 
 		/**
 		 * AJAX related hooks
