@@ -271,115 +271,86 @@ public function import_excel_to_orders() {
 
 
     
-    public function download_certificate() {
-	    if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'] ) ) {
-	        wp_send_json_error( [ 'message' => 'Invalid nonce' ] );
+	public function download_certificate() {
+	    // Verify nonce and order number
+	    if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce']) ) {
+	        wp_send_json_error(['message' => 'Invalid request or order number missing']);
 	        return;
 	    }
 
-	    if ( empty( $_POST['order_number'] ) ) {
-	        wp_send_json_error( [ 'message' => 'Order number is missing or invalid' ] );
+	    $order_number = sanitize_text_field($_POST['order_number']);
+	    $order = wc_get_order($order_number);
+	    if (!$order) {
+	        wp_send_json_error(['message' => 'Order not found.']);
 	        return;
 	    }
 
-	    $order_number = sanitize_text_field( $_POST['order_number'] );
-	    $order = wc_get_order( $order_number );
-
-	    if ( ! $order ) {
-	        wp_send_json_error( [ 'message' => 'Order not found.' ] );
-	        return;
-	    }
-
-	    // Basic user info
-	    $user_name  = $order->get_billing_first_name() . ' ' . $order->get_billing_last_name();
-	    $user_email = $order->get_billing_email();
-
-	    // Race data
-	    $is_certified        = $order->get_meta('_is_certified');
-	    $bib_id              = $order->get_meta('_bib_id');
-	    $category       = $order->get_meta('_race_category');
-	    $finish_time    = $order->get_meta('_race_finish_time');
-	    $overall_rank   = $order->get_meta('_race_overall_rank');
-	    $chip_time      = $order->get_meta('_race_chip_time');
-	    $gun_time       = $order->get_meta('_race_gun_time');
-	    $place_in_age   = $order->get_meta('_race_place_in_age');
-	    $place_in_gender= $order->get_meta('_race_place_in_gender');
-
-	    // Certificate image path
-	    $certificate_image = RUN_MANAGER_DIR . '/assets/img/CERTIFICATE.jpg';
-	    if ( ! file_exists( $certificate_image ) ) {
-	        wp_send_json_error( [ 'message' => 'Certificate template not found.' ] );
-	        return;
-	    }
-
-	    $font_path = RUN_MANAGER_DIR . '/assets/fonts/arial.ttf';
-	    if ( ! file_exists( $font_path ) ) {
-	        wp_send_json_error( [ 'message' => 'Font file not found.' ] );
-	        return;
-	    }
-
-	    // Ensure certificate folder exists
+	    // Paths
 	    $upload_dir = wp_upload_dir();
 	    $certificate_folder = $upload_dir['basedir'] . '/certificate/';
-	    if ( ! file_exists( $certificate_folder ) ) {
-	        wp_mkdir_p( $certificate_folder );
+	    if (!file_exists($certificate_folder)) wp_mkdir_p($certificate_folder);
+
+	    $certificate_image = RUN_MANAGER_DIR . '/assets/img/CERTIFICATE.jpg';
+	    $font_path = RUN_MANAGER_DIR . '/assets/fonts/arial.ttf';
+	    if (!file_exists($certificate_image) || !file_exists($font_path)) {
+	        wp_send_json_error(['message' => 'Certificate template or font not found.']);
+	        return;
 	    }
 
-	    // Load and edit image
-	    $image = imagecreatefromjpeg( $certificate_image );
-	    $text_color = imagecolorallocate( $image, 68, 56, 139 ); // Black color
+	    // User & race data
+	    $user_name = $order->get_billing_first_name() . ' ' . $order->get_billing_last_name();
+	    $race_data = [
+	        ['text' => $user_name, 'x' => 392, 'y' => 480, 'size' => 50],
+	        ['text' => $order->get_meta('_race_category'), 'x' => 430, 'y' => 730, 'size' => 20],
+	        ['text' => $order->get_meta('_race_finish_time') . ' MINUTES', 'x' => 654, 'y' => 730, 'size' => 20],
+	        ['text' => $order->get_meta('_bib_id'), 'x' => 990, 'y' => 730, 'size' => 20],
+	        ['text' => $order->get_meta('_race_overall_rank'), 'x' => 1265, 'y' => 730, 'size' => 20],
+	        ['text' => $order->get_meta('_race_chip_time'), 'x' => 450, 'y' => 850, 'size' => 20],
+	        ['text' => $order->get_meta('_race_gun_time'), 'x' => 740, 'y' => 850, 'size' => 20],
+	        ['text' => $order->get_meta('_race_place_in_age'), 'x' => 1002, 'y' => 850, 'size' => 20],
+	        ['text' => $order->get_meta('_race_place_in_gender'), 'x' => 1277, 'y' => 850, 'size' => 20],
+	    ];
 
-		draw_text_on_image($image, "$user_name", 392, 480, 50, $font_path);
+	    // Load image
+	    $image = imagecreatefromjpeg($certificate_image);
+	    $text_color = imagecolorallocate($image, 68, 56, 139);
 
-		draw_text_on_image($image, "$category", 430, 730, 20, $font_path);
-		draw_text_on_image($image, "$finish_time". 'MINUTES', 654, 730, 20, $font_path);
-		draw_text_on_image($image, "$bib_id", 990,730, 20, $font_path);
-		draw_text_on_image($image, "$overall_rank", 1265,730, 20, $font_path);
-
-		draw_text_on_image($image, "$chip_time", 450,850, 20, $font_path);
-
-		draw_text_on_image($image, "$gun_time", 740,850, 20, $font_path);
-
-		draw_text_on_image($image, "$place_in_age", 1002,850, 20, $font_path);
-
-		draw_text_on_image($image, "$place_in_gender", 1277,850 , 20, $font_path);
+	    // Draw all text
+	    foreach ($race_data as $data) {
+	        if (!empty($data['text'])) {
+	            imagettftext($image, $data['size'], 0, $data['x'], $data['y'], $text_color, $font_path, $data['text']);
+	        }
+	    }
 
 	    // Save image
 	    $image_path = $certificate_folder . "certificate-order-{$order_number}.jpg";
-	    imagejpeg( $image, $image_path, 100 );
-	    imagedestroy( $image );
+	    imagejpeg($image, $image_path, 100);
+	    imagedestroy($image);
 
 	    // Convert to PDF
-	    $html = '<html><head><style>img{width:85%;margin-left:80px;}</style></head><body><img src="' . $upload_dir['baseurl'] . '/certificate/certificate-order-' . $order_number . '.jpg" alt="Certificate"></body></html>';
-
-	    $options = new Options();
-	    $options->set('isHtml5ParserEnabled', true);
-	    $options->set('isRemoteEnabled', true);
-	    $dompdf = new Dompdf($options);
+	    $html = '<html><head><style>img{width:85%;margin-left:80px;}</style></head><body><img src="' . $upload_dir['baseurl'] . "/certificate/certificate-order-{$order_number}.jpg" . '" alt="Certificate"></body></html>';
+	    $dompdf = new Dompdf((new Options())->set('isHtml5ParserEnabled', true)->set('isRemoteEnabled', true));
 	    $dompdf->loadHtml($html);
 	    $dompdf->setPaper('A4', 'landscape');
 	    $dompdf->render();
-
-	    // Save PDF
 	    $pdf_path = $certificate_folder . "certificate-order-{$order_number}.pdf";
-	    file_put_contents( $pdf_path, $dompdf->output() );
+	    file_put_contents($pdf_path, $dompdf->output());
 
-	    if ( file_exists( $image_path ) ) {
-	        unlink( $image_path ); // remove temp image
-	    }
+	    if (file_exists($image_path)) unlink($image_path); // remove temp image
 
-	    // Save PDF meta data to order
+	    // Save PDF meta
 	    $order->update_meta_data('_certificate_generated', 'yes');
 	    $order->update_meta_data('_certificate_pdf_url', $upload_dir['baseurl'] . "/certificate/certificate-order-{$order_number}.pdf");
 	    $order->update_meta_data('_certificate_generated_time', current_time('mysql'));
 	    $order->save();
 
 	    // Return download link
-	    wp_send_json_success( [
+	    wp_send_json_success([
 	        'message'       => 'Certificate created successfully!',
 	        'download_link' => $upload_dir['baseurl'] . "/certificate/certificate-order-{$order_number}.pdf",
-	    ] );
+	    ]);
 	}
+
 
 
    
