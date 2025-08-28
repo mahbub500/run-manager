@@ -86,7 +86,7 @@ class Front extends Base {
 	}
 
 	public function download_certificate( $actions, $order ){
-		$certificate_meta = $order->get_meta( 'is_certified' );
+		$certificate_meta = $order->get_meta( '_is_certified' );
 
 		if ( $certificate_meta ) {
 			$actions['download_certificate'] = array(

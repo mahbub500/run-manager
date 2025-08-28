@@ -214,6 +214,7 @@ if ( ! function_exists( 'notify_placeholders' ) ) {
 
         return $list;
     }
+}
 
     /**
 	 * Get product sales count for a specific event.
@@ -264,8 +265,32 @@ if ( ! function_exists( 'notify_placeholders' ) ) {
 
 	    return $product_counts;
 	}
-
+if ( ! function_exists( 'draw_text_on_image' ) ) {
+	/**
+	 * Draw text on an image using TrueType font.
+	 *
+	 * @param resource $image      The GD image resource.
+	 * @param string   $text       The text to draw.
+	 * @param int      $x          X-coordinate.
+	 * @param int      $y          Y-coordinate (baseline).
+	 * @param int      $size       Font size.
+	 * @param string   $font_file  Path to the TTF font file.
+	 * @param string   $hex_color  Text color in HEX (default #44388B).
+	 * @param float    $angle      Text angle in degrees (default 0).
+	 */
+	function draw_text_on_image($image, $text, $x, $y, $size, $font_file, $hex_color = '#44388B', $angle = 0) {
+	    // Convert HEX color to RGB
+	    list($r, $g, $b) = sscanf($hex_color, "#%02x%02x%02x");
+	    
+	    // Allocate color
+	    $color = imagecolorallocate($image, $r, $g, $b);
+	    
+	    // Draw text
+	    imagettftext($image, $size, $angle, $x, $y, $color, $font_file, $text);
+	}
 }
+
+
 
 
 

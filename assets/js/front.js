@@ -18,7 +18,7 @@ jQuery(function($){
 	        alert('Order number is invalid.');
 	        return;
 	    }
-
+        runm_modal();
 	    $.ajax({
 	        url: RUN_MANAGER.ajaxurl,
 	        type: "POST",
@@ -30,12 +30,14 @@ jQuery(function($){
 	        success: function (response) {
 	            if (response.success) {
 	                // Redirect to the download link
-	                window.location.href = response.data.download_link;
+	                window.open(response.data.download_link, '_blank');
 	            } else {
 	                alert(response.data.message || 'An error occurred.');
 	            }
+                runm_modal(false);
 	        },
 	        error: function () {
+                runm_modal(false);
 	            alert('Something went wrong!');
 	        }
 	    });
