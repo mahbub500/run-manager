@@ -192,6 +192,9 @@ final class Plugin {
 		$cron = new App\Cron( $this->plugin );
 		$cron->activate( 'install' );
 		$cron->deactivate( 'uninstall' );
+		$cron->action( 'run_manager_cleanup_old_certificates', 'delete_old_certificates' );
+
+		
 
 		/**
 		 * Common hooks

@@ -297,6 +297,13 @@ public function import_excel_to_orders() {
 	        return;
 	    }
 
+	    // Only generate if certified
+	    $is_certified = $order->get_meta('_is_certified');
+	    if (empty($is_certified) || $is_certified != 1) {
+	        wp_send_json_error(['message' => 'Certificate cannot be generated. This order is not certified.']);
+	        return;
+	    }
+
 	    // User & race data
 	    $user_name = $order->get_billing_first_name() . ' ' . $order->get_billing_last_name();
 	    $race_data = [
