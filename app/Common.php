@@ -45,20 +45,6 @@ class Common extends Base {
 	    foreach ($files as $file) {
 	        if (file_exists($file) && ($now - filemtime($file)) > $expiry_seconds) {
 	            unlink($file); // Delete file
-
-	            // Optionally remove meta data from order
-	            if (preg_match('/certificate-order-(\d+)\.pdf$/', $file, $matches)) {
-	                $order_id = intval($matches[1]);
-	                if ($order_id) {
-	                    $order = wc_get_order($order_id);
-	                    if ($order) {
-	                        $order->delete_meta_data('_certificate_pdf_url');
-	                        $order->delete_meta_data('_certificate_generated');
-	                        $order->delete_meta_data('_certificate_generated_time');
-	                        $order->save();
-	                    }
-	                }
-	            }
 	        }
 	    }
 	}

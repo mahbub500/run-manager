@@ -336,12 +336,8 @@ public function import_excel_to_orders() {
 	    $pdf_path = $certificate_folder . "certificate-order-{$order_number}.pdf";
 	    file_put_contents($pdf_path, $dompdf->output());
 
-	    if (file_exists($image_path)) unlink($image_path); // remove temp image
-
-	    // Save PDF meta
-	    $order->update_meta_data('_certificate_generated', 'yes');
-	    $order->update_meta_data('_certificate_pdf_url', $upload_dir['baseurl'] . "/certificate/certificate-order-{$order_number}.pdf");
-	    $order->update_meta_data('_certificate_generated_time', current_time('mysql'));
+	    if (file_exists($image_path)) unlink($image_path); 
+	   
 	    $order->save();
 
 	    // Return download link
