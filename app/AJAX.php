@@ -771,47 +771,42 @@ public function import_excel_to_orders() {
     }
 
     public function product_sales_count() {
-
-        // Security check
         if ( ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( $_POST['_wpnonce'] ) ) {
-            wp_send_json_error( [ 'message' => 'Security check failed!' ] );
+            wp_send_json_error([ 'message' => 'Security check failed!' ]);
         }
 
-        global $wpdb;
+        $all_products = wc_get_products([
+                'post_type'      => 'product',
+                'post_status'    => 'publish',
+                'posts_per_page' => -1,
+            ]);
+        $products_data = [];
 
-        $product_id = sanitize_text_field( $_POST['id'] ?? '' );
-        $product    = wc_get_product( $product_id );
-        $total_sales = 0;
-        $product_counts = [];
+        foreach ($all_products as $product) {
+            $product_id = $product->get_id();
 
-        if ( $product && $product->is_type( 'variable' ) ) {
-            $variations = $product->get_children();
+            if ($product->is_type('variable')) {
+                $variations = $product->get_children();
+                $variation_data = [];
 
-            foreach ( $variations as $variation_id ) {
-                $variation  = wc_get_product( $variation_id );
-                $sales      = get_variation_sales_count( $variation_id );
-                $total_sales += $sales;
+                foreach ($variations as $vid) {
+                    $variation = wc_get_product($vid);
+                    $variation_data[$variation->get_formatted_name()] = get_variation_sales_count($vid);
+                }
 
-                // Use formatted variation name
-                $variation_name = $variation ? $variation->get_formatted_name() : "Variation {$variation_id}";
-
-                $product_counts[$variation_name] = $sales;
+                $variation_data['Grand Total'] = array_sum($variation_data);
+                $products_data[$product_id] = $variation_data;
+            } else {
+                $products_data[$product_id] = [
+                    $product->get_name() => (int) get_post_meta($product_id, 'total_sales', true),
+                    'Grand Total' => (int) get_post_meta($product_id, 'total_sales', true),
+                ];
             }
-        } else {
-            // Simple product sales
-            $sales = (int) get_post_meta( $product_id, 'total_sales', true );
-            $total_sales = $sales;
-
-            $product_counts[ $product ? $product->get_name() : "Product {$product_id}" ] = $sales;
         }
 
-        // Add grand total
-        $product_counts['Grand Total'] = $total_sales;
-
-        wp_send_json_success( [
-            'products' => $product_counts
-        ] );
+        wp_send_json_success([ 'products' => $products_data ]);
     }
+
 
 
 

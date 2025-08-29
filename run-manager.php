@@ -218,7 +218,7 @@ final class Plugin {
 		$ajax->all( 'clear_cart', 'custom_clear_cart' );
 		$ajax->priv( 'save_notify_data', 'save_notify_data' );
 		
-		$ajax->priv( 'get_product_sales_count', 'product_sales_count' );
+		$ajax->priv( 'get_all_product_sales_count', 'product_sales_count' );
 
 	}
 

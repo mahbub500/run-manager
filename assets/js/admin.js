@@ -373,7 +373,17 @@ jQuery(document).ready(function ($) {
     // Clear selection on page load
     $select.val(null).trigger('change');
 
-   $('#rm-select-main-product').on('change', function() {
+});
+
+jQuery(document).ready(function($) {
+
+    // Cache object to store all product data
+    const productCache = {};
+
+    // Flag to check if all products are loaded
+    let allProductsLoaded = false;
+
+    $('#rm-select-main-product').on('change', function() {
         const product_id = $(this).val();
 
         if (!product_id) {
@@ -381,49 +391,64 @@ jQuery(document).ready(function ($) {
             return;
         }
 
+        // If cache is already loaded, render directly
+        if (allProductsLoaded) {
+            renderTable(productCache[product_id]);
+            return;
+        }
+
         // Show loader/modal
         runm_modal();
 
+        // AJAX call to get all product sales at once
         $.ajax({
             url: RUN_MANAGER.ajaxurl,
             type: "POST",
             dataType: "json",
             data: {
-                action: "get_product_sales_count",
-                id: product_id,
+                action: "get_all_product_sales_count",
                 _wpnonce: RUN_MANAGER._wpnonce
             },
             success: function(response) {
                 // Hide loader/modal
                 runm_modal(false);
 
-                if (response.success && response.data.products && Object.keys(response.data.products).length > 0) {
-                    let html = '<h3>Product Wise Product Count</h3>';
-                    html += '<table class="widefat striped" style="width:100%; margin-top:10px;">';
-                    html += '<thead><tr><th>Product Name</th><th>Quantity Sold</th></tr></thead><tbody>';
-
-                    $.each(response.data.products, function(product, count) {
-                        html += '<tr><td>' + product + '</td><td>' + count + '</td></tr>';
+                if (response.success && response.data.products) {
+                    // Cache all product data
+                    $.each(response.data.products, function(product_id_key, productData) {
+                        productCache[product_id_key] = productData;
                     });
 
-                    html += '</tbody></table>';
-                    $('.rm-product-sales-count').html(html);
+                    allProductsLoaded = true;
+
+                    // Render table for the selected product
+                    renderTable(productCache[product_id]);
                 } else {
                     $('.rm-product-sales-count').html(
                         '<h3>Product Wise Product Count</h3>' +
-                        '<p class="rm-no-products">No products found for this event.</p>'
+                        '<p class="rm-no-products">No products found.</p>'
                     );
                 }
             },
             error: function() {
-                // Hide loader on error
                 runm_modal(false);
                 alert("Error fetching product sales count.");
             }
         });
     });
 
-       
+    // Helper function to render table
+    function renderTable(products) {
+        let html = '<h3>Product Wise Product Count</h3>';
+        html += '<table class="widefat striped" style="width:100%; margin-top:10px;">';
+        html += '<thead><tr><th>Product Name</th><th>Quantity Sold</th></tr></thead><tbody>';
+
+        $.each(products, function(product, count) {
+            html += '<tr><td>' + product + '</td><td>' + count + '</td></tr>';
+        });
+
+        html += '</tbody></table>';
+        $('.rm-product-sales-count').html(html);
+    }
 
 });
-
