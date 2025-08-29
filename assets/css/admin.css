@@ -169,11 +169,8 @@
 }
 
 .rm-product-sales-count thead {
-    background: linear-gradient(90deg, #ff6a00, #ee0979);
+    background: #bae8e8;
     color: #fff;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    font-weight: 600;
 }
 
 .rm-product-sales-count th,
