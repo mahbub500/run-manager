@@ -66,19 +66,19 @@ class Admin extends Base {
 	public function enqueue_scripts() {
 		$min = defined( 'RUN_MANAGER_DEBUG' ) && RUN_MANAGER_DEBUG ? '' : '.min';
 
-		wp_enqueue_style( $this->slug, plugins_url( "/assets/css/admin{$min}.css", RUN_MANAGER ), '', time(), 'all' );
+		wp_enqueue_style( $this->slug, plugins_url( "/assets/css/admin{$min}.css", RUN_MANAGER ), '', $this->version, 'all' );
 		
 		wp_enqueue_style( $this->slug . 'toastr', 'https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css', '', 0.1, 'all' );
 
-		wp_enqueue_script( $this->slug, plugins_url( "/assets/js/admin{$min}.js", RUN_MANAGER ), [ 'jquery' ], time(), true );
+		wp_enqueue_script( $this->slug, plugins_url( "/assets/js/admin{$min}.js", RUN_MANAGER ), [ 'jquery' ], $this->version, true );
 		
-		wp_enqueue_script( $this->slug . 'toastr', 'https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js', [ 'jquery' ], time(), true );
+		wp_enqueue_script( $this->slug . 'toastr', 'https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js', [ 'jquery' ], $this->version, true );
 
 		if ( isset($_GET['page']) && $_GET['page'] === 'run-manager' ) {
 	        // Enqueue CSS
-			wp_enqueue_style( $this->slug . '_select2', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css', '', time(), 'all' );
+			wp_enqueue_style( $this->slug . '_select2', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css', '', $this->version, 'all' );
 			// Enqueue JS
-	       wp_enqueue_script( $this->slug . '_select2', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js', [ 'jquery' ], time(), true );
+	       wp_enqueue_script( $this->slug . '_select2', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js', [ 'jquery' ], $this->version, true );
 	    }
 
 		$localized = [

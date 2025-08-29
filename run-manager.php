@@ -5,7 +5,7 @@
  * Plugin URI: https://techwithmahbub.com/
  * Author: Mahbub
  * Author URI: https://techwithmahbub.com/
- * Version: 1.12
+ * Version: 2.0.0
  * Text Domain: run-manager
  * Domain Path: /languages
  */
