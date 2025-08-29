@@ -29,24 +29,6 @@ $last_event = !empty($events) ? end($events) : '';
 
 <div class="wph-row">
   <div class="wph-label-wrap">
-    <label for="rm-event-name">Event Name :</label>
-  </div>
-  <div class="wph-field-wrap">
-    <input type="text" id="rm-event-name" name="rm_event_name" class="regular-text" placeholder="DMHM2025" value="<?php echo $last_event ?>" />
-    <p class="wph-desc">Enter the event name </p>
-    <button id="rm-event-button" class="button button-hero button-primary">
-      <i class="bi bi-download"></i> Save
-    </button>
-
-    <!-- This is where the event list will appear -->
-    <div id="rm-event-list" style="margin-top:10px;"></div>
-  </div>
-</div>
-
-
-
-<div class="wph-row">
-  <div class="wph-label-wrap">
     <label for="rm-event-select">Get Tshirt chart :</label>
   </div>
   <div class="wph-field-wrap">

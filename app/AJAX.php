@@ -776,54 +776,6 @@ public function import_excel_to_orders() {
         wp_send_json_success( [ 'message' => 'Settings saved successfully!' ] );
     }
 
-    /**
-     * Save event name via AJAX without timestamp.
-     * 
-     * This function:
-     * 1. Checks the nonce for security.
-     * 2. Validates the event name.
-     * 3. Retrieves the existing events array from options.
-     * 4. Adds the new event (if not already in the array).
-     * 5. Saves the updated array back to the database.
-     * 6. Returns a success or error response.
-     */
-    public function rm_save_event() {
-
-        // Security check: verify nonce
-        if ( ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( $_POST['_wpnonce'] ) ) {
-            wp_send_json_error( [ 'message' => 'Security check failed!' ] );
-        }
-
-        // Sanitize and validate event name
-        $event_name = sanitize_text_field( $_POST['event_name'] ?? '' );
-        if ( empty( $event_name ) ) {
-            wp_send_json_error( [ 'message' => 'Event name cannot be empty!' ] );
-        }
-
-        // Option key for storing all events
-        $option_key = 'rm_event_names';
-
-        // Get existing events array
-        $event_names = get_option( $option_key, [] );
-        if ( ! is_array( $event_names ) ) {
-            $event_names = [];
-        }
-
-        // Convert event name to uppercase (optional)
-        $event_name = strtoupper( $event_name );
-
-        // Add the event if not already in the array
-        if ( ! in_array( $event_name, $event_names ) ) {
-            $event_names[] = $event_name;
-        }
-
-        // Save updated array back to database
-        update_option( $option_key, $event_names );
-
-        // Return success response
-        wp_send_json_success( $event_names );
-    }
-
     public function product_sales_count() {
 
         // Security check: verify nonce
