@@ -216,72 +216,90 @@ if ( ! function_exists( 'notify_placeholders' ) ) {
     }
 }
 
-    /**
-	 * Get product sales count for a specific event.
-	 *
-	 * @param string $event_key The value of 'rm_event_key' meta to filter orders.
-	 * @return array Product name => count
-	 */
-	function get_product_sales_count_by_event( $event_key ) {
-	    if ( empty( $event_key ) ) {
-	        return [];
-	    }
+/**
+ * Get product sales count for a specific event.
+ *
+ * @param string $event_key The value of 'rm_event_key' meta to filter orders.
+ * @return array Product name => count
+ */
+function get_product_sales_count_by_event( $product_id  ) {
+    if ( empty( $product_id ) ) {
+        return [];
+    }
 
-	    // Get order IDs for the event
-	    $args = [
-	        'status'      => ['wc-completed', 'wc-processing'],
-	        'orderby'     => 'date',
-	        'order'       => 'ASC',
-	        'meta_key'    => 'rm_event_key',
-	        'meta_value'  => $event_key,
-	        'return'      => 'ids',
-	    ];
+    $product = wc_get_product( $product_id );
 
-	    $order_ids = wc_get_orders( $args );
+    // Get order IDs for the event
+    $args = [
+        'status'      => ['wc-completed', 'wc-processing'],
+        'orderby'     => 'date',
+        'order'       => 'ASC',
+        'meta_key'    => 'rm_event_key',
+        'meta_value'  => $event_key,
+        'return'      => 'ids',
+    ];
 
-	    if ( empty( $order_ids ) ) {
-	        return [];
-	    }
+    $order_ids = wc_get_orders( $args );
 
+    if ( empty( $order_ids ) ) {
+        return [];
+    }
+
+    global $wpdb;
+
+    $order_ids_placeholders = implode(',', array_map('absint', $order_ids));
+
+    // Get product counts for these orders
+    $results = $wpdb->get_results("
+        SELECT oi.order_item_name, COUNT(*) AS item_count
+        FROM {$wpdb->prefix}woocommerce_order_items oi
+        WHERE oi.order_item_type = 'line_item'
+          AND oi.order_id IN ($order_ids_placeholders)
+        GROUP BY oi.order_item_name
+        ORDER BY item_count DESC
+    ");
+
+    // Convert to simple array: product => count
+    $product_counts = [];
+    foreach ( $results as $row ) {
+        $product_counts[ $row->order_item_name ] = (int) $row->item_count;
+    }
+
+    return $product_counts;
+}
+if ( ! function_exists( 'get_product_order_ids' ) ) {
+    function get_product_order_ids( $product_id ) {
+        global $wpdb;
+
+        $order_ids = $wpdb->get_col( $wpdb->prepare(
+            "SELECT DISTINCT order_items.order_id
+             FROM {$wpdb->prefix}woocommerce_order_items AS order_items
+             INNER JOIN {$wpdb->prefix}woocommerce_order_itemmeta AS itemmeta 
+                ON order_items.order_item_id = itemmeta.order_item_id
+             WHERE itemmeta.meta_key = '_product_id'
+               AND itemmeta.meta_value = %d",
+            $product_id
+        ) );
+
+        return $order_ids;
+    }
+}
+
+if ( ! function_exists( 'get_variation_sales_count' ) ) {
+    function get_variation_sales_count( $variation_id ) {
 	    global $wpdb;
 
-	    $order_ids_placeholders = implode(',', array_map('absint', $order_ids));
-
-	    // Get product counts for these orders
-	    $results = $wpdb->get_results("
-	        SELECT oi.order_item_name, COUNT(*) AS item_count
-	        FROM {$wpdb->prefix}woocommerce_order_items oi
-	        WHERE oi.order_item_type = 'line_item'
-	          AND oi.order_id IN ($order_ids_placeholders)
-	        GROUP BY oi.order_item_name
-	        ORDER BY item_count DESC
-	    ");
-
-	    // Convert to simple array: product => count
-	    $product_counts = [];
-	    foreach ( $results as $row ) {
-	        $product_counts[ $row->order_item_name ] = (int) $row->item_count;
-	    }
-
-	    return $product_counts;
+	    return (int) $wpdb->get_var(
+	        $wpdb->prepare("
+	            SELECT COUNT(*)
+	            FROM {$wpdb->prefix}woocommerce_order_itemmeta
+	            WHERE meta_key = '_variation_id'
+	              AND meta_value = %d
+	        ", $variation_id )
+	    );
 	}
-	if ( ! function_exists( 'get_product_order_ids' ) ) {
-	    function get_product_order_ids( $product_id ) {
-	        global $wpdb;
 
-	        $order_ids = $wpdb->get_col( $wpdb->prepare(
-	            "SELECT DISTINCT order_items.order_id
-	             FROM {$wpdb->prefix}woocommerce_order_items AS order_items
-	             INNER JOIN {$wpdb->prefix}woocommerce_order_itemmeta AS itemmeta 
-	                ON order_items.order_item_id = itemmeta.order_item_id
-	             WHERE itemmeta.meta_key = '_product_id'
-	               AND itemmeta.meta_value = %d",
-	            $product_id
-	        ) );
-
-	        return $order_ids;
-	    }
-	}
+}
 
 
 

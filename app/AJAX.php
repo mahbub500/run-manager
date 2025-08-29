@@ -772,19 +772,47 @@ public function import_excel_to_orders() {
 
     public function product_sales_count() {
 
-        // Security check: verify nonce
+        // Security check
         if ( ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( $_POST['_wpnonce'] ) ) {
             wp_send_json_error( [ 'message' => 'Security check failed!' ] );
         }
 
-        $event = sanitize_text_field($_POST['event'] ?? '');
+        global $wpdb;
 
-        $product_counts = get_product_sales_count_by_event( $event );
+        $product_id = sanitize_text_field( $_POST['id'] ?? '' );
+        $product    = wc_get_product( $product_id );
+        $total_sales = 0;
+        $product_counts = [];
 
-        // Return success response
-         wp_send_json_success( [ 
-	        'products' => $product_counts
-	    ] );
+        if ( $product && $product->is_type( 'variable' ) ) {
+            $variations = $product->get_children();
+
+            foreach ( $variations as $variation_id ) {
+                $variation  = wc_get_product( $variation_id );
+                $sales      = get_variation_sales_count( $variation_id );
+                $total_sales += $sales;
+
+                // Use formatted variation name
+                $variation_name = $variation ? $variation->get_formatted_name() : "Variation {$variation_id}";
+
+                $product_counts[$variation_name] = $sales;
+            }
+        } else {
+            // Simple product sales
+            $sales = (int) get_post_meta( $product_id, 'total_sales', true );
+            $total_sales = $sales;
+
+            $product_counts[ $product ? $product->get_name() : "Product {$product_id}" ] = $sales;
+        }
+
+        // Add grand total
+        $product_counts['Grand Total'] = $total_sales;
+
+        wp_send_json_success( [
+            'products' => $product_counts
+        ] );
     }
+
+
 
 }

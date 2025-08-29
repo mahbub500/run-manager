@@ -152,3 +152,54 @@
     color: red;
     font-weight: bold;
 }
+
+.rm-product-sales-count h3 {
+    font-size: 18px;
+    margin-bottom: 12px;
+    color: #333;
+}
+
+.rm-product-sales-count table {
+    border-collapse: collapse;
+    width: 100%;
+    font-family: Arial, sans-serif;
+    background: #fff;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.rm-product-sales-count thead {
+    background: linear-gradient(90deg, #ff6a00, #ee0979);
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+}
+
+.rm-product-sales-count th,
+.rm-product-sales-count td {
+    padding: 10px 14px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.rm-product-sales-count tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.rm-product-sales-count tr:hover {
+    background-color: #f1f7ff;
+}
+
+.rm-product-sales-count td:last-child {
+    text-align: center;
+    font-weight: bold;
+    color: #222;
+}
+
+.rm-no-products {
+    color: #666;
+    font-style: italic;
+    padding: 8px 0;
+}
+

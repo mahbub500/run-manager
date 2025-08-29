@@ -363,10 +363,9 @@ jQuery(document).ready(function ($) {
 
     $('#rm-select-product').select2();
 
-    const $select = $('#rm-select-product-product');
+    const $select = $('#rm-select-main-product');
 
     $select.select2({
-        placeholder: "-- Select Event --",
         allowClear: true,
         width: '300px'
     });
@@ -374,11 +373,11 @@ jQuery(document).ready(function ($) {
     // Clear selection on page load
     $select.val(null).trigger('change');
 
-    $('#rm-select-product-product').on('change', function() {
-        const selectedEvent = $(this).val();
+   $('#rm-select-main-product').on('change', function() {
+        const product_id = $(this).val();
 
-        if (!selectedEvent) {
-            $('.rm-product-sales-count').html(''); // Clear table if no event
+        if (!product_id) {
+            $('.rm-product-sales-count').html(''); // Clear table if no product
             return;
         }
 
@@ -391,7 +390,7 @@ jQuery(document).ready(function ($) {
             dataType: "json",
             data: {
                 action: "get_product_sales_count",
-                event: selectedEvent,
+                id: product_id,
                 _wpnonce: RUN_MANAGER._wpnonce
             },
             success: function(response) {
@@ -399,7 +398,7 @@ jQuery(document).ready(function ($) {
                 runm_modal(false);
 
                 if (response.success && response.data.products && Object.keys(response.data.products).length > 0) {
-                    let html = '<h3>Event Wise Product Count</h3>';
+                    let html = '<h3>Product Wise Product Count</h3>';
                     html += '<table class="widefat striped" style="width:100%; margin-top:10px;">';
                     html += '<thead><tr><th>Product Name</th><th>Quantity Sold</th></tr></thead><tbody>';
 
@@ -410,13 +409,15 @@ jQuery(document).ready(function ($) {
                     html += '</tbody></table>';
                     $('.rm-product-sales-count').html(html);
                 } else {
-                    $('.rm-product-sales-count').html('<h3>Event Wise Product Count</h3><p class="rm-no-products">No products found for this event.</p>');
-
+                    $('.rm-product-sales-count').html(
+                        '<h3>Product Wise Product Count</h3>' +
+                        '<p class="rm-no-products">No products found for this event.</p>'
+                    );
                 }
-
             },
             error: function() {
-                runm_modal(false);// Hide loader on error
+                // Hide loader on error
+                runm_modal(false);
                 alert("Error fetching product sales count.");
             }
         });

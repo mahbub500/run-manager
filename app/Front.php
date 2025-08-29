@@ -38,7 +38,6 @@ class Front extends Base {
 	}
 
 	public function head() {
-			
 	}
 
 	

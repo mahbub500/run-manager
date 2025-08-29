@@ -71,12 +71,12 @@ $WcProduct = Helper::get_posts( [
   </div>
   <div class="wph-field-wrap ">
 
-    <select id="rm-select-product-product" name="rm_event_select_product" class="regular-text">
-      <option value="">-- Select Event --</option>
-      <?php if ( ! empty( $events ) ) : ?>
-        <?php foreach ( $events as $event ) : ?>
-          <option value="<?php echo esc_attr( $event ); ?>" <?php selected( $event, $last_event ); ?>>
-            <?php echo esc_html( $event ); ?>
+    <select id="rm-select-main-product" name="rm_event_select_product" class="regular-text">
+      <option value="">-- Select Product --</option>
+      <?php if ( ! empty( $WcProduct ) ) : ?>
+        <?php foreach ( $WcProduct as $product_id => $product_title ) : ?>
+          <option value="<?php echo esc_attr( $product_id ); ?>" <?php selected( $product_id ); ?>>
+            <?php echo esc_html( $product_title ); ?>
           </option>
         <?php endforeach; ?>
       <?php endif; ?>
