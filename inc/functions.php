@@ -265,30 +265,23 @@ if ( ! function_exists( 'notify_placeholders' ) ) {
 
 	    return $product_counts;
 	}
-if ( ! function_exists( 'draw_text_on_image' ) ) {
-	/**
-	 * Draw text on an image using TrueType font.
-	 *
-	 * @param resource $image      The GD image resource.
-	 * @param string   $text       The text to draw.
-	 * @param int      $x          X-coordinate.
-	 * @param int      $y          Y-coordinate (baseline).
-	 * @param int      $size       Font size.
-	 * @param string   $font_file  Path to the TTF font file.
-	 * @param string   $hex_color  Text color in HEX (default #44388B).
-	 * @param float    $angle      Text angle in degrees (default 0).
-	 */
-	function draw_text_on_image($image, $text, $x, $y, $size, $font_file, $hex_color = '#44388B', $angle = 0) {
-	    // Convert HEX color to RGB
-	    list($r, $g, $b) = sscanf($hex_color, "#%02x%02x%02x");
-	    
-	    // Allocate color
-	    $color = imagecolorallocate($image, $r, $g, $b);
-	    
-	    // Draw text
-	    imagettftext($image, $size, $angle, $x, $y, $color, $font_file, $text);
+	if ( ! function_exists( 'get_product_order_ids' ) ) {
+	    function get_product_order_ids( $product_id ) {
+	        global $wpdb;
+
+	        $order_ids = $wpdb->get_col( $wpdb->prepare(
+	            "SELECT DISTINCT order_items.order_id
+	             FROM {$wpdb->prefix}woocommerce_order_items AS order_items
+	             INNER JOIN {$wpdb->prefix}woocommerce_order_itemmeta AS itemmeta 
+	                ON order_items.order_item_id = itemmeta.order_item_id
+	             WHERE itemmeta.meta_key = '_product_id'
+	               AND itemmeta.meta_value = %d",
+	            $product_id
+	        ) );
+
+	        return $order_ids;
+	    }
 	}
-}
 
 
 

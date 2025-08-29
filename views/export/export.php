@@ -10,8 +10,11 @@ $data             = json_decode($rsponse, true);
 
 // Fixed the issue here
 $balance	= isset($data['balance']['sms']) ? $data['balance']['sms'] : "";
-$events 	= get_option('rm_event_names', []);
-$last_event = !empty($events) ? end($events) : '';
+$WcProduct = Helper::get_posts( [
+		        'post_type'      => 'product',
+		        'post_status'    => 'publish',
+		        'posts_per_page' => -1,
+		    ] );
 
 ?>
 
@@ -29,16 +32,16 @@ $last_event = !empty($events) ? end($events) : '';
 
 <div class="wph-row">
   <div class="wph-label-wrap">
-    <label for="rm-event-select">Get Tshirt chart :</label>
+    <label for="rm-select-product">Get Tshirt chart :</label>
   </div>
   <div class="wph-field-wrap">
-    <!-- Dropdown populated with events -->
-    <select id="rm-event-select" name="rm_event_select" class="regular-text">
-      <option value="">-- Select Event --</option>
-      <?php if ( ! empty( $events ) ) : ?>
-        <?php foreach ( $events as $event ) : ?>
-          <option value="<?php echo esc_attr( $event ); ?>" <?php selected( $event, $last_event ); ?>>
-            <?php echo esc_html( $event ); ?>
+    <!-- Dropdown populated with product -->
+    <select id="rm-select-product" name="rm-select-product" class="regular-text">
+      <option value="">-- Select Product --</option>
+      <?php if ( ! empty( $WcProduct ) ) : ?>
+        <?php foreach ( $WcProduct as $product_id => $product_title ) : ?>
+          <option value="<?php echo esc_attr( $product_id ); ?>" <?php selected( $product_id ); ?>>
+            <?php echo esc_html( $product_title ); ?>
           </option>
         <?php endforeach; ?>
       <?php endif; ?>
@@ -49,7 +52,7 @@ $last_event = !empty($events) ? end($events) : '';
       <i class="bi bi-download"></i> Download
     </button>
 
-    <p class="wph-desc">This will download your size chart of order by EVENT</p>
+    <p class="wph-desc">Download your Tshirt size chart of Product</p>
   </div>
 </div>
 
@@ -68,7 +71,7 @@ $last_event = !empty($events) ? end($events) : '';
   </div>
   <div class="wph-field-wrap ">
 
-    <select id="rm-event-select-product" name="rm_event_select_product" class="regular-text">
+    <select id="rm-select-product-product" name="rm_event_select_product" class="regular-text">
       <option value="">-- Select Event --</option>
       <?php if ( ! empty( $events ) ) : ?>
         <?php foreach ( $events as $event ) : ?>

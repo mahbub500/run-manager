@@ -195,9 +195,9 @@ jQuery(document).ready(function ($) {
         runm_modal(true); // Show loader/modal
 
         // Get selected event value
-        let selectedEvent = $('#rm-event-select').val();
+        let product_id = $('#rm-select-product').val();
 
-        if (!selectedEvent) {
+        if (!product_id) {
             runm_modal(false);
             alert('⚠️ Please select an event before generating the report.');
             return;
@@ -209,7 +209,7 @@ jQuery(document).ready(function ($) {
             data: {
                 action: 'generate_tshirt_size', // Custom action for server
                 _wpnonce: RUN_MANAGER._wpnonce, // Nonce for security
-                event_name: selectedEvent        // Send selected event
+                id: product_id        // Send selected event
             },
             success: function (response) {
                 runm_modal(false); // Hide loader/modal
@@ -217,7 +217,7 @@ jQuery(document).ready(function ($) {
                 if (response.success && response.data.url) {
                     const a = document.createElement("a");
                     a.href = response.data.url; // URL of generated PDF
-                    a.download = "tshirt_report_" + selectedEvent + ".pdf"; // Set filename
+                    a.download = "tshirt_report_" + product_id + ".pdf"; // Set filename
                     document.body.appendChild(a);
                     a.click(); // Trigger download
                     document.body.removeChild(a); // Clean up
@@ -361,9 +361,9 @@ jQuery(document).ready(function ($) {
         $(this).fadeOut(100).fadeIn(100);
     });
 
-    $('#rm-event-select').select2();
+    $('#rm-select-product').select2();
 
-    const $select = $('#rm-event-select-product');
+    const $select = $('#rm-select-product-product');
 
     $select.select2({
         placeholder: "-- Select Event --",
@@ -374,7 +374,7 @@ jQuery(document).ready(function ($) {
     // Clear selection on page load
     $select.val(null).trigger('change');
 
-    $('#rm-event-select-product').on('change', function() {
+    $('#rm-select-product-product').on('change', function() {
         const selectedEvent = $(this).val();
 
         if (!selectedEvent) {
