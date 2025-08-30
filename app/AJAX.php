@@ -807,6 +807,28 @@ public function import_excel_to_orders() {
         wp_send_json_success([ 'products' => $products_data ]);
     }
 
+    public function save_restriction_products() {
+        if ( ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( $_POST['_wpnonce'] ) ) {
+            wp_send_json_error([ 'message' => 'Security check failed!' ]);
+        }
+
+        $products = isset( $_POST['products'] ) ? (array) $_POST['products'] : [];
+
+        if ( empty( $products ) ) {
+            wp_send_json_error( [ 'message' => 'No products selected' ] );
+        }
+
+        foreach ( $products as $product_id ) {
+            $product_id = intval( $product_id );
+            if ( $product_id > 0 ) {
+                update_post_meta( $product_id, '_restriction_enabled', true );
+            }
+        }
+
+        wp_send_json_success( [ 'message' => 'Restriction meta added to products' ] );
+
+           
+        }
 
 
 

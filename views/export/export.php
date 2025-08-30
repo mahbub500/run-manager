@@ -16,6 +16,19 @@ $WcProduct = Helper::get_posts( [
 		        'posts_per_page' => -1,
 		    ] );
 
+$args = [
+    'post_type'      => 'product',
+    'posts_per_page' => -1,
+    'fields'         => 'ids',
+    'meta_query'     => [
+        [
+            'key'   => '_restriction_enabled',
+            'value' => true,
+        ]
+    ]
+];
+$restricted_products = get_posts( $args ); 
+
 ?>
 
 <div class="wph-row  ">
@@ -53,6 +66,33 @@ $WcProduct = Helper::get_posts( [
     </button>
 
     <p class="wph-desc">Download your Tshirt size chart of Product</p>
+  </div>
+</div>
+
+<div class="wph-row">
+  <div class="wph-label-wrap">
+    <label for="rm-restriction-product">Select restriction product :</label>
+  </div>
+  <div class="wph-field-wrap">
+    <!-- Dropdown populated with product -->
+    <select id="rm-restriction-product" name="product[]" multiple="multiple" class="regular-text">
+    <option value="">-- Select Product --</option>
+    <?php if ( ! empty( $WcProduct ) ) : ?>
+      <?php foreach ( $WcProduct as $product_id => $product_title ) : ?>
+        <option value="<?php echo esc_attr( $product_id ); ?>"
+          <?php echo in_array( $product_id, $restricted_products ) ? 'selected' : ''; ?>>
+          <?php echo esc_html( $product_title ); ?>
+        </option>
+      <?php endforeach; ?>
+    <?php endif; ?>
+  </select>
+
+    <!-- Select button -->
+    <button id="rm-product-restriction" class="button button-hero button-primary">
+      <i class="bi bi-download"></i> Save data
+    </button>
+
+    <p class="wph-desc">Select your product to add restriction</p>
   </div>
 </div>
 

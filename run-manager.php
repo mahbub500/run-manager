@@ -220,6 +220,7 @@ final class Plugin {
 		$ajax->priv( 'save_notify_data', 'save_notify_data' );
 		
 		$ajax->priv( 'get_all_product_sales_count', 'product_sales_count' );
+		$ajax->priv( 'save_restriction_products', 'save_restriction_products' );
 
 	}
 

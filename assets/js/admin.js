@@ -370,6 +370,35 @@ setTimeout(restoreTab, 1);
     // Clear selection on page load
     $select.val(null).trigger('change');
 
+    $('#rm-restriction-product').select2();$('#rm-product-restriction').on('click', function(e) {
+        e.preventDefault();
+
+        let selectedProducts = $('#rm-restriction-product').val(); // array of selected product IDs
+
+        if (!selectedProducts || selectedProducts.length === 0) {
+            alert('Please select at least one product.');
+            return;
+        }
+        runm_modal();
+        $.ajax({
+            url: RUN_MANAGER.ajaxurl, // WordPress provides this in admin
+            type: 'POST',
+            data: {
+                action: 'save_restriction_products',
+                products: selectedProducts,
+                _wpnonce: RUN_MANAGER._wpnonce // optional if you add nonce
+            },
+            success: function(response) {
+                runm_modal(false);
+                if (response.success) {
+                    alert('Products saved successfully!');
+                } else {
+                    alert(response.data.message || 'Error saving products');
+                }
+            }
+        });
+    });
+
 });
 
 jQuery(document).ready(function($) {
