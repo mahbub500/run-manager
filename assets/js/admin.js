@@ -233,58 +233,55 @@ jQuery(document).ready(function ($) {
     });
 
 
-     const STORAGE_KEY = 'wph_last_active_tab';
-    const SMS_TAB = 'wph-tab-run-manager_basic-run-manager_sms_manager';
-    const SAVE_TAB = 'wph-tab-run-manager_basic-run-manager_save_message';
+    const STORAGE_KEY = 'wph_last_active_tab';
+const SMS_TAB = 'wph-tab-run-manager_basic-run-manager_sms_manager';
+const SAVE_TAB = 'wph-tab-run-manager_basic-run-manager_save_message';
 
-    // Hide sections initially
-    $('.wrap.notify-wrap, #wph-tab-run-manager_basic-run-manager_save_message').hide();
+// Hide sections initially
+$('.wrap.notify-wrap, #wph-tab-run-manager_basic-run-manager_save_message').hide();
 
-    function toggleSections(target) {
-        // Default: show controls, hide all sections
-        $('.wph-controls-wrapper.wph-nonsticky-controls').show();
-        $('.wrap.notify-wrap').hide();
-        $('#wph-tab-run-manager_basic-run-manager_save_message').hide();
+function toggleSections(target) {
+    // Hide all sections first
+    $('.wrap.notify-wrap').hide();
+    $('#wph-tab-run-manager_basic-run-manager_save_message').hide();
 
-        if (target === SMS_TAB) {
-            $('.wph-controls-wrapper.wph-nonsticky-controls').hide();
-            $('.wrap.notify-wrap').show();
-        } else if (target === SAVE_TAB) {
-            $('#wph-tab-run-manager_basic-run-manager_save_message').show();
-        }
+    if (target === SMS_TAB) {
+        $('.wrap.notify-wrap').show();
+    } else if (target === SAVE_TAB) {
+        $('#wph-tab-run-manager_basic-run-manager_save_message').show();
     }
+}
 
-    // Tab click
-    $('.wph-tabs .wph-tab').on('click', function() {
-        var target = $(this).data('target');
+// Tab click
+$('.wph-tabs .wph-tab').on('click', function() {
+    var target = $(this).data('target');
 
-        // Save to localStorage
-        localStorage.setItem(STORAGE_KEY, target);
+    // Save to localStorage
+    localStorage.setItem(STORAGE_KEY, target);
 
-        // Handle section visibility
-        toggleSections(target);
-    });
+    // Handle section visibility
+    toggleSections(target);
 
-    // Restore last active tab after reload
-    function restoreTab() {
-        var savedTab = localStorage.getItem(STORAGE_KEY);
-        if (!savedTab) return;
+    // Active tab styling
+    $(this).addClass('is-active').siblings().removeClass('is-active');
+});
 
-        var $tab = $('.wph-tabs .wph-tab[data-target="' + savedTab + '"]');
-        if (!$tab.length) return;
+// Restore last active tab after reload
+function restoreTab() {
+    var savedTab = localStorage.getItem(STORAGE_KEY);
+    if (!savedTab) return;
 
-        // Trigger the tab click to ensure library behavior
-        $tab.get(0).click();
+    var $tab = $('.wph-tabs .wph-tab[data-target="' + savedTab + '"]');
+    if (!$tab.length) return;
 
-        // Make tab visually active (if your system uses an active class)
-        $tab.addClass('is-active').siblings().removeClass('is-active');
+    $tab.get(0).click(); // trigger tab click
+    $tab.addClass('is-active').siblings().removeClass('is-active');
+    toggleSections(savedTab);
+}
 
-        // Ensure sections are visible correctly
-        toggleSections(savedTab);
-    }
+// Delay restore to allow tabs to render
+setTimeout(restoreTab, 1);
 
-    // Delay restore to allow tabs to render (if loaded via JS)
-    setTimeout(restoreTab, 1);
 
     
     
