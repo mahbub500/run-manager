@@ -139,6 +139,7 @@ final class Plugin {
 			$admin->action( 'admin_enqueue_scripts', 'enqueue_scripts' );
 			$admin->action( 'admin_footer_text', 'footer_text' );
 			
+			
 
 			/**
 			 * Settings related hooks

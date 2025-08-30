@@ -55,6 +55,7 @@ class Settings extends Base {
 					'icon'      => 'dashicons-admin-tools',
 					// 'color'		=> '#4c3f93',
 					'sticky'	=> false,
+					'hide_form'	=> true,
 					'fields'    => [
 						'sample_tabs' => [
 							'id'      => 'sample_tabs',
