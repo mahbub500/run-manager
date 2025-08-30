@@ -204,4 +204,43 @@ class Front extends Base {
 	    $order->update_meta_data( 'rm_event_key', $last_event );
 	    $order->save();
 	}
+
+	public function cart_validation( $passed, $product_id, $quantity, $variation_id = null, $variations = null ){
+
+		$restricted = get_post_meta($product_id, '_restriction_enabled', true);
+
+	    if($restricted == '1') {
+	        // Check if cart already has other products
+	        foreach(WC()->cart->get_cart() as $cart_item) {
+	            if($cart_item['product_id'] != $product_id) {
+	                wc_add_notice('You can only purchase this product alone.', 'error');
+	                return false;
+	            }
+	        }
+
+	        // Check if quantity > 1
+	        if($quantity > 1) {
+	            wc_add_notice('You can only purchase one of this product.', 'error');
+	            return false;
+	        }
+	    } else {
+	        // If restricted product already in cart, block adding other products
+	        foreach(WC()->cart->get_cart() as $cart_item) {
+	            $cart_product_id = $cart_item['product_id'];
+	            if(get_post_meta($cart_product_id, '_restriction_enabled', true) == '1') {
+	                wc_add_notice('You cannot add other products because a restricted product is in the cart.', 'error');
+	                return false;
+	            }
+	        }
+	    }
+
+	    return $passed;
+	}
+
+	public function item_quantity( $quantity, $cart_item_key, $cart_item ){
+		if(get_post_meta($cart_item['product_id'], '_restriction_enabled', true) == '1') {
+	        $quantity = 1;
+	    }
+	    return $quantity;
+	}
 }

@@ -174,6 +174,8 @@ final class Plugin {
 			$front->action( 'woocommerce_order_details_after_order_table', 'show_tshirt_size_after_order_table', 20 );
 			$front->action( 'woocommerce_checkout_fields', 'hide_checkout_field_if_product_in_cart', 20 );
 			$front->action( 'woocommerce_checkout_update_order_meta', 'add_tracking_meta', 20 );
+			$front->filter( 'woocommerce_add_to_cart_validation', 'cart_validation', 20, 5 );
+			$front->filter( 'woocommerce_cart_item_quantity', 'item_quantity', 20, 3 );
 
 
 
