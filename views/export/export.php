@@ -1,21 +1,22 @@
 <?php
 use Codexpert\Plugin\Table;
 use WpPluginHub\Run_Manager\Helper;
-
 use WpPluginHub\AdnSms\AdnSmsNotification;
 
-$smsNotification  = new AdnSmsNotification();
-$rsponse          = $smsNotification->checkBalance();
-$data             = json_decode($rsponse, true);
+// ===== Fetch ADN Balance =====
+$smsNotification = new AdnSmsNotification();
+$response        = $smsNotification->checkBalance();
+$data            = json_decode($response, true);
+$balance         = isset($data['balance']['sms']) ? $data['balance']['sms'] : "";
 
-// Fixed the issue here
-$balance	= isset($data['balance']['sms']) ? $data['balance']['sms'] : "";
+// ===== Fetch All Products =====
 $WcProduct = Helper::get_posts( [
-		        'post_type'      => 'product',
-		        'post_status'    => 'publish',
-		        'posts_per_page' => -1,
-		    ] );
+    'post_type'      => 'product',
+    'post_status'    => 'publish',
+    'posts_per_page' => -1,
+] );
 
+// ===== Fetch Restricted Products =====
 $args = [
     'post_type'      => 'product',
     'posts_per_page' => -1,
@@ -27,107 +28,94 @@ $args = [
         ]
     ]
 ];
-$restricted_products = get_posts( $args ); 
-
+$restricted_products = get_posts( $args );
 ?>
 
-<div class="wph-row  ">
+<!-- ===== Export Order Data ===== -->
+<div class="wph-row">
   <div class="wph-label-wrap">
-    <label >Export Order Data To excel :</label>
+    <label>Export Order Data To Excel :</label>
   </div>
-  <div class="wph-field-wrap ">
-    <button id="run-manager-export-button" class="button button-hero button-primary ">
-    <i class="bi bi-download"></i>Export
-  </button>
-    <p class="wph-desc">This will export your completed order data to excel.</p>
+  <div class="wph-field-wrap">
+    <button id="run-manager-export-button" class="button button-hero button-primary">
+      <i class="bi bi-download"></i> Export
+    </button>
+    <p class="wph-desc">This will export your completed order data to Excel.</p>
   </div>
 </div>
 
+<!-- ===== T-Shirt Size Chart ===== -->
 <div class="wph-row">
   <div class="wph-label-wrap">
-    <label for="rm-select-product">Get Tshirt chart :</label>
+    <label for="rm-select-product">Get T-Shirt Chart :</label>
   </div>
   <div class="wph-field-wrap">
-    <!-- Dropdown populated with product -->
     <select id="rm-select-product" name="rm-select-product" class="regular-text">
       <option value="">-- Select Product --</option>
-      <?php if ( ! empty( $WcProduct ) ) : ?>
-        <?php foreach ( $WcProduct as $product_id => $product_title ) : ?>
-          <option value="<?php echo esc_attr( $product_id ); ?>" <?php selected( $product_id ); ?>>
-            <?php echo esc_html( $product_title ); ?>
-          </option>
-        <?php endforeach; ?>
-      <?php endif; ?>
+      <?php foreach ( $WcProduct as $product_id => $product_title ) : ?>
+        <option value="<?php echo esc_attr( $product_id ); ?>">
+          <?php echo esc_html( $product_title ); ?>
+        </option>
+      <?php endforeach; ?>
     </select>
 
-    <!-- Download button -->
     <button id="run-manager-tshirt-chart" class="button button-hero button-primary">
       <i class="bi bi-download"></i> Download
     </button>
 
-    <p class="wph-desc">Download your Tshirt size chart of Product</p>
+    <p class="wph-desc">Download your T-shirt size chart of a product.</p>
   </div>
 </div>
 
+<!-- ===== Restrict Products ===== -->
 <div class="wph-row">
   <div class="wph-label-wrap">
-    <label for="rm-restriction-product">Select restriction product :</label>
+    <label for="rm-restriction-product">Select Restriction Product :</label>
   </div>
   <div class="wph-field-wrap">
-    <!-- Dropdown populated with product -->
     <select id="rm-restriction-product" name="product[]" multiple="multiple" class="regular-text">
-    <option value="">-- Select Product --</option>
-    <?php if ( ! empty( $WcProduct ) ) : ?>
+      <option value="">-- Select Product --</option>
       <?php foreach ( $WcProduct as $product_id => $product_title ) : ?>
         <option value="<?php echo esc_attr( $product_id ); ?>"
           <?php echo in_array( $product_id, $restricted_products ) ? 'selected' : ''; ?>>
           <?php echo esc_html( $product_title ); ?>
         </option>
       <?php endforeach; ?>
-    <?php endif; ?>
-  </select>
+    </select>
 
-    <!-- Select button -->
     <button id="rm-product-restriction" class="button button-hero button-primary">
-      <i class="bi bi-download"></i> Save data
+      <i class="bi bi-download"></i> Save Data
     </button>
 
-    <p class="wph-desc">Select your product to add restriction</p>
+    <p class="wph-desc">Select your product(s) to add restriction.</p>
   </div>
 </div>
 
+<!-- ===== ADN Balance ===== -->
 <div class="wph-row">
   <div class="wph-label-wrap">
-    <label>Your ADN API Remaining balance is:</label>
+    <label>Your ADN API Remaining Balance:</label>
   </div>
-  <div class="wph-field-wrap ">
-    <p> <strong><?php echo $balance; ?></strong></p>
+  <div class="wph-field-wrap">
+    <p><strong><?php echo esc_html( $balance ); ?></strong></p>
   </div>
 </div>
 
+<!-- ===== Product Sales Count ===== -->
 <div class="wph-row">
   <div class="wph-label-wrap">
-    <label>Product Sales count</label>
+    <label for="rm-select-main-product">Product Sales Count :</label>
   </div>
-  <div class="wph-field-wrap ">
-
+  <div class="wph-field-wrap">
     <select id="rm-select-main-product" name="rm_event_select_product" class="regular-text">
       <option value="">-- Select Product --</option>
-      <?php if ( ! empty( $WcProduct ) ) : ?>
-        <?php foreach ( $WcProduct as $product_id => $product_title ) : ?>
-          <option value="<?php echo esc_attr( $product_id ); ?>" <?php selected( $product_id ); ?>>
-            <?php echo esc_html( $product_title ); ?>
-          </option>
-        <?php endforeach; ?>
-      <?php endif; ?>
+      <?php foreach ( $WcProduct as $product_id => $product_title ) : ?>
+        <option value="<?php echo esc_attr( $product_id ); ?>">
+          <?php echo esc_html( $product_title ); ?>
+        </option>
+      <?php endforeach; ?>
     </select>
 
     <div class="rm-product-sales-count"></div>
-    
-
   </div>
 </div>
-
-<?php
- // display_product_sales_count(); 
-?>

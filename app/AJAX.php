@@ -812,16 +812,20 @@ public function import_excel_to_orders() {
             wp_send_json_error([ 'message' => 'Security check failed!' ]);
         }
 
-        $products = isset( $_POST['products'] ) ? (array) $_POST['products'] : [];
+        $selected_products = isset( $_POST['products'] ) ? (array) $_POST['products'] : [];
 
-        if ( empty( $products ) ) {
-            wp_send_json_error( [ 'message' => 'No products selected' ] );
-        }
+        // Get all published products
+        $all_products = get_posts([
+            'post_type'      => 'product',
+            'posts_per_page' => -1,
+            'fields'         => 'ids',
+        ]);
 
-        foreach ( $products as $product_id ) {
-            $product_id = intval( $product_id );
-            if ( $product_id > 0 ) {
+        foreach ( $all_products as $product_id ) {
+            if ( in_array( $product_id, $selected_products ) ) {
                 update_post_meta( $product_id, '_restriction_enabled', true );
+            } else {
+                delete_post_meta( $product_id, '_restriction_enabled' );
             }
         }
 
