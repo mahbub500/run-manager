@@ -65,18 +65,24 @@ class Front extends Base {
 		</div>';
 	}
 
-	public function download_certificate( $actions, $order ){
-		$certificate_meta = $order->get_meta( '_is_certified' );
+	public function download_certificate( $actions, $order ) {
+	    $certificate_meta = $order->get_meta( '_is_certified' );
 
-		if ( $certificate_meta ) {
-			$actions['download_certificate'] = array(
-		        'url'  => '#', 
-		        'name' => __( 'Get Certified', 'run-manager' ),
-		        
-		    );
-		}
-		return $actions;
+	    if ( $certificate_meta ) {
+	        $actions['download_certificate'] = array(
+	            'url'  => wp_nonce_url(
+	                admin_url( 'admin-ajax.php?action=download_certificate&order_id=' . $order->get_id() ),
+	                'download_certificate'
+	            ),
+	            'name' => '📥 ' . __( 'Certificate', 'run-manager' ),
+
+	        );
+	    }
+
+	    return $actions;
 	}
+
+
 	
 	public function send_confirmation_sms( $order_id ) {
 	    $campain_name = Helper::get_option( 'run-manager_basic', 'campain_name' );
