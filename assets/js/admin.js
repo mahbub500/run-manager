@@ -375,10 +375,10 @@ setTimeout(restoreTab, 1);
 
         let selectedProducts = $('#rm-restriction-product').val(); // array of selected product IDs
 
-        if (!selectedProducts || selectedProducts.length === 0) {
-            alert('Please select at least one product.');
-            return;
-        }
+        // if (!selectedProducts || selectedProducts.length === 0) {
+        //     alert('Please select at least one product.');
+        //     return;
+        // }
         runm_modal();
         $.ajax({
             url: RUN_MANAGER.ajaxurl, // WordPress provides this in admin
@@ -478,3 +478,6 @@ jQuery(document).ready(function($) {
     }
 
 });
+
+
+

@@ -70,7 +70,7 @@ $restricted_products = get_posts( $args );
 <!-- ===== Restrict Products ===== -->
 <div class="wph-row">
   <div class="wph-label-wrap">
-    <label for="rm-restriction-product">Select Restriction Product :</label>
+    <label for="rm-restriction-product">Restriction Product :</label>
   </div>
   <div class="wph-field-wrap">
     <select id="rm-restriction-product" name="product[]" multiple="multiple" class="regular-text">

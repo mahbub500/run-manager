@@ -134,27 +134,31 @@ jQuery(function($){
     });
 
 
-    function addClearCartButton() {
+   function addClearCartButton() {
         let notice = $('.woocommerce-error, .woocommerce-info');
         notice.each(function() {
             let message = $(this).text().trim();
-            if (message.includes('You can only add one product to your cart') && !$(this).find('.clear-cart-button').length) {
-                let button = $('<button class="button clear-cart-button">Clear Cart</button>');
 
-                // Wrap text and button in a flex container inside .woocommerce-error
+            if (
+                (message.includes('You cannot add other products because an Event was added to your cart.') ||
+                 message.includes('Clear your Cart and try again.'))
+                && !$(this).find('.clear-cart-button').length
+            ) {
+                let button = $('<button class="button clear-cart-button">Clear Cart</button>');
                 let textSpan = $('<span class="clear-cart-text"></span>').text(message);
-                
-                // Empty the notice and append structured content
+
                 $(this).empty().append(textSpan, button).addClass('clear-cart-container');
             }
         });
     }
+
 
     // Run function on page load
     $(document).ready( addClearCartButton );
 
     $(document).on('click', '.clear-cart-button', function(e) {
         e.preventDefault();
+        runm_modal();
         $.ajax({
             url: RUN_MANAGER.ajaxurl,
             type: 'POST',
@@ -163,20 +167,12 @@ jQuery(function($){
                 _wpnonce : RUN_MANAGER._wpnonce
             },
             success: function() {
+                runm_modal(false);
                 // location.reload();
                 window.location.href = window.location.pathname;
             }
         });
     });
 });
-
-
-
-
-
-
-
-
-
 
 

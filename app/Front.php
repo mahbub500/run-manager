@@ -47,7 +47,7 @@ class Front extends Base {
 	public function enqueue_scripts() {
 		$min = defined( 'RUN_MANAGER_DEBUG' ) && RUN_MANAGER_DEBUG ? '' : '.min';
 
-		wp_enqueue_style( $this->slug, plugins_url( "/assets/css/front{$min}.css", RUN_MANAGER ), '', $this->version, 'all' );
+		wp_enqueue_style( $this->slug, plugins_url( "/assets/css/front{$min}.css", RUN_MANAGER ), '',time(), 'all' );
 
 		wp_enqueue_script( $this->slug, plugins_url( "/assets/js/front{$min}.js", RUN_MANAGER ), [ 'jquery' ], $this->version, true );
 		
@@ -219,7 +219,7 @@ class Front extends Base {
 	        // Check if cart already has other products
 	        foreach(WC()->cart->get_cart() as $cart_item) {
 	            if($cart_item['product_id'] != $product_id) {
-	                wc_add_notice('You can only purchase this product alone.', 'error');
+	                wc_add_notice('Clear your Cart and try again.', 'error');
 	                return false;
 	            }
 	        }
@@ -234,7 +234,7 @@ class Front extends Base {
 	        foreach(WC()->cart->get_cart() as $cart_item) {
 	            $cart_product_id = $cart_item['product_id'];
 	            if(get_post_meta($cart_product_id, '_restriction_enabled', true) == '1') {
-	                wc_add_notice('You cannot add other products because a restricted product is in the cart.', 'error');
+	                wc_add_notice('You cannot add other products because an Event was added to your cart.', 'error');
 	                return false;
 	            }
 	        }
