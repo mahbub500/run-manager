@@ -1,0 +1,134 @@
+@font-face {
+	src: url(../fonts/GraphikRegular.otf);
+	font-family: myfonts;
+}
+
+#certificate-wrapper {
+	width: 800px;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: contain;
+	background-color: #fff;
+	margin: auto;
+	margin-top: 35px;
+	padding-bottom: 50px;
+	padding-top: 45px;
+	font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif;
+}
+.certificate-content-panel {
+	padding: 19px 100px;
+}
+.certificate-content-header,
+.certificate-content-footer,
+.certificate-content-body {
+	text-align: center;
+}
+.certificate-content-header {
+	margin-top: 40px;
+}
+.certificate-content-header .certificate-title {
+	font-size: 52px;
+	line-height: 62px;
+	color: #404040;
+	font-weight: 400;
+	margin: 0;
+}
+.line-before{
+	width: 60px;
+    height: 2px;
+    background: #E6991E;
+    float: left;
+    margin-left: 82px;
+ }
+.line-after{
+	width: 60px;
+    height: 2px;
+    background: #E6991E;
+    float: right;
+    margin-right: 82px;
+}
+.certificate-content-header .certificate-description {
+	font-size: 27px;
+	letter-spacing: 3px;
+	line-height: 33px;
+	color: #E6991E;
+	font-weight: 400;
+	margin: 0;
+}
+.certificate-content-body {}
+.certificate-content-body h6 {
+	font-size: 12px;
+	letter-spacing: 1px;
+	line-height: 14px;
+	color: #404040;
+	font-weight: normal;
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+.certificate-content-body h1 {
+	font-family: myfonts;
+	font-size: 65px;
+	line-height: 78px;
+	color: #001F41;
+	font-weight: bold;
+	font-style: italic;
+	margin: 0;
+	border-bottom: 1px solid #D6D6D6;
+}
+.certificate-content-body p {
+	font-size: 14px;
+	line-height: 20px;
+	color: #505050;
+	margin: 0;
+	padding-top: 20px;
+}
+.certificate-content-footer {
+	text-align: center;
+	margin-top: 90px;
+	margin-bottom: 20px;
+}
+.certificate-content-footer .certificate-date,
+.certificate-content-footer .certificate-signature {
+	display: inline-block;
+}
+.certificate-content-footer .certificate-date {
+	width: 120px;
+	margin-right: 0;
+	margin-left: 135px;
+	float: left;
+}
+.certificate-content-footer .certificate-date p {
+	font-size: 14px;
+	letter-spacing: 1px;
+	line-height: 23px;
+	color: #7A7A7A;
+	font-weight: 400;
+}
+.certificate-date span {
+	color: #5b5b5b;
+}
+.certificate-content-footer .certificate-signature {
+	width: 180px;
+	margin-left: 50px;
+	margin-right: 82px;
+	float: right;
+}
+.certificate-content-footer .certificate-date p,
+.certificate-content-footer .certificate-signature p {
+	border-top: 1px solid #D6D6D6;
+	margin-top: 5px;
+	padding-top: 10px;
+}
+.certificate-content-footer .certificate-signature p {
+	font-size: 14px;
+	letter-spacing: 1px;
+	line-height: 23px;
+	color: #7b7b7b;
+	font-weight: 400;
+}
+#coschool-certificate-download-section{
+	margin-top: 30px;
+}
+#coschool-certificate-download{
+	margin-right: 20px;
+}
